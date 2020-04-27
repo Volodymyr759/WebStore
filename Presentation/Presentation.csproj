@@ -1,0 +1,349 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{72708821-B4E6-4058-B097-CC6E4DF2DAF6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Presentation</RootNamespace>
+    <AssemblyName>Presentation</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Presenters\BasePresenter.cs" />
+    <Compile Include="Presenters\IBasePresenter.cs" />
+    <Compile Include="Presenters\UserControls\CategoriesDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\CategoriesPresenter.cs" />
+    <Compile Include="Presenters\UserControls\GroupsDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\GroupsPresenter.cs" />
+    <Compile Include="Presenters\UserControls\ICategoriesDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\ICategoriesPresenter.cs" />
+    <Compile Include="Presenters\UserControls\IGroupsDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\IGroupsPresenter.cs" />
+    <Compile Include="Presenters\IMainPresenter.cs" />
+    <Compile Include="Presenters\MainPresenter.cs" />
+    <Compile Include="Presenters\UserControls\IImagesDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\IImagesPresenter.cs" />
+    <Compile Include="Presenters\UserControls\ImagesDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\ImagesPresenter.cs" />
+    <Compile Include="Presenters\UserControls\IParametersDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\IParametersPresenter.cs" />
+    <Compile Include="Presenters\UserControls\IProductsDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\IProductsPresenter.cs" />
+    <Compile Include="Presenters\UserControls\ISuppliersDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\ISuppliersPresenter.cs" />
+    <Compile Include="Presenters\UserControls\IUnitsDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\IUnitsPresenter.cs" />
+    <Compile Include="Presenters\UserControls\ParametersDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\ParametersPresenter.cs" />
+    <Compile Include="Presenters\UserControls\ProductsDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\ProductsPresenter.cs" />
+    <Compile Include="Presenters\UserControls\SuppliersDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\SuppliersPresenter.cs" />
+    <Compile Include="Presenters\UserControls\UnitsDetailPresenter.cs" />
+    <Compile Include="Presenters\UserControls\UnitsPresenter.cs" />
+    <Compile Include="Validators\UnitsValidator.cs" />
+    <Compile Include="Views\DeleteConfirmView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\DeleteConfirmView.Designer.cs">
+      <DependentUpon>DeleteConfirmView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ErrorMessageView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ErrorMessageView.Designer.cs">
+      <DependentUpon>ErrorMessageView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\IDeleteConfirmView.cs" />
+    <Compile Include="Views\IErrorMessageView.cs" />
+    <Compile Include="Views\IMainView.cs" />
+    <Compile Include="Views\UserControls\IUnitsUC.cs" />
+    <Compile Include="Views\MainView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MainView.Designer.cs">
+      <DependentUpon>MainView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\UserControls\UnitsUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\UnitsUC.Designer.cs">
+      <DependentUpon>UnitsUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\CategoriesDetailUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\CategoriesDetailUC.Designer.cs">
+      <DependentUpon>CategoriesDetailUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\CategoriesUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\CategoriesUC.Designer.cs">
+      <DependentUpon>CategoriesUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\GroupsDetailUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\GroupsDetailUC.Designer.cs">
+      <DependentUpon>GroupsDetailUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\GroupsUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\GroupsUC.Designer.cs">
+      <DependentUpon>GroupsUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\ICategoriesDetailUC.cs" />
+    <Compile Include="Views\UserControls\ICategoriesUC.cs" />
+    <Compile Include="Views\UserControls\IGroupsDetailUC.cs" />
+    <Compile Include="Views\UserControls\IGroupsUC.cs" />
+    <Compile Include="Views\UserControls\IImagesUC.cs" />
+    <Compile Include="Views\UserControls\IImagesDetailUC.cs" />
+    <Compile Include="Views\UserControls\ImagesUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\ImagesUC.Designer.cs">
+      <DependentUpon>ImagesUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\ImagesDetailUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\ImagesDetailUC.Designer.cs">
+      <DependentUpon>ImagesDetailUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\IParametersDetailUC.cs" />
+    <Compile Include="Views\UserControls\IParametersUC.cs" />
+    <Compile Include="Views\UserControls\IProductsDetailUC.cs" />
+    <Compile Include="Views\UserControls\IProductsUC.cs" />
+    <Compile Include="Views\UserControls\ISuppliersDetailUC.cs" />
+    <Compile Include="Views\UserControls\ISuppliersUC.cs" />
+    <Compile Include="Views\UserControls\IUnitsDetailUC.cs" />
+    <Compile Include="Views\UserControls\ParametersDetailUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\ParametersDetailUC.Designer.cs">
+      <DependentUpon>ParametersDetailUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\ParametersUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\ParametersUC.Designer.cs">
+      <DependentUpon>ParametersUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\ProductsDetailUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\ProductsDetailUC.Designer.cs">
+      <DependentUpon>ProductsDetailUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\ProductsUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\ProductsUC.Designer.cs">
+      <DependentUpon>ProductsUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\SuppliersDetailUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\SuppliersDetailUC.Designer.cs">
+      <DependentUpon>SuppliersDetailUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\SuppliersUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\SuppliersUC.Designer.cs">
+      <DependentUpon>SuppliersUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\UnitsDetailUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\UnitsDetailUC.Designer.cs">
+      <DependentUpon>UnitsDetailUC.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Views\DeleteConfirmView.resx">
+      <DependentUpon>DeleteConfirmView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ErrorMessageView.resx">
+      <DependentUpon>ErrorMessageView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MainView.resx">
+      <DependentUpon>MainView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Views\UserControls\UnitsUC.resx">
+      <DependentUpon>UnitsUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\CategoriesDetailUC.resx">
+      <DependentUpon>CategoriesDetailUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\CategoriesUC.resx">
+      <DependentUpon>CategoriesUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\GroupsDetailUC.resx">
+      <DependentUpon>GroupsDetailUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\GroupsUC.resx">
+      <DependentUpon>GroupsUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\ImagesUC.resx">
+      <DependentUpon>ImagesUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\ImagesDetailUC.resx">
+      <DependentUpon>ImagesDetailUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\ParametersDetailUC.resx">
+      <DependentUpon>ParametersDetailUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\ParametersUC.resx">
+      <DependentUpon>ParametersUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\ProductsDetailUC.resx">
+      <DependentUpon>ProductsDetailUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\ProductsUC.resx">
+      <DependentUpon>ProductsUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\SuppliersDetailUC.resx">
+      <DependentUpon>SuppliersDetailUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\SuppliersUC.resx">
+      <DependentUpon>SuppliersUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserControls\UnitsDetailUC.resx">
+      <DependentUpon>UnitsDetailUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="webstore.sdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AddBlack24x24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DeleteBlack24x24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EditBlack24x24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Import.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OptionsBlackDotsOnWhite20x20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Print.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Tool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OpenFolder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{5a4f4afd-bae9-4627-9450-a89de5e95f0f}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
+      <Project>{CC8015F6-FFFD-4EE2-9BFF-C2DD734713F9}</Project>
+      <Name>DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{3805bead-140b-4e20-b9b3-b946e098d6bf}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\Services.csproj">
+      <Project>{a90d18a5-5d5f-4884-8ae7-55ebc8568000}</Project>
+      <Name>Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation">
+      <Version>8.6.2</Version>
+    </PackageReference>
+    <PackageReference Include="Unity">
+      <Version>5.8.6</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
