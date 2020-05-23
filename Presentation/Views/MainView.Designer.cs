@@ -47,8 +47,13 @@
             this.unitsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.serviceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.serviceProductsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findNewProductsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findOldProductsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkAvailabilityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkPricesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.завантажитиЗображенняToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.завантажитиХарактеристикиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpinfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,12 +75,11 @@
             this.fileToolStripMenuItem,
             this.handbooksToolStripMenuItem,
             this.serviceToolStripMenuItem,
-            this.windowToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
-            this.menuStrip.Size = new System.Drawing.Size(884, 25);
+            this.menuStrip.Size = new System.Drawing.Size(900, 25);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -125,7 +129,7 @@
             this.exportxmlToolStripMenuItem1.Name = "exportxmlToolStripMenuItem1";
             this.exportxmlToolStripMenuItem1.Size = new System.Drawing.Size(93, 22);
             this.exportxmlToolStripMenuItem1.Text = "xml";
-            this.exportxmlToolStripMenuItem1.Click += new System.EventHandler(this.ExportxmlToolStripMenuItem1_Click);
+            this.exportxmlToolStripMenuItem1.Click += new System.EventHandler(this.ExportxmlToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -151,49 +155,49 @@
             // productsToolStripMenuItem
             // 
             this.productsToolStripMenuItem.Name = "productsToolStripMenuItem";
-            this.productsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.productsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.productsToolStripMenuItem.Text = "Товари";
             this.productsToolStripMenuItem.Click += new System.EventHandler(this.ProductsToolStripMenuItem_Click);
             // 
             // categoriesToolStripMenuItem
             // 
             this.categoriesToolStripMenuItem.Name = "categoriesToolStripMenuItem";
-            this.categoriesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.categoriesToolStripMenuItem.Text = "Категорії";
+            this.categoriesToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.categoriesToolStripMenuItem.Text = "Категорії постачальників";
             this.categoriesToolStripMenuItem.Click += new System.EventHandler(this.CategoriesToolStripMenuItem_Click);
             // 
             // groupspromuaToolStripMenuItem
             // 
             this.groupspromuaToolStripMenuItem.Name = "groupspromuaToolStripMenuItem";
-            this.groupspromuaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.groupspromuaToolStripMenuItem.Text = "Групи prom.ua";
-            this.groupspromuaToolStripMenuItem.Click += new System.EventHandler(this.GroupspromuaToolStripMenuItem_Click);
+            this.groupspromuaToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.groupspromuaToolStripMenuItem.Text = "Групи каталогу";
+            this.groupspromuaToolStripMenuItem.Click += new System.EventHandler(this.GroupsToolStripMenuItem_Click);
             // 
             // suppliersToolStripMenuItem
             // 
             this.suppliersToolStripMenuItem.Name = "suppliersToolStripMenuItem";
-            this.suppliersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.suppliersToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.suppliersToolStripMenuItem.Text = "Постачальники";
             this.suppliersToolStripMenuItem.Click += new System.EventHandler(this.SuppliersToolStripMenuItem_Click);
             // 
             // parametersToolStripMenuItem
             // 
             this.parametersToolStripMenuItem.Name = "parametersToolStripMenuItem";
-            this.parametersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.parametersToolStripMenuItem.Text = "Характеристики";
+            this.parametersToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.parametersToolStripMenuItem.Text = "Характеристики товарів";
             this.parametersToolStripMenuItem.Click += new System.EventHandler(this.ParametersToolStripMenuItem_Click);
             // 
             // imagesToolStripMenuItem
             // 
             this.imagesToolStripMenuItem.Name = "imagesToolStripMenuItem";
-            this.imagesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.imagesToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.imagesToolStripMenuItem.Text = "Зображення";
             this.imagesToolStripMenuItem.Click += new System.EventHandler(this.ImagesToolStripMenuItem_Click);
             // 
             // unitsToolStripMenuItem
             // 
             this.unitsToolStripMenuItem.Name = "unitsToolStripMenuItem";
-            this.unitsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.unitsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.unitsToolStripMenuItem.Text = "Одиниці виміру";
             this.unitsToolStripMenuItem.Click += new System.EventHandler(this.UnitsToolStripMenuItem_Click);
             // 
@@ -201,7 +205,7 @@
             // 
             this.serviceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.settingsToolStripMenuItem,
-            this.searchToolStripMenuItem});
+            this.serviceProductsToolStripMenuItem});
             this.serviceToolStripMenuItem.Name = "serviceToolStripMenuItem";
             this.serviceToolStripMenuItem.Size = new System.Drawing.Size(55, 19);
             this.serviceToolStripMenuItem.Text = "Сервіс";
@@ -213,18 +217,60 @@
             this.settingsToolStripMenuItem.Text = "Налаштування";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
             // 
-            // searchToolStripMenuItem
+            // serviceProductsToolStripMenuItem
             // 
-            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.searchToolStripMenuItem.Text = "Пошук";
-            this.searchToolStripMenuItem.Click += new System.EventHandler(this.SearchToolStripMenuItem_Click);
+            this.serviceProductsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.findNewProductsToolStripMenuItem,
+            this.findOldProductsToolStripMenuItem,
+            this.checkAvailabilityToolStripMenuItem,
+            this.checkPricesToolStripMenuItem,
+            this.завантажитиЗображенняToolStripMenuItem,
+            this.завантажитиХарактеристикиToolStripMenuItem});
+            this.serviceProductsToolStripMenuItem.Name = "serviceProductsToolStripMenuItem";
+            this.serviceProductsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.serviceProductsToolStripMenuItem.Text = "Сервіс товарів";
             // 
-            // windowToolStripMenuItem
+            // findNewProductsToolStripMenuItem
             // 
-            this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
-            this.windowToolStripMenuItem.Size = new System.Drawing.Size(49, 19);
-            this.windowToolStripMenuItem.Text = "Вікно";
+            this.findNewProductsToolStripMenuItem.Name = "findNewProductsToolStripMenuItem";
+            this.findNewProductsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.findNewProductsToolStripMenuItem.Text = "Нові товари";
+            this.findNewProductsToolStripMenuItem.Click += new System.EventHandler(this.FindNewProductsToolStripMenuItem_Click);
+            // 
+            // findOldProductsToolStripMenuItem
+            // 
+            this.findOldProductsToolStripMenuItem.Name = "findOldProductsToolStripMenuItem";
+            this.findOldProductsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.findOldProductsToolStripMenuItem.Text = "Застарілі товари";
+            this.findOldProductsToolStripMenuItem.Click += new System.EventHandler(this.FindOldProductsToolStripMenuItem_Click);
+            // 
+            // checkAvailabilityToolStripMenuItem
+            // 
+            this.checkAvailabilityToolStripMenuItem.Name = "checkAvailabilityToolStripMenuItem";
+            this.checkAvailabilityToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.checkAvailabilityToolStripMenuItem.Text = "Перевірити наявність";
+            this.checkAvailabilityToolStripMenuItem.Click += new System.EventHandler(this.CheckAvailabilityToolStripMenuItem_Click);
+            // 
+            // checkPricesToolStripMenuItem
+            // 
+            this.checkPricesToolStripMenuItem.Name = "checkPricesToolStripMenuItem";
+            this.checkPricesToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.checkPricesToolStripMenuItem.Text = "Перевірити ціни";
+            this.checkPricesToolStripMenuItem.Click += new System.EventHandler(this.CheckPricesToolStripMenuItem_Click);
+            // 
+            // завантажитиЗображенняToolStripMenuItem
+            // 
+            this.завантажитиЗображенняToolStripMenuItem.Name = "завантажитиЗображенняToolStripMenuItem";
+            this.завантажитиЗображенняToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.завантажитиЗображенняToolStripMenuItem.Text = "Завантажити зображення";
+            this.завантажитиЗображенняToolStripMenuItem.Click += new System.EventHandler(this.GetImagesToolStripMenuItem_Click);
+            // 
+            // завантажитиХарактеристикиToolStripMenuItem
+            // 
+            this.завантажитиХарактеристикиToolStripMenuItem.Name = "завантажитиХарактеристикиToolStripMenuItem";
+            this.завантажитиХарактеристикиToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.завантажитиХарактеристикиToolStripMenuItem.Text = "Завантажити характеристики";
+            this.завантажитиХарактеристикиToolStripMenuItem.Click += new System.EventHandler(this.GetParametersToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -259,7 +305,7 @@
             this.toolStripButtonSearch});
             this.toolStrip.Location = new System.Drawing.Point(0, 25);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(884, 25);
+            this.toolStrip.Size = new System.Drawing.Size(900, 25);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "toolStrip1";
             // 
@@ -289,7 +335,7 @@
             // toolStripTextBoxSearch
             // 
             this.toolStripTextBoxSearch.Name = "toolStripTextBoxSearch";
-            this.toolStripTextBoxSearch.Size = new System.Drawing.Size(250, 25);
+            this.toolStripTextBoxSearch.Size = new System.Drawing.Size(350, 25);
             // 
             // toolStripButtonSearch
             // 
@@ -299,28 +345,35 @@
             this.toolStripButtonSearch.Name = "toolStripButtonSearch";
             this.toolStripButtonSearch.Size = new System.Drawing.Size(23, 22);
             this.toolStripButtonSearch.Text = "toolStripButton3";
+            this.toolStripButtonSearch.Click += new System.EventHandler(this.ToolStripButtonSearch_Click);
             // 
             // panelMain
             // 
-            this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelMain.Location = new System.Drawing.Point(0, 50);
+            this.panelMain.Margin = new System.Windows.Forms.Padding(0);
+            this.panelMain.MinimumSize = new System.Drawing.Size(900, 469);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(884, 422);
+            this.panelMain.Size = new System.Drawing.Size(900, 469);
             this.panelMain.TabIndex = 2;
             // 
             // panelRight
             // 
-            this.panelRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelRight.Location = new System.Drawing.Point(684, 50);
+            this.panelRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRight.Location = new System.Drawing.Point(600, 50);
+            this.panelRight.Margin = new System.Windows.Forms.Padding(0);
             this.panelRight.Name = "panelRight";
-            this.panelRight.Size = new System.Drawing.Size(200, 422);
+            this.panelRight.Size = new System.Drawing.Size(310, 469);
             this.panelRight.TabIndex = 3;
             // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 472);
+            this.ClientSize = new System.Drawing.Size(900, 518);
             this.Controls.Add(this.panelRight);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.toolStrip);
@@ -329,8 +382,10 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.MinimumSize = new System.Drawing.Size(916, 556);
             this.Name = "MainView";
             this.Text = "Управління товарами";
+            this.Load += new System.EventHandler(this.MainView_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.toolStrip.ResumeLayout(false);
@@ -359,8 +414,7 @@
         private System.Windows.Forms.ToolStripMenuItem imagesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem serviceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem serviceProductsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpinfoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
@@ -373,6 +427,12 @@
         private System.Windows.Forms.Panel panelMain;
         private System.Windows.Forms.Panel panelRight;
         private System.Windows.Forms.ToolStripMenuItem unitsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem findNewProductsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem findOldProductsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkAvailabilityToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkPricesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem завантажитиЗображенняToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem завантажитиХарактеристикиToolStripMenuItem;
     }
 }
 

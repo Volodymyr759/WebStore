@@ -2,10 +2,6 @@
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.Tests
 {
@@ -16,7 +12,9 @@ namespace Presentation.Tests
 
         public ProductsDetailPresenterTests()
         {
-            productsDetailPresenter = new ProductsDetailPresenter();
+            ErrorMessageView errorMessageView = new ErrorMessageView();
+            ProductsDetailUC productsDetailUC = new ProductsDetailUC(errorMessageView);
+            productsDetailPresenter = new ProductsDetailPresenter(productsDetailUC, ServicesInitializator.facade);
         }
 
         [TestMethod()]

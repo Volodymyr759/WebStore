@@ -3,6 +3,9 @@ using System;
 
 namespace Presentation.Presenters.UserControls
 {
+    /// <summary>
+    /// Інтерфейс представлення деталей зображення товару
+    /// </summary>
     public interface IImagesDetailPresenter
     {
         /// <summary>
@@ -14,6 +17,11 @@ namespace Presentation.Presenters.UserControls
         /// Подія відміни збереження зображення
         /// </summary>
         event EventHandler CancelClickEventRaised;
+
+        /// <summary>
+        /// Подія збереження зображення товару
+        /// </summary>
+        event EventHandler SaveImageClickEventRaised;
 
         /// <summary>
         /// Отримання презентером форми вводу даних для створення/редагування зображення

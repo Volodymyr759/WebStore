@@ -19,6 +19,11 @@ namespace Presentation
         event EventHandler CancelClickEventRaised;
 
         /// <summary>
+        /// Подія збереження запису обраної одиниці виміру
+        /// </summary>
+        event EventHandler SaveUnitClickEventRaised;
+
+        /// <summary>
         /// Отримання презентером форми вводу даних для створення/редагування одиниці виміру
         /// </summary>
         /// <returns>Форма вводу даних для створення/редагування одиниці виміру</returns>

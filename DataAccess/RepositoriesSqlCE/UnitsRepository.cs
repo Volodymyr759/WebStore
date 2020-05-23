@@ -23,31 +23,38 @@ namespace DataAccess.RepositoriesSqlCE
 
         #endregion
 
-        public void Add(IUnitsModel unitsModel)
+        public void Add(IUnitsModel model)
         {
-            string sqlQuery = $"insert into Units(Name, Notes) values('{unitsModel.Name}', '{unitsModel.Notes}')";
+            string sqlQuery = "insert into Units(Name, Notes) values(@Name, @Notes)";
             using (var db = new SqlCeConnection(connectionString))
             {
                 var cmd = new SqlCeCommand(sqlQuery, db);
                 db.Open();
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Name", model.Name);
+                cmd.Parameters.AddWithValue("@Notes", model.Notes);
                 cmd.ExecuteNonQuery();
+                db.Close();
             }
         }
 
         public void DeleteById(int id)
         {
-            string query = $"delete from Units where Id={id}";
+            string query = "delete from Units where Id=@Id";
             using (var db = new SqlCeConnection(connectionString))
             {
                 db.Open();
-                SqlCeCommand command = new SqlCeCommand(query, db);
-                command.ExecuteNonQuery();
+                SqlCeCommand cmd = new SqlCeCommand(query, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Id", id);
+                cmd.ExecuteNonQuery();
+                db.Close();
             }
         }
 
         public IEnumerable<IUnitsModel> GetAll()
         {
-            var listUnitsModel = new List<UnitsModel>();
+            List<UnitsModel> units = new List<UnitsModel>();
             string query = "select * from Units";
             using (var db = new SqlCeConnection(connectionString))
             {
@@ -64,24 +71,27 @@ namespace DataAccess.RepositoriesSqlCE
                                 Name = reader["Name"].ToString(),
                                 Notes = reader["Notes"].ToString()
                             };
-                            listUnitsModel.Add(unit);
+                            units.Add(unit);
                         }
                     }
                 }
+                db.Close();
             }
-            return listUnitsModel;
+            return units;
         }
 
-        public UnitsModel GetById(int id)
+        public IUnitsModel GetById(int id)
         {
             UnitsModel unit = new UnitsModel();
             using (var db = new SqlCeConnection(connectionString))
             {
                 db.Open();
-                string query = $"select Id, Name, Notes from Units where Id={@id}";
-                using (SqlCeCommand command = new SqlCeCommand(query, db))
+                string query = "select Id, Name, Notes from Units where Id=@Id";
+                using (SqlCeCommand cmd = new SqlCeCommand(query, db))
                 {
-                    using (SqlCeDataReader reader = command.ExecuteReader())
+                    cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    using (SqlCeDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
@@ -91,17 +101,22 @@ namespace DataAccess.RepositoriesSqlCE
                         }
                     }
                 }
+                db.Close();
             }
             return unit;
         }
 
-        public void Update(IUnitsModel unitsModel)
+        public void Update(IUnitsModel model)
         {
-            var sqlQuery = $"update Units set Name='{unitsModel.Name}', Notes='{unitsModel.Notes}' where Id={unitsModel.Id}";
+            var sqlQuery = "update Units set Name=@Name, Notes=@Notes where Id=@Id";
             using (var db = new SqlCeConnection(connectionString))
             {
-                var cmd = new SqlCeCommand(sqlQuery, db);
                 db.Open();
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Name", model.Name);
+                cmd.Parameters.AddWithValue("@Notes", model.Notes);
+                cmd.Parameters.AddWithValue("@Id", model.Id);
                 cmd.ExecuteNonQuery();
                 db.Close();
             }

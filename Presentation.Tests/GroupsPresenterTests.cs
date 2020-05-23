@@ -2,10 +2,6 @@
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.Tests
 {
@@ -13,21 +9,31 @@ namespace Presentation.Tests
     public class GroupsPresenterTests
     {
         private GroupsPresenter groupsPresenter;
+        string errorMessage;
+
+        public GroupsPresenterTests()
+        {
+            ErrorMessageView errorMessageView = new ErrorMessageView();
+            DeleteConfirmView deleteConfirmView = new DeleteConfirmView();
+            GroupsDetailUC groupsDetailUC = new GroupsDetailUC(errorMessageView);
+            GroupsDetailPresenter groupsDetailPresenter = new GroupsDetailPresenter(groupsDetailUC, ServicesInitializator.facade);
+            groupsPresenter = new GroupsPresenter(new GroupsUC(errorMessageView), groupsDetailPresenter, ServicesInitializator.facade, deleteConfirmView, errorMessageView);
+        }
 
         [TestMethod()]
         public void GetGroupsUCTest_ShouldReturnGroupsUC()
         {
-            groupsPresenter = new GroupsPresenter();
             GroupsUC groupsUC = null;
-
+            errorMessage = "";
             try
             {
                 groupsUC = (GroupsUC)groupsPresenter.GetGroupsUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsNotNull(groupsUC);
+            Assert.IsNotNull(groupsUC, errorMessage);
         }
     }
 }

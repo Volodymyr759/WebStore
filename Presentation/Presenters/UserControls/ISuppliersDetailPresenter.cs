@@ -3,10 +3,13 @@ using System;
 
 namespace Presentation.Presenters.UserControls
 {
+    /// <summary>
+    /// Інтерфейс презентера представлення деталей постачальника
+    /// </summary>
     public interface ISuppliersDetailPresenter
     {
         /// <summary>
-        /// Подія готовності форми для відображення у головній формі
+        /// Подія готовності для відображення у головній формі
         /// </summary>
         event EventHandler ReadyToShowSuppliersDetailEventRaised;
 
@@ -14,6 +17,11 @@ namespace Presentation.Presenters.UserControls
         /// Подія відміни збереження постачальника
         /// </summary>
         event EventHandler CancelClickEventRaised;
+
+        /// <summary>
+        /// Подія збереження запису обраного постачальника
+        /// </summary>
+        event EventHandler SaveSupplierClickEventRaised;
 
         /// <summary>
         /// Отримання презентером форми вводу даних для створення/редагування постачальника

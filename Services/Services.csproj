@@ -21,6 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,30 +43,69 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CategoriesService\CategoriesService.cs" />
-    <Compile Include="CategoriesService\ICategoriesRepository.cs" />
-    <Compile Include="CategoriesService\ICategoriesService.cs" />
-    <Compile Include="GroupsService\GroupsService.cs" />
-    <Compile Include="GroupsService\IGroupsRepository.cs" />
-    <Compile Include="GroupsService\IGroupsService.cs" />
-    <Compile Include="ImagesService\IImagesRepository.cs" />
-    <Compile Include="ImagesService\IImagesService.cs" />
-    <Compile Include="ImagesService\ImagesService.cs" />
-    <Compile Include="ParametersService\IParametersRepository.cs" />
-    <Compile Include="ParametersService\IParametersService.cs" />
-    <Compile Include="ParametersService\ParametersService.cs" />
-    <Compile Include="ProductsService\IProductsRepository.cs" />
-    <Compile Include="ProductsService\IProductsService.cs" />
-    <Compile Include="ProductsService\ProductsService.cs" />
+    <Compile Include="Agents\FactoryAgents.cs" />
+    <Compile Include="Agents\ISaverToXmlAgent.cs" />
+    <Compile Include="Agents\SaverToCsvAgent.cs" />
+    <Compile Include="Agents\SaverToXmlAgent.cs" />
+    <Compile Include="Agents\ISaverToCsvAgent.cs" />
+    <Compile Include="CategoriesServices\CategoriesDtoModel.cs" />
+    <Compile Include="CategoriesServices\CategoriesService.cs" />
+    <Compile Include="CategoriesServices\ICategoriesRepository.cs" />
+    <Compile Include="CategoriesServices\ICategoriesService.cs" />
+    <Compile Include="GroupsServices\GroupsDtoModel.cs" />
+    <Compile Include="GroupsServices\GroupsService.cs" />
+    <Compile Include="GroupsServices\IGroupsRepository.cs" />
+    <Compile Include="GroupsServices\IGroupsService.cs" />
+    <Compile Include="Agents\IImagesAgent.cs" />
+    <Compile Include="ImagesServices\IImagesRepository.cs" />
+    <Compile Include="ImagesServices\IImagesService.cs" />
+    <Compile Include="ImagesServices\ImagesDtoModel.cs" />
+    <Compile Include="Agents\ImagesAgent.cs" />
+    <Compile Include="ImagesServices\ImagesService.cs" />
+    <Compile Include="Agents\IParametersAgent.cs" />
+    <Compile Include="IStoreFacade.cs" />
+    <Compile Include="ParametersServices\IParametersRepository.cs" />
+    <Compile Include="ParametersServices\IParametersService.cs" />
+    <Compile Include="ParametersServices\ParametersDtoModel.cs" />
+    <Compile Include="Agents\ParametersAgent.cs" />
+    <Compile Include="ParametersServices\ParametersService.cs" />
+    <Compile Include="Agents\IProductsAgent.cs" />
+    <Compile Include="ProductsServices\IProductsRepository.cs" />
+    <Compile Include="ProductsServices\IProductsService.cs" />
+    <Compile Include="Agents\ProductsApiAgent.cs" />
+    <Compile Include="ProductsServices\ProductsDtoModel.cs" />
+    <Compile Include="Agents\ProductsHtmlAgent.cs" />
+    <Compile Include="ProductsServices\ProductsService.cs" />
+    <Compile Include="Agents\ProductsXmlAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SuppliersService\ISuppliersRepository.cs" />
-    <Compile Include="SuppliersService\ISuppliersService.cs" />
-    <Compile Include="SuppliersService\SuppliersService.cs" />
-    <Compile Include="UnitsService\IUnitsRepository.cs" />
-    <Compile Include="UnitsService\IUnitsService.cs" />
-    <Compile Include="UnitsService\UnitsService.cs" />
+    <Compile Include="ShedulerServices\Scheduler.cs" />
+    <Compile Include="ShedulerServices\SchedulerService.cs" />
+    <Compile Include="StoreFacade.cs" />
+    <Compile Include="SuppliersServices\ISuppliersRepository.cs" />
+    <Compile Include="SuppliersServices\ISuppliersService.cs" />
+    <Compile Include="SuppliersServices\SuppliersDtoModel.cs" />
+    <Compile Include="SuppliersServices\SuppliersService.cs" />
+    <Compile Include="UnitsServices\IUnitsRepository.cs" />
+    <Compile Include="UnitsServices\IUnitsService.cs" />
+    <Compile Include="UnitsServices\UnitsDtoModel.cs" />
+    <Compile Include="UnitsServices\UnitsService.cs" />
+    <Compile Include="Validators\CategoriesValidator.cs" />
+    <Compile Include="Validators\GroupsValidator.cs" />
+    <Compile Include="Validators\ImagesValidator.cs" />
+    <Compile Include="Validators\ParametersValidator.cs" />
+    <Compile Include="Validators\ProductsValidator.cs" />
+    <Compile Include="Validators\SuppliersValidator.cs" />
+    <Compile Include="Validators\UnitsValidator.cs" />
+    <Compile Include="Validators\ValidationResultsHelper.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="FluentValidation">
+      <Version>8.6.2</Version>
+    </PackageReference>
+    <PackageReference Include="HtmlAgilityPack">
+      <Version>1.11.23</Version>
+    </PackageReference>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{3805BEAD-140B-4E20-B9B3-B946E098D6BF}</Project>

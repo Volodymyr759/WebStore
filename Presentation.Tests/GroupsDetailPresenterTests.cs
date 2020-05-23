@@ -2,10 +2,6 @@
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.Tests
 {
@@ -13,58 +9,67 @@ namespace Presentation.Tests
     public class GroupsDetailPresenterTests
     {
         private GroupsDetailPresenter groupsDetailPresenter;
+        string errorMessage;
 
         public GroupsDetailPresenterTests()
         {
-            groupsDetailPresenter = new GroupsDetailPresenter();
+            ErrorMessageView errorMessageView = new ErrorMessageView();
+            //DeleteConfirmView deleteConfirmView = new DeleteConfirmView();
+            GroupsDetailUC groupsDetailUC = new GroupsDetailUC(errorMessageView);
+            groupsDetailPresenter = new GroupsDetailPresenter(groupsDetailUC, ServicesInitializator.facade);
         }
 
         [TestMethod()]
         public void GetGroupsDetailUC_ShouldReturnGroupsDetailUC()
         {
             GroupsDetailUC groupsDetailUC = null;
-
+            errorMessage = "";
             try
             {
                 groupsDetailUC = (GroupsDetailUC)groupsDetailPresenter.GetGroupsDetailUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
 
-            Assert.IsNotNull(groupsDetailUC);
+            Assert.IsNotNull(groupsDetailUC, errorMessage);
         }
 
         [TestMethod()]
-        public void SetupGroupsDetailForAddv()
+        public void SetupGroupsDetailForAdd()
         {
+            errorMessage = "";
             bool operationSucceeded = false;
             try
             {
                 groupsDetailPresenter.SetupGroupsDetailForAdd();
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
 
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
         public void SetupGroupsDetailForEdit_ShouldReturn_Success()
         {
             bool operationSucceeded = false;
+            errorMessage = "";
             try
             {
                 groupsDetailPresenter.SetupGroupsDetailForEdit(1);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
 
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

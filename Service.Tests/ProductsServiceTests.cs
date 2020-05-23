@@ -1,11 +1,12 @@
-﻿using Domain.Models.Products;
+﻿using Infrastructure.DataAccess.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Services.ProductsService;
+using Services.CategoriesServices;
+using Services.GroupsServices;
+using Services.ProductsServices;
+using Services.SuppliersServices;
+using Services.UnitsServices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Tests
 {
@@ -14,85 +15,136 @@ namespace Service.Tests
     {
         bool operationSucceeded;
         ProductsService productsService;
+        string errorMessage;
+        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
 
         public ProductsServiceTests()
         {
-            productsService = new ProductsService();
+            SuppliersService suppliersService = new SuppliersService(new SuppliersRepository(connString));
+            productsService = new ProductsService(new ProductsRepository(connString),
+                                    new CategoriesService(new CategoriesRepository(connString), suppliersService),
+                                    new GroupsService(new GroupsRepository(connString)),
+                                    suppliersService,
+                                    new UnitsService(new UnitsRepository(connString)));
         }
 
         [TestMethod()]
-        public void Add_ShouldReturn_Success()
+        public void AddProduct_ShouldReturn_Success()
         {
             operationSucceeded = false;
-            ProductsModel productsModel = new ProductsModel();
+            errorMessage = "";
+            ProductsDtoModel productDto = new ProductsDtoModel()
+            {
+                SupplierId = 1,
+                CategoryId = 1,
+                GroupId = 1,
+                NameWebStore = "product1",
+                NameSupplier = "Product1",
+                CodeWebStore = "111",
+                CodeSupplier = "112",
+                UnitId = 1,
+                PriceWebStore = 1.5m,
+                PriceSupplier = 1,
+                Available = "+",
+                LinkWebStore = "link1",
+                LinkSupplier = "link2",
+                Notes = "some notes"
+            };
             try
             {
-                productsService.Add(productsModel);
+                productsService.AddProduct(productDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void DeleteById_ShouldReturn_Success()
+        public void DeleteProductById_ShouldReturn_Success()
         {
             operationSucceeded = false;
+            errorMessage = "";
             try
             {
-                productsService.DeleteById(1);
+                productsService.DeleteProductById(11111);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void GetById_ShouldReturn_Success()
+        public void GetProductById_ShouldReturn_NotNull()
         {
-            ProductsModel productsModel = null;
+            ProductsDtoModel productsModel = null;
+            errorMessage = "";
             try
             {
-                productsModel = (ProductsModel)productsService.GetById(1);
+                productsModel = productsService.GetProductById(1);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
             Assert.IsNotNull(productsModel);
         }
 
         [TestMethod()]
-        public void GetProductsToList_ShouldReturn_NotEmpty()
+        public void GetProducts_ShouldReturn_ListProductsDtoModel()
         {
-            var productsModels = new List<ProductsDtoModel>();
+            errorMessage = "";
+            IEnumerable<ProductsDtoModel> productsDtos = productsService.GetProducts();
             try
             {
-                productsModels = productsService.GetProductsToList();
+                productsDtos = (List<ProductsDtoModel>)productsService.GetProducts();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(productsModels.Count > 0);
+            Assert.IsNotNull(productsDtos, errorMessage);
         }
 
         [TestMethod()]
-        public void Update_ShouldReturn_Success()
+        public void UpdateProduct_ShouldReturn_Success()
         {
             operationSucceeded = false;
-            ProductsModel productsModel = new ProductsModel();
+            errorMessage = "";
+            ProductsDtoModel productDto = new ProductsDtoModel()
+            {
+                Id = 1,
+                SupplierId = 1,
+                CategoryId = 1,
+                GroupId = 1,
+                NameWebStore = "Updated product1",
+                NameSupplier = "Product1",
+                CodeWebStore = "111",
+                CodeSupplier = "112",
+                UnitId = 1,
+                PriceWebStore = 1.5m,
+                PriceSupplier = 1,
+                Available = "+",
+                LinkWebStore = "link1",
+                LinkSupplier = "link2",
+                Notes = "some notes"
+
+            };
             try
             {
-                productsService.Update(productsModel);
+                productsService.UpdateProduct(productDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

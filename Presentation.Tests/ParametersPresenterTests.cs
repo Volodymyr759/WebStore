@@ -2,10 +2,6 @@
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.Tests
 {
@@ -13,21 +9,51 @@ namespace Presentation.Tests
     public class ParametersPresenterTests
     {
         private ParametersPresenter parametersPresenter;
+        private string errorMessage;
+
+        public ParametersPresenterTests()
+        {
+            ErrorMessageView errorMessageView = new ErrorMessageView();
+            DeleteConfirmView deleteConfirmView = new DeleteConfirmView();
+            ParametersDetailUC parametersDetailUC = new ParametersDetailUC(errorMessageView);
+            ParametersDetailPresenter parametersDetailPresenter = new ParametersDetailPresenter(parametersDetailUC, ServicesInitializator.facade);
+            parametersPresenter = new ParametersPresenter(new ParametersUC(errorMessageView), 
+                parametersDetailPresenter, 
+                ServicesInitializator.facade,
+                deleteConfirmView, errorMessageView);
+        }
 
         [TestMethod()]
         public void GetParametersUCTest_ShouldReturnParametersUC()
         {
-            parametersPresenter = new ParametersPresenter();
             ParametersUC parametersUC = null;
+            errorMessage = "";
             try
             {
                 parametersUC = (ParametersUC)parametersPresenter.GetParametersUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
 
-            Assert.IsNotNull(parametersUC);
+            Assert.IsNotNull(parametersUC, errorMessage);
+        }
+
+        [TestMethod()]
+        public void LoadParametersTest_ShouldReturn_ParametersUC()
+        {
+            ParametersUC parametersUC = null;
+            errorMessage = "";
+            try
+            {
+                parametersUC = (ParametersUC)parametersPresenter.LoadParameters();
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
+            }
+            Assert.IsNotNull(parametersUC, errorMessage);
         }
     }
 }

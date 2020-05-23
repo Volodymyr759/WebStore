@@ -3,10 +3,13 @@ using System;
 
 namespace Presentation.Presenters.UserControls
 {
+    /// <summary>
+    /// Інтерфейс презентера представлення деталей товару постачальника
+    /// </summary>
     public interface IProductsDetailPresenter
     {
         /// <summary>
-        /// Подія готовності форми для відображення у головній формі
+        /// Подія готовності для відображення у головній формі
         /// </summary>
         event EventHandler ReadyToShowProductsDetailEventRaised;
 
@@ -14,6 +17,11 @@ namespace Presentation.Presenters.UserControls
         /// Подія відміни збереження товару
         /// </summary>
         event EventHandler CancelClickEventRaised;
+
+        /// <summary>
+        /// Подія збереження запису обраного товару
+        /// </summary>
+        event EventHandler SaveProductClickEventRaised;
 
         /// <summary>
         /// Отримання презентером форми вводу даних для створення/редагування товару

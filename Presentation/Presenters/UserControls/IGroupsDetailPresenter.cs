@@ -3,6 +3,9 @@ using System;
 
 namespace Presentation.Presenters.UserControls
 {
+    /// <summary>
+    /// Інтерфейс презентера представлення деталей групи власного каталогу
+    /// </summary>
     public interface IGroupsDetailPresenter
     {
         /// <summary>
@@ -14,6 +17,11 @@ namespace Presentation.Presenters.UserControls
         /// Подія відміни збереження групи prom.ua
         /// </summary>
         event EventHandler CancelClickEventRaised;
+
+        /// <summary>
+        /// Подія збереження запису обраної групи власного каталогу
+        /// </summary>
+        event EventHandler SaveGroupClickEventRaised;
 
         /// <summary>
         /// Отримання презентером форми вводу даних для створення/редагування групи prom.ua

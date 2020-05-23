@@ -1,13 +1,6 @@
-﻿using DataAccess.RepositoriesSqlCE;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Presentation;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation.Views.UserControls;
-using Services.UnitsService;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.Tests
 {
@@ -15,57 +8,64 @@ namespace Presentation.Tests
     public class UnitsDetailPresenterTests
     {
         private UnitsDetailPresenter unitsDetailPresenter;
+        bool operationSucceeded;
+        string errorMessage;
 
         public UnitsDetailPresenterTests()
         {
             unitsDetailPresenter = new UnitsDetailPresenter(
-                new UnitsDetailUC(), 
-                new UnitsService(new UnitsRepository()), 
-                new ErrorMessageView());
+                new UnitsDetailUC(new ErrorMessageView()),
+                ServicesInitializator.facade);
         }
 
         [TestMethod()]
         public void GetUnitsDetailUC_ShouldReturnUnitsDetailUC()
         {
+            errorMessage = "";
             UnitsDetailUC unitsDetailUC = null;
             try
             {
                 unitsDetailUC = (UnitsDetailUC)unitsDetailPresenter.GetUnitsDetailUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsNotNull(unitsDetailUC);
+            Assert.IsNotNull(unitsDetailUC, errorMessage);
         }
 
         [TestMethod()]
         public void SetupUnitsDetailForAdd_ShouldReturn_Success()
         {
-            bool operationSucceeded = false;
+            errorMessage = "";
+            operationSucceeded = false;
             try
             {
                 unitsDetailPresenter.SetupUnitsDetailForAdd();
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
         public void SetupUnitsDetailForEdit_ShouldReturn_Success()
         {
-            bool operationSucceeded = false;
+            errorMessage = "";
+            operationSucceeded = false;
             try
             {
                 unitsDetailPresenter.SetupUnitsDetailForEdit(1);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

@@ -2,10 +2,6 @@
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.Tests
 {
@@ -13,17 +9,19 @@ namespace Presentation.Tests
     public class SuppliersDetailPresenterTests
     {
         private SuppliersDetailPresenter suppliersDetailPresenter;
+        bool operationSucceeded;
 
         public SuppliersDetailPresenterTests()
         {
-            suppliersDetailPresenter = new SuppliersDetailPresenter();
+            suppliersDetailPresenter = new SuppliersDetailPresenter(
+                new SuppliersDetailUC(new ErrorMessageView()),
+                ServicesInitializator.facade);
         }
 
         [TestMethod()]
         public void GetSuppliersDetailUC_ShouldReturnSuppliersDetailUC()
         {
             SuppliersDetailUC suppliersDetailUC = null;
-
             try
             {
                 suppliersDetailUC = (SuppliersDetailUC)suppliersDetailPresenter.GetSuppliersDetailUC();
@@ -31,14 +29,13 @@ namespace Presentation.Tests
             catch (Exception)
             {
             }
-
             Assert.IsNotNull(suppliersDetailUC);
         }
 
         [TestMethod()]
         public void SetupSuppliersDetailForAdd_ShouldReturn_Success()
         {
-            bool operationSucceeded = false;
+            operationSucceeded = false;
             try
             {
                 suppliersDetailPresenter.SetupSuppliersDetailForAdd();
@@ -47,14 +44,13 @@ namespace Presentation.Tests
             catch (Exception)
             {
             }
-
             Assert.IsTrue(operationSucceeded);
         }
 
         [TestMethod()]
         public void SetupSuppliersDetailForEdit_ShouldReturn_Success()
         {
-            bool operationSucceeded = false;
+            operationSucceeded = false;
             try
             {
                 suppliersDetailPresenter.SetupSuppliersDetailForEdit(1);
@@ -63,7 +59,6 @@ namespace Presentation.Tests
             catch (Exception)
             {
             }
-
             Assert.IsTrue(operationSucceeded);
         }
     }

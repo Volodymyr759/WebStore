@@ -60,13 +60,13 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
-      <Project>{CC8015F6-FFFD-4EE2-9BFF-C2DD734713F9}</Project>
-      <Name>DataAccess</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{3805BEAD-140B-4E20-B9B3-B946E098D6BF}</Project>
       <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
+      <Project>{C781BC00-4898-460E-982A-F3C041166888}</Project>
+      <Name>Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\Services\Services.csproj">
       <Project>{A90D18A5-5D5F-4884-8AE7-55EBC8568000}</Project>

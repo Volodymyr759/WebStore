@@ -1,11 +1,8 @@
-﻿using Domain.Models.Suppliers;
+﻿using Infrastructure.DataAccess.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Services.SuppliersService;
+using Services.SuppliersServices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Tests
 {
@@ -14,85 +11,110 @@ namespace Service.Tests
     {
         bool operationSucceeded;
         SuppliersService suppliersService;
+        string errorMessage;
+        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
 
         public SuppliersServiceTests()
         {
-            suppliersService = new SuppliersService();
+            suppliersService = new SuppliersService(new SuppliersRepository(connString));
         }
 
         [TestMethod()]
-        public void Add_ShouldReturn_Success()
+        public void AddSupplier_ShouldReturn_Success()
         {
+            errorMessage = "";
             operationSucceeded = false;
-            SuppliersModel suppliersModel = new SuppliersModel();
+            SuppliersDtoModel supplierDto = new SuppliersDtoModel()
+            {
+                Name = "New supplier",
+                Link = "Suppliers link1",
+                Currency = "Eur",
+                Notes = "some notes for supplier1"
+            };
             try
             {
-                suppliersService.Add(suppliersModel);
+                suppliersService.AddSupplier(supplierDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void DeleteById_ShouldReturn_Success()
+        public void DeleteSupplierById_ShouldReturn_Success()
         {
             operationSucceeded = false;
+            errorMessage = "";
             try
             {
-                suppliersService.DeleteById(1);
+                suppliersService.DeleteSupplierById(11111);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void GetById_ShouldReturn_Success()
+        public void GetSupplierById_ShouldReturn_NotNull()
         {
-            SuppliersModel suppliersModel = null;
+            errorMessage = "";
+            SuppliersDtoModel supplierDto = null;
             try
             {
-                suppliersModel = (SuppliersModel)suppliersService.GetById(1);
+                supplierDto = suppliersService.GetSupplierById(2);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsNotNull(suppliersModel);
+            Assert.IsNotNull(supplierDto, errorMessage);
         }
 
         [TestMethod()]
-        public void GetSuppliersToList_ShouldReturn_NotEmpty()
+        public void GetSuppliers_ShouldReturn_ListSuppliersDtoModel()
         {
-            var suppliersModels = new List<ISuppliersModel>();
+            errorMessage = "";
+            var suppliersDtos = new List<SuppliersDtoModel>();
             try
             {
-                suppliersModels = suppliersService.GetSuppliersToList();
+                suppliersDtos = (List<SuppliersDtoModel>)suppliersService.GetSuppliers();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(suppliersModels.Count > 0);
+            Assert.IsTrue(suppliersDtos.Count > 0, errorMessage);
         }
 
         [TestMethod()]
-        public void Update_ShouldReturn_Success()
+        public void UpdateSupplier_ShouldReturn_Success()
         {
+            errorMessage = "";
             operationSucceeded = false;
-            SuppliersModel suppliersModel = new SuppliersModel();
+            SuppliersDtoModel supplierDto = new SuppliersDtoModel()
+            {
+                Id = 3,
+                Name = "New supplier",
+                Link = "Suppliers link1",
+                Currency = "Eur",
+                Notes = "some notes for supplier1"
+            };
             try
             {
-                suppliersService.Update(suppliersModel);
+                suppliersService.UpdateSupplier(supplierDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

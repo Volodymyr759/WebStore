@@ -3,10 +3,13 @@ using System;
 
 namespace Presentation.Presenters.UserControls
 {
+    /// <summary>
+    /// Інтерфейс презентера представлення деталей категорії постачальника
+    /// </summary>
     public interface ICategoriesDetailPresenter
     {
         /// <summary>
-        /// Подія готовності форми для відображення у головній формі
+        /// Подія готовності для відображення у головній формі
         /// </summary>
         event EventHandler ReadyToShowCategoriesDetailEventRaised;
 
@@ -14,6 +17,11 @@ namespace Presentation.Presenters.UserControls
         /// Подія відміни збереження категорії товарів постачальника
         /// </summary>
         event EventHandler CancelClickEventRaised;
+
+        /// <summary>
+        /// Подія збереження запису обраної категорії постачальника
+        /// </summary>
+        event EventHandler SaveCategoryClickEventRaised;
 
         /// <summary>
         /// Отримання презентером форми вводу даних для створення/редагування категорії товарів постачальника

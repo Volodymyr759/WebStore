@@ -1,23 +1,23 @@
-﻿using Domain.Models.Units;
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Presentation.Views.UserControls;
-using Services.UnitsService;
+using Services.UnitsServices;
 using System.ComponentModel;
+using Services;
+using Common;
+using System.Linq;
 
 namespace Presentation
 {
     /// <summary>
     /// Презентер форми списку одиниць виміру
     /// </summary>
-    public class UnitsPresenter : BasePresenter, IUnitsPresenter
+    public class UnitsPresenter : IUnitsPresenter
     {
         private IUnitsUC unitsUC;
 
         private IUnitsDetailPresenter unitsDetailPresenter;
 
-        private IUnitsService unitsService;
+        private IStoreFacade facade;
 
         private IDeleteConfirmView deleteConfirmView;
 
@@ -29,18 +29,18 @@ namespace Presentation
         /// Конструктор
         /// </summary>
         /// <param name="unitsUC">Форма списку одиниць виміру</param>
-        /// <param name="unitsService">сервіс-рівень для одиниць виміру</param>
-        /// <param name="unitsDetailPresenter">презентер форми створення/редагування одиниці виміру</param>
-        /// <param name="deleteConfirmView">форма підтвердження видалення</param>
-        /// <param name="errorMessageView">форма повідомлення про помилку</param>
+        /// <param name="facade">Екземпляр фасаду</param>
+        /// <param name="unitsDetailPresenter">Презентер форми створення/редагування одиниці виміру</param>
+        /// <param name="deleteConfirmView">Екземпляр форми підтвердження видалення</param>
+        /// <param name="errorMessageView">Екземпляр форми повідомлення про помилку</param>
         public UnitsPresenter(IUnitsUC unitsUC,
-                              IUnitsService unitsService,
+                              IStoreFacade facade,
                               IUnitsDetailPresenter unitsDetailPresenter,
                               IDeleteConfirmView deleteConfirmView,
-                              IErrorMessageView errorMessageView) : base(errorMessageView)
+                              IErrorMessageView errorMessageView)
         {
             this.unitsUC = unitsUC;
-            this.unitsService = unitsService;
+            this.facade = facade;
             this.unitsDetailPresenter = unitsDetailPresenter;
             this.deleteConfirmView = deleteConfirmView;
             this.errorMessageView = errorMessageView;
@@ -64,37 +64,45 @@ namespace Presentation
 
             unitsUC.EditUnitEventRaised += (sender, e) =>
             {
-                UnitsModel UnitsModel = (UnitsModel)bindingSource.Current;
-                unitsDetailPresenter.SetupUnitsDetailForEdit(UnitsModel.Id);
+                UnitsDtoModel unitDto = (UnitsDtoModel)bindingSource.Current;
+                unitsDetailPresenter.SetupUnitsDetailForEdit(unitDto.Id);
             };
 
             unitsUC.DeleteUnitEventRaised += (sender, e) =>
             {
-                UnitsModel UnitsModel = (UnitsModel)bindingSource.Current;
+                UnitsDtoModel unitDto = (UnitsDtoModel)bindingSource.Current;
                 deleteConfirmView.ShowDeleteConfirmMessageView("Видалення одиниці виміру",
-                    $"Підтвердіть видалення одиниці виміру: { UnitsModel.Name }.", UnitsModel.Id);
+                    $"Підтвердіть видалення одиниці виміру: { unitDto.Name }.", unitDto.Id, "UnitsUC");
             };
 
-            deleteConfirmView.DeleteConfirmViewOKEventRaised += (sender, e) =>
-            {
-                try
-                {  
-                    unitsService.DeleteById(deleteConfirmView.GetIdToDelete());
-                }
-                catch (Exception Ex)
-                {
-                    ShowErrorMessage("Помилка видалення одиниці виміру", Ex.StackTrace);
-                }
-            };
+            unitsUC.SortUnitsByBindingPropertyNameEventRaised += (sender, sortParameters) =>
+              OnSortUnitsByBindingPropertyNameEventRaised(sender, sortParameters);
         }
 
         private BindingSource BuildDataSource()
         {
-            IEnumerable<IUnitsModel> unitsModels = unitsService.GetUnitsToList();
-            var bindingList = new BindingList<UnitsModel>();
-            foreach (UnitsModel unit in unitsModels) bindingList.Add(unit);
+            var bindingList = new BindingList<UnitsDtoModel>();
+            foreach (UnitsDtoModel unit in facade.GetUnitsDto()) bindingList.Add(unit);
+            bindingSource = new BindingSource { DataSource = bindingList };
+            return bindingSource;
+        }
 
-            return new BindingSource { DataSource = bindingList };
+        private void OnSortUnitsByBindingPropertyNameEventRaised(object sender, DataEventArgs sortParameters)
+        {
+            var unitsDtos = facade.GetUnitsDto();
+            switch (sortParameters.ModelDictionary["PropertyName"])
+            {
+                case "Name":
+                    unitsDtos = sortParameters.ModelDictionary["OrderOfSort"] == "Ascending" ? unitsDtos.OrderBy(u => u.Name) :
+                        unitsDtos.OrderByDescending(u => u.Name);
+                    break;
+                case "Notes":
+                    unitsDtos = sortParameters.ModelDictionary["OrderOfSort"] == "Ascending" ? unitsDtos.OrderBy(u => u.Notes) :
+                        unitsDtos.OrderByDescending(u => u.Notes);
+                    break;
+            }
+            bindingSource.DataSource = unitsDtos;
+            unitsUC.SetupControls(bindingSource);
         }
     }
 }

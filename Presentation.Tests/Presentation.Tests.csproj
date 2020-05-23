@@ -49,8 +49,11 @@
     <Compile Include="GroupsPresenterTests.cs" />
     <Compile Include="ImagesDetailPresenterTests.cs" />
     <Compile Include="ImaigesPresenterTests.cs" />
+    <Compile Include="MainViewTests.cs" />
     <Compile Include="ParametersDetailPresenterTests.cs" />
     <Compile Include="ParametersPresenterTests.cs" />
+    <Compile Include="ServicesInitializator.cs" />
+    <Compile Include="SettingsPresenterTests.cs" />
     <Compile Include="ProductsDetailPresenterTests.cs" />
     <Compile Include="ProductsPresenterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -58,7 +61,6 @@
     <Compile Include="SuppliersPresenterTests.cs" />
     <Compile Include="UnitsDetailPresenterTests.cs" />
     <Compile Include="UnitsPresenterTests.cs" />
-    <Compile Include="MainViewTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MSTest.TestAdapter">
@@ -69,9 +71,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
-      <Project>{CC8015F6-FFFD-4EE2-9BFF-C2DD734713F9}</Project>
-      <Name>DataAccess</Name>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
+      <Project>{C781BC00-4898-460E-982A-F3C041166888}</Project>
+      <Name>Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\Presentation\Presentation.csproj">
       <Project>{72708821-B4E6-4058-B097-CC6E4DF2DAF6}</Project>

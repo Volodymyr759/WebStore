@@ -4,29 +4,55 @@ using Common;
 
 namespace Presentation
 {
+    /// <summary>
+    /// Універсальна форма підтвердження видалення запису
+    /// </summary>
     public partial class DeleteConfirmView : Form, IDeleteConfirmView
     {
+        /// <summary>
+        /// Подія підтвердження видалення запису
+        /// </summary>
         public event EventHandler DeleteConfirmViewOKEventRaised;
 
         int idToDelete;
 
+        string usercontrolName;
+
+        /// <summary>
+        /// Конструктор форми підтвердження видалення запису
+        /// </summary>
         public DeleteConfirmView()
         {
             InitializeComponent();
         }
 
-        public void ShowDeleteConfirmMessageView(string windowTitle, string deleteConfirmMessage, int idToDelete)
+        /// <summary>
+        /// Відображає форму підтвердження видалення запису
+        /// </summary>
+        /// <param name="windowTitle">Заголовок форми</param>
+        /// <param name="deleteConfirmMessage">Текст повідомлення про видалення запису</param>
+        /// <param name="idToDelete">Ідентифікатор запису</param>
+        /// <param name="usercontrolName">Назва представлення, яке звернулось до форми підтвердження</param>
+        public void ShowDeleteConfirmMessageView(string windowTitle, string deleteConfirmMessage, int idToDelete, string usercontrolName)
         {
             this.Text = windowTitle;
             labelMessage.Text = deleteConfirmMessage;
             this.idToDelete = idToDelete;
+            this.usercontrolName = usercontrolName;
             this.ShowDialog();
         }
 
-        public int GetIdToDelete()
-        {
-            return idToDelete;
-        }
+        /// <summary>
+        /// Повертає ідентифікатор запису, яка має бути видалена
+        /// </summary>
+        /// <returns>Ідентифікатор запису</returns>
+        public int GetIdToDelete() => idToDelete;
+
+        /// <summary>
+        /// Повертає назву представлення, яке звернулось до форми підтвердження
+        /// </summary>
+        /// <returns>Назва представлення</returns>
+        public string GetUserControlName() => usercontrolName;
 
         private void DeleteConfirmView_Load(object sender, EventArgs e)
         {

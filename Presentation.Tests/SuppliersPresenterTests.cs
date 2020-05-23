@@ -2,10 +2,6 @@
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.Tests
 {
@@ -13,22 +9,31 @@ namespace Presentation.Tests
     public class SuppliersPresenterTests
     {
         private SuppliersPresenter suppliersPresenter;
+        string errorMessage;
+
+        public SuppliersPresenterTests()
+        {
+            ErrorMessageView errorMessageView = new ErrorMessageView();
+            suppliersPresenter = new SuppliersPresenter(new SuppliersUC(errorMessageView),
+                new SuppliersDetailPresenter(new SuppliersDetailUC(errorMessageView), ServicesInitializator.facade),
+                ServicesInitializator.facade, 
+                new DeleteConfirmView(), errorMessageView);
+        }
 
         [TestMethod()]
         public void GetSuppliersUCTest_ShouldReturnSuppliersUC()
         {
-            suppliersPresenter = new SuppliersPresenter();
+            errorMessage = "";
             SuppliersUC suppliersUC = null;
-
             try
             {
                 suppliersUC = (SuppliersUC)suppliersPresenter.GetSuppliersUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-
-            Assert.IsNotNull(suppliersUC);
+            Assert.IsNotNull(suppliersUC, errorMessage);
         }
     }
 }

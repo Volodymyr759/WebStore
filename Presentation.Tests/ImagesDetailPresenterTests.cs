@@ -2,10 +2,6 @@
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.Tests
 {
@@ -13,57 +9,63 @@ namespace Presentation.Tests
     public class ImagesDetailPresenterTests
     {
         private ImagesDetailPresenter imagesDetailPresenter;
+        private string errorMessage;
 
         public ImagesDetailPresenterTests()
         {
-            imagesDetailPresenter = new ImagesDetailPresenter();
+            ErrorMessageView errorMessageView = new ErrorMessageView();
+            ImagesDetailUC imagesDetailUC = new ImagesDetailUC(errorMessageView);
+            imagesDetailPresenter = new ImagesDetailPresenter(imagesDetailUC, ServicesInitializator.facade);
         }
 
         [TestMethod()]
         public void GetImagesDetailUC_ShouldReturnImagesDetailUC()
         {
+            errorMessage = "";
             ImagesDetailUC imagesDetailUC = null;
             try
             {
                 imagesDetailUC = (ImagesDetailUC)imagesDetailPresenter.GetImagesDetailUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-
-            Assert.IsNotNull(imagesDetailUC);
+            Assert.IsNotNull(imagesDetailUC, errorMessage);
         }
 
         [TestMethod()]
         public void SetupImagesDetailForAdd_ShouldReturn_Success()
         {
+            errorMessage = "";
             bool operationSucceeded = false;
             try
             {
                 imagesDetailPresenter.SetupImagesDetailForAdd();
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
         public void SetupImagesDetailForEdit_ShouldReturn_Success()
         {
+            errorMessage = "";
             bool operationSucceeded = false;
             try
             {
                 imagesDetailPresenter.SetupImagesDetailForEdit(1);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

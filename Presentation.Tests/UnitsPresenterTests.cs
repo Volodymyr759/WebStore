@@ -1,13 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Presentation;
 using Presentation.Views.UserControls;
-using Services.UnitsService;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using System.Threading.Tasks;
-using DataAccess.RepositoriesSqlCE;
 
 namespace Presentation.Tests
 {
@@ -15,33 +8,32 @@ namespace Presentation.Tests
     public class UnitsPresenterTests
     {
         private UnitsPresenter unitsPresenter;
-        private UnitsService unitsService;
+        string errorMessage;
 
         public UnitsPresenterTests()
         {
-            unitsService = new UnitsService(new UnitsRepository());
+            ErrorMessageView errorMessageView = new ErrorMessageView();
             unitsPresenter = new UnitsPresenter(
-                new UnitsUC(),
-                unitsService, 
-                new UnitsDetailPresenter(new UnitsDetailUC(), unitsService, new ErrorMessageView()), 
-                new DeleteConfirmView(), new ErrorMessageView());
+                new UnitsUC(errorMessageView),
+                ServicesInitializator.facade, 
+                new UnitsDetailPresenter(new UnitsDetailUC(errorMessageView), ServicesInitializator.facade), 
+                new DeleteConfirmView(), errorMessageView);
         }
 
         [TestMethod()]
-        public void UnitsPresenterTest_ShouldReturnUnitsUC()
+        public void GetUnitsUCTest_ShouldReturnUnitsUC()
         {
-            
             UnitsUC unitsUC = null;
-
+            errorMessage = "";
             try
             {
                 unitsUC = (UnitsUC)unitsPresenter.GetUnitsUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-
-            Assert.IsNotNull(unitsUC);
+            Assert.IsNotNull(unitsUC, errorMessage);
         }
     }
 }

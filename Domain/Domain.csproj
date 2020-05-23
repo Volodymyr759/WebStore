@@ -21,6 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,18 +44,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Categories\CategoriesModel.cs" />
-    <Compile Include="Models\Categories\CategoriesDtoModel.cs" />
     <Compile Include="Models\Categories\ICategoriesModel.cs" />
     <Compile Include="Models\Groups\GroupsModel.cs" />
     <Compile Include="Models\Groups\IGroupsModel.cs" />
     <Compile Include="Models\Images\IImagesModel.cs" />
-    <Compile Include="Models\Images\ImagesDtoModel.cs" />
     <Compile Include="Models\Images\ImagesModel.cs" />
     <Compile Include="Models\Parameters\IParametersModel.cs" />
-    <Compile Include="Models\Parameters\ParametersDtoModel.cs" />
     <Compile Include="Models\Parameters\ParametersModel.cs" />
     <Compile Include="Models\Products\IProductsModel.cs" />
-    <Compile Include="Models\Products\ProductsDtoModel.cs" />
     <Compile Include="Models\Products\ProductsModel.cs" />
     <Compile Include="Models\Suppliers\ISuppliersModel.cs" />
     <Compile Include="Models\Suppliers\SuppliersModel.cs" />

@@ -2,10 +2,6 @@
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.Tests
 {
@@ -13,22 +9,81 @@ namespace Presentation.Tests
     public class ProductsPresenterTests
     {
         private ProductsPresenter productsPresenter;
+        private string errorMessage;
+
+        public ProductsPresenterTests()
+        {
+            ErrorMessageView errorMessageView = new ErrorMessageView();
+            DeleteConfirmView deleteConfirmView = new DeleteConfirmView();
+            ProductsDetailUC productsDetailUC = new ProductsDetailUC(errorMessageView);
+            ProductsDetailPresenter productsDetailPresenter = new ProductsDetailPresenter(productsDetailUC, ServicesInitializator.facade);
+            productsPresenter = new ProductsPresenter(new ProductsUC(errorMessageView), productsDetailPresenter,
+                ServicesInitializator.facade,
+                deleteConfirmView, errorMessageView);
+        }
 
         [TestMethod()]
-        public void GetProductsUCTest_ShouldReturnProductsUC()
+        public void GetProductsUCTest_ShouldReturn_ProductsUC()
         {
-            productsPresenter = new ProductsPresenter();
             ProductsUC productsUC = null;
-
+            errorMessage = "";
             try
             {
                 productsUC = (ProductsUC)productsPresenter.GetProductsUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
+            Assert.IsNotNull(productsUC, errorMessage);
+        }
 
-            Assert.IsNotNull(productsUC);
+        [TestMethod()]
+        public void GetNewProductsTest_ShouldReturn_ProductsUC()
+        {
+            ProductsUC productsUC = null;
+            errorMessage = "";
+            try
+            {
+                productsUC = (ProductsUC)productsPresenter.GetNewProducts();
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
+            }
+            Assert.IsNotNull(productsUC, errorMessage);
+        }
+
+        [TestMethod()]
+        public void CheckAvailabilityTest_ShouldReturn_ProductsUC()
+        {
+            ProductsUC productsUC = null;
+            errorMessage = "";
+            try
+            {
+                productsUC = (ProductsUC)productsPresenter.CheckAvailability();
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
+            }
+            Assert.IsNotNull(productsUC, errorMessage);
+        }
+
+        [TestMethod()]
+        public void CheckPricesTest_ShouldReturn_ProductsUC()
+        {
+            ProductsUC productsUC = null;
+            errorMessage = "";
+            try
+            {
+                productsUC = (ProductsUC)productsPresenter.CheckPrices();
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
+            }
+            Assert.IsNotNull(productsUC, errorMessage);
         }
     }
 }

@@ -40,17 +40,23 @@
             // 
             // dgvSuppliers
             // 
+            this.dgvSuppliers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvSuppliers.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dgvSuppliers.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvSuppliers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvSuppliers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvSuppliers.Location = new System.Drawing.Point(0, 0);
+            this.dgvSuppliers.Margin = new System.Windows.Forms.Padding(0);
             this.dgvSuppliers.Name = "dgvSuppliers";
             this.dgvSuppliers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSuppliers.Size = new System.Drawing.Size(884, 422);
+            this.dgvSuppliers.Size = new System.Drawing.Size(900, 469);
             this.dgvSuppliers.TabIndex = 0;
             this.dgvSuppliers.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvSuppliers_CellClick);
             this.dgvSuppliers.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvSuppliers_CellMouseLeave);
             this.dgvSuppliers.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DgvSuppliers_CellMouseMove);
+            this.dgvSuppliers.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DgvSuppliers_ColumnHeaderMouseClick);
+            this.dgvSuppliers.SelectionChanged += new System.EventHandler(this.DgvSuppliers_SelectionChanged);
             // 
             // contextMenuOptions
             // 
@@ -91,9 +97,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.dgvSuppliers);
             this.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SuppliersUC";
-            this.Size = new System.Drawing.Size(884, 422);
+            this.Size = new System.Drawing.Size(900, 469);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSuppliers)).EndInit();
             this.contextMenuOptions.ResumeLayout(false);
             this.ResumeLayout(false);

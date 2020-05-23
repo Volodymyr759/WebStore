@@ -1,12 +1,8 @@
-﻿using DataAccess.RepositoriesSqlCE;
-using Domain.Models.Units;
+﻿using Infrastructure.DataAccess.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Services.UnitsService;
+using Services.UnitsServices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Tests
 {
@@ -16,94 +12,96 @@ namespace Service.Tests
         bool operationSucceeded;
         UnitsService unitsService;
         string errorMessage;
+        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
 
         public UnitsServiceTests()
         {
-            unitsService = new UnitsService(new UnitsRepository(@"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf"));
+            unitsService = new UnitsService(new UnitsRepository(connString));
         }
 
         [TestMethod()]
-        public void Add_ShouldReturn_Success()
+        public void AddUnit_ShouldReturn_Success()
         {
             errorMessage = "";
             operationSucceeded = false;
-            UnitsModel unitsModel = new UnitsModel { Name = DateTime.Now.Millisecond.ToString(), Notes = "Test" };
+            UnitsDtoModel unitDto = new UnitsDtoModel { Name = DateTime.Now.Millisecond.ToString(), Notes = "Test" };
             try
             {
-                unitsService.Add(unitsModel);
+                unitsService.AddUnit(unitDto);
                 operationSucceeded = true;
             }
             catch (Exception ex)
             {
-                errorMessage = ex.StackTrace;
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void DeleteById_ShouldReturn_Success()
+        public void DeleteUnitById_ShouldReturn_Success()
         {
             errorMessage = "";
             operationSucceeded = false;
             try
             {
-                unitsService.DeleteById(1);
+                unitsService.DeleteUnitById(11111);
                 operationSucceeded = true;
             }
             catch (Exception ex)
             {
-                errorMessage = ex.StackTrace;
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void GetById_ShouldReturn_Success()
+        public void GetUnitById_ShouldReturn_NotNull()
         {
             errorMessage = "";
-            UnitsModel unitsModel = null;
+            UnitsDtoModel unitDto = null;
             try
             {
-                unitsModel = (UnitsModel)unitsService.GetById(1);
+                unitDto = unitsService.GetUnitById(1);
             }
             catch (Exception ex)
             {
-                errorMessage = ex.StackTrace;
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsNotNull(unitsModel, errorMessage);
+            Assert.IsNotNull(unitDto, errorMessage);
         }
 
         [TestMethod()]
-        public void GetUnitsToList_ShouldReturn_Success()
+        public void GetUnits_ShouldReturn_ListUnitsDtoModel()
         {
             errorMessage = "";
-            operationSucceeded = false;
+            var unitsDtos = new List<UnitsDtoModel>();
             try
             {
-                var unitsModels = unitsService.GetUnitsToList();
-                operationSucceeded = true;
+                unitsDtos = (List<UnitsDtoModel>)unitsService.GetUnits();
             }
             catch (Exception ex)
             {
-                errorMessage = ex.StackTrace;
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded, errorMessage);
+            Assert.IsTrue(unitsDtos.Count > 0, errorMessage);
         }
 
         [TestMethod()]
         public void Update_ShouldReturn_Success()
         {
             operationSucceeded = false;
-            UnitsModel unitsModel = new UnitsModel { Id =1, Name = DateTime.Now.Millisecond.ToString(), Notes = "Test" };
+            errorMessage = "";
+            UnitsDtoModel unitDto = new UnitsDtoModel { Id = 1, Name = DateTime.Now.Millisecond.ToString(), Notes = "Test" };
             try
             {
-                unitsService.Update(unitsModel);
+                unitsService.UpdateUnit(unitDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded,errorMessage);
         }
     }
 }

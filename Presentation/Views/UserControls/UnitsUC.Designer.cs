@@ -40,17 +40,22 @@
             // 
             // dgvUnits
             // 
+            this.dgvUnits.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvUnits.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dgvUnits.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvUnits.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvUnits.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvUnits.Location = new System.Drawing.Point(0, 0);
+            this.dgvUnits.Margin = new System.Windows.Forms.Padding(0);
             this.dgvUnits.Name = "dgvUnits";
             this.dgvUnits.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvUnits.Size = new System.Drawing.Size(884, 422);
+            this.dgvUnits.Size = new System.Drawing.Size(900, 469);
             this.dgvUnits.TabIndex = 0;
             this.dgvUnits.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvUnits_CellClick);
             this.dgvUnits.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvUnits_CellMouseLeave);
             this.dgvUnits.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DgvUnits_CellMouseMove);
+            this.dgvUnits.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DgvUnits_ColumnHeaderMouseClick);
             // 
             // contextMenuOptions
             // 
@@ -59,13 +64,13 @@
             this.editMenuItem,
             this.deleteMenuItem});
             this.contextMenuOptions.Name = "contextMenuOptions";
-            this.contextMenuOptions.Size = new System.Drawing.Size(181, 92);
+            this.contextMenuOptions.Size = new System.Drawing.Size(135, 70);
             // 
             // addMenuItem
             // 
             this.addMenuItem.Image = global::Presentation.Properties.Resources.AddBlack24x24;
             this.addMenuItem.Name = "addMenuItem";
-            this.addMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addMenuItem.Text = "Додати";
             this.addMenuItem.Click += new System.EventHandler(this.AddMenuItem_Click);
             // 
@@ -73,7 +78,7 @@
             // 
             this.editMenuItem.Image = global::Presentation.Properties.Resources.EditBlack24x24;
             this.editMenuItem.Name = "editMenuItem";
-            this.editMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editMenuItem.Size = new System.Drawing.Size(134, 22);
             this.editMenuItem.Text = "Редагувати";
             this.editMenuItem.Click += new System.EventHandler(this.EditMenuItem_Click);
             // 
@@ -81,7 +86,7 @@
             // 
             this.deleteMenuItem.Image = global::Presentation.Properties.Resources.DeleteBlack24x24;
             this.deleteMenuItem.Name = "deleteMenuItem";
-            this.deleteMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteMenuItem.Size = new System.Drawing.Size(134, 22);
             this.deleteMenuItem.Text = "Видалити";
             this.deleteMenuItem.Click += new System.EventHandler(this.DeleteMenuItem_Click);
             // 
@@ -91,9 +96,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.dgvUnits);
             this.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "UnitsUC";
-            this.Size = new System.Drawing.Size(884, 422);
+            this.Size = new System.Drawing.Size(900, 469);
             ((System.ComponentModel.ISupportInitialize)(this.dgvUnits)).EndInit();
             this.contextMenuOptions.ResumeLayout(false);
             this.ResumeLayout(false);

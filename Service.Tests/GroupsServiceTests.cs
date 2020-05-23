@@ -1,11 +1,8 @@
-﻿using Domain.Models.Groups;
+﻿using Infrastructure.DataAccess.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Services.GroupsService;
+using Services.GroupsServices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Tests
 {
@@ -14,85 +11,120 @@ namespace Service.Tests
     {
         bool operationSucceeded;
         GroupsService groupsService;
+        string errorMessage;
+        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
 
         public GroupsServiceTests()
         {
-            groupsService = new GroupsService();
+            groupsService = new GroupsService(new GroupsRepository(connString));
         }
 
         [TestMethod()]
-        public void Add_ShouldReturn_Success()
+        public void AddGroup_ShouldReturn_Success()
         {
+            errorMessage = "";
             operationSucceeded = false;
-            GroupsModel groupsModel = new GroupsModel();
+            GroupsDtoModel group = new GroupsDtoModel()
+            {
+                Name = "Group 1",
+                Number = "1",
+                Identifier = "_1",
+                AncestorNumber = "2",
+                AncestorIdentifier = "_2",
+                ProductType = "r",
+                Link = "some link",
+                Notes = "some notes"
+            };
             try
             {
-                groupsService.Add(groupsModel);
+                groupsService.AddGroup(group);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
         public void DeleteById_ShouldReturn_Success()
         {
+            errorMessage = "";
             operationSucceeded = false;
             try
             {
-                groupsService.DeleteById(1);
+                groupsService.DeleteGroupById(1);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void GetById_ShouldReturn_Success()
+        public void GetGroupById_ShouldReturn_NotNull()
         {
-            GroupsModel groupsModel = null;
+            errorMessage ="";
+            GroupsDtoModel group = null;
             try
             {
-                groupsModel = (GroupsModel)groupsService.GetById(1);
+                group = groupsService.GetGroupById(1);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsNotNull(groupsModel);
+            Assert.IsNotNull(group, errorMessage);
         }
 
         [TestMethod()]
-        public void GetGroupsToList_ShouldReturn_NotEmpty()
+        public void GetGroups_ShouldReturn_ListGroupsDtoModel()
         {
-            var groupsModels = new List<IGroupsModel>();
+            errorMessage = "";
+            operationSucceeded = false;
+            List<GroupsDtoModel> groupsDtos = new List<GroupsDtoModel>();
             try
             {
-                groupsModels = groupsService.GetGroupsToList();
+                groupsDtos = (List<GroupsDtoModel>)groupsService.GetGroups();
+                operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(groupsModels.Count > 0);
+            Assert.IsTrue(groupsDtos.Count>0, errorMessage);
         }
 
         [TestMethod()]
         public void Update_ShouldReturn_Success()
         {
+            errorMessage = "";
             operationSucceeded = false;
-            GroupsModel groupsModel = new GroupsModel();
+            GroupsDtoModel groupDto = new GroupsDtoModel()
+            {
+                Id = 1,
+                Name = "Updated Group 1",
+                Number = "1",
+                Identifier = "_1",
+                AncestorNumber = "2",
+                AncestorIdentifier = "_2",
+                ProductType = "r",
+                Link = "some link",
+                Notes = "some notes"
+            };
             try
             {
-                groupsService.Update(groupsModel);
+                groupsService.UpdateGroup(groupDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

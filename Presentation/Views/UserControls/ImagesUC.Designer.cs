@@ -40,17 +40,23 @@
             // 
             // dgvImages
             // 
+            this.dgvImages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvImages.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dgvImages.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvImages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvImages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvImages.Location = new System.Drawing.Point(0, 0);
+            this.dgvImages.Margin = new System.Windows.Forms.Padding(0);
             this.dgvImages.Name = "dgvImages";
             this.dgvImages.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvImages.Size = new System.Drawing.Size(884, 422);
+            this.dgvImages.Size = new System.Drawing.Size(900, 469);
             this.dgvImages.TabIndex = 0;
             this.dgvImages.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvImages_CellClick);
             this.dgvImages.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvImages_CellMouseLeave);
             this.dgvImages.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DgvImages_CellMouseMove);
+            this.dgvImages.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DgvImages_ColumnHeaderMouseClick);
+            this.dgvImages.SelectionChanged += new System.EventHandler(this.DgvImages_SelectionChanged);
             // 
             // contextMenuOptions
             // 
@@ -65,7 +71,7 @@
             // 
             this.addMenuItem.Image = global::Presentation.Properties.Resources.AddBlack24x24;
             this.addMenuItem.Name = "addMenuItem";
-            this.addMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addMenuItem.Text = "Додати";
             this.addMenuItem.Click += new System.EventHandler(this.AddMenuItem_Click);
             // 
@@ -73,7 +79,7 @@
             // 
             this.editMenuItem.Image = global::Presentation.Properties.Resources.EditBlack24x24;
             this.editMenuItem.Name = "editMenuItem";
-            this.editMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editMenuItem.Size = new System.Drawing.Size(134, 22);
             this.editMenuItem.Text = "Редагувати";
             this.editMenuItem.Click += new System.EventHandler(this.EditMenuItem_Click);
             // 
@@ -81,7 +87,7 @@
             // 
             this.deleteMenuItem.Image = global::Presentation.Properties.Resources.DeleteBlack24x24;
             this.deleteMenuItem.Name = "deleteMenuItem";
-            this.deleteMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteMenuItem.Size = new System.Drawing.Size(134, 22);
             this.deleteMenuItem.Text = "Видалити";
             this.deleteMenuItem.Click += new System.EventHandler(this.DeleteMenuItem_Click);
             // 
@@ -91,9 +97,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.dgvImages);
             this.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ImagesUC";
-            this.Size = new System.Drawing.Size(884, 422);
+            this.Size = new System.Drawing.Size(900, 469);
             ((System.ComponentModel.ISupportInitialize)(this.dgvImages)).EndInit();
             this.contextMenuOptions.ResumeLayout(false);
             this.ResumeLayout(false);

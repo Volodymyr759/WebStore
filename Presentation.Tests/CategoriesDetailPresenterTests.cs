@@ -2,10 +2,6 @@
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.Tests
 {
@@ -13,59 +9,62 @@ namespace Presentation.Tests
     public class CategoriesDetailPresenterTests
     {
         private CategoriesDetailPresenter categoriesDetailPresenter;
+        string errorMessage;
 
         public CategoriesDetailPresenterTests()
         {
-            categoriesDetailPresenter = new CategoriesDetailPresenter();
+            categoriesDetailPresenter = new CategoriesDetailPresenter(new CategoriesDetailUC(new ErrorMessageView()), 
+                ServicesInitializator.facade);
         }
 
         [TestMethod()]
-        public void GetCategoriesDetailUC_ShouldReturnCategoriesDetailUC()
+        public void GetCategoriesDetailUC_ShouldReturn_CategoriesDetailUC()
         {
-            categoriesDetailPresenter = new CategoriesDetailPresenter();
+            errorMessage = "";
             CategoriesDetailUC categoriesDetailUC = null;
-
             try
             {
                 categoriesDetailUC = (CategoriesDetailUC)categoriesDetailPresenter.GetCategoriesDetailUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-
-            Assert.IsNotNull(categoriesDetailUC);
+            Assert.IsNotNull(categoriesDetailUC, errorMessage);
         }
 
         [TestMethod()]
         public void SetupCategoriesDetailForAdd_ShouldReturn_Success()
         {
+            errorMessage = "";
             bool operationSucceeded = false;
             try
             {
                 categoriesDetailPresenter.SetupCategoriesDetailForAdd();
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
         public void SetupCategoriesDetailForEdit_ShouldReturn_Success()
         {
+            errorMessage = "";
             bool operationSucceeded = false;
             try
             {
                 categoriesDetailPresenter.SetupCategoriesDetailForEdit(1);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

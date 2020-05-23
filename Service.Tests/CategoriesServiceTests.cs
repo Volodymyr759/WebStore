@@ -1,11 +1,9 @@
-﻿using Domain.Models.Categories;
+﻿using Infrastructure.DataAccess.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Services.CategoriesService;
+using Services.CategoriesServices;
+using Services.SuppliersServices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Tests
 {
@@ -14,85 +12,115 @@ namespace Service.Tests
     {
         bool operationSucceeded;
         CategoriesService categoriesService;
+        string errorMessage;
+        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
 
         public CategoriesServiceTests()
         {
-            categoriesService = new CategoriesService();
+            categoriesService = new CategoriesService(new CategoriesRepository(connString), 
+                new SuppliersService(new SuppliersRepository(connString)));
         }
 
         [TestMethod()]
-        public void Add_ShouldReturn_Success()
+        public void AddCategory_ShouldReturn_Success()
         {
             operationSucceeded = false;
-            CategoriesModel categoriesModel = new CategoriesModel();
+            errorMessage = "";
+            CategoriesDtoModel categoriesDto = new CategoriesDtoModel()
+            {
+                Name = "New category",
+                SupplierId = 2,
+                SupplierName = "Supplier",
+                Link = "some categories link",
+                Rate = 1.5m,
+                Notes = "some notes for new category"
+            };
             try
             {
-                categoriesService.Add(categoriesModel);
+                categoriesService.AddCategory(categoriesDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void DeleteById_ShouldReturn_Success()
+        public void DeleteCategoryById_ShouldReturn_Success()
         {
             operationSucceeded = false;
+            errorMessage = "";
             try
             {
-                categoriesService.DeleteById(1);
+                categoriesService.DeleteCategoryById(11111);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void GetById_ShouldReturn_Success()
+        public void GetCategoryById_ShouldReturn_NotNull()
         {
-            CategoriesModel categoriesModel = null;
+            CategoriesDtoModel categoriesDto = null;
+            errorMessage = "";
             try
             {
-                categoriesModel = (CategoriesModel)categoriesService.GetById(1);
+                categoriesDto = categoriesService.GetCategoryById(1);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsNotNull(categoriesModel);
+            Assert.IsNotNull(categoriesDto, errorMessage);
         }
 
         [TestMethod()]
-        public void GetCategoriesToList_ShouldReturn_NotEmpty()
+        public void GetCategories_ShouldReturn_ListCategoriesDtoModel()
         {
-            var categoriesModels = new List<CategoriesDtoModel>();
+            errorMessage = "";
+            List<CategoriesDtoModel> categoriesDtos = new List<CategoriesDtoModel>();
             try
             {
-                categoriesModels = categoriesService.GetCategoriesToList();
+                categoriesDtos = (List<CategoriesDtoModel>)categoriesService.GetCategories();
+                operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(categoriesModels.Count > 0);
+            Assert.IsTrue(categoriesDtos.Count>0, errorMessage);
         }
 
         [TestMethod()]
-        public void Update_ShouldReturn_Success()
+        public void UpdateCategory_ShouldReturn_Success()
         {
             operationSucceeded = false;
-            CategoriesModel categoriesModel = new CategoriesModel();
+            errorMessage = "";
+            CategoriesDtoModel categoriesDto = new CategoriesDtoModel()
+            {
+                Id = 1,
+                Name = "Updated category",
+                SupplierId = 2,
+                Link = "some categories link",
+                Rate = 1.5m,
+                Notes = "some notes for new category"
+            };
             try
             {
-                categoriesService.Update(categoriesModel);
+                categoriesService.UpdateCategory(categoriesDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

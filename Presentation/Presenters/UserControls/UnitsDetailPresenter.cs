@@ -1,9 +1,7 @@
 ﻿using Common;
-using Domain.Models.Units;
-using Presentation;
-using Presentation.Validators;
 using Presentation.Views.UserControls;
-using Services.UnitsService;
+using Services;
+using Services.UnitsServices;
 using System;
 using System.Collections.Generic;
 
@@ -12,13 +10,11 @@ namespace Presentation
     /// <summary>
     /// Презентер для форми вводу даних створення/редагування одиниці виміру
     /// </summary>
-    public class UnitsDetailPresenter : BasePresenter, IUnitsDetailPresenter
+    public class UnitsDetailPresenter : IUnitsDetailPresenter
     {
         private IUnitsDetailUC unitsDetaileUC;
 
-        private IUnitsService unitsService;
-
-        private IErrorMessageView errorMessageView;
+        private IStoreFacade facade;
 
         /// <summary>
         /// Подія готовності форми вводу даних для відображення у головній формі
@@ -31,17 +27,19 @@ namespace Presentation
         public event EventHandler CancelClickEventRaised;
 
         /// <summary>
+        /// Подія збереження запису обраної одиниці виміру
+        /// </summary>
+        public event EventHandler SaveUnitClickEventRaised;
+
+        /// <summary>
         /// Конструктор презентера форми вводу даних одиниці виміру
         /// </summary>
         /// <param name="unitsDetaileUC">Форма вводу даних одиниці виміру</param>
-        /// <param name="unitsService">Сервіс-рівень одиниці виміру</param>
-        /// <param name="errorMessageView">Форма для відображення помилки</param>
-        public UnitsDetailPresenter(IUnitsDetailUC unitsDetaileUC, IUnitsService unitsService, IErrorMessageView errorMessageView) : base(errorMessageView)
+        /// <param name="facade">Екземпляр фасаду</param>
+        public UnitsDetailPresenter(IUnitsDetailUC unitsDetaileUC, IStoreFacade facade)
         {
             this.unitsDetaileUC = unitsDetaileUC;
-            this.unitsService = unitsService;
-            this.errorMessageView = errorMessageView;
-
+            this.facade = facade;
             SubscribeToEvents();
         }
 
@@ -49,18 +47,17 @@ namespace Presentation
         {
             unitsDetaileUC.SaveUnitsDetailEventRaised += (sender, modelDictionary) =>
             {
-                UnitsModel unitsModel = new UnitsModel
+                UnitsDtoModel unitDto = new UnitsDtoModel
                 {
-                    Id = int.Parse(modelDictionary.ModelDictionary["Id"]),
+                    Id = modelDictionary.ModelDictionary["Id"] == "" ? 0 : int.Parse(modelDictionary.ModelDictionary["Id"]),
                     Name = modelDictionary.ModelDictionary["Name"],
                     Notes = modelDictionary.ModelDictionary["Notes"]
                 };
-                var unitsValidator = new UnitsValidator();
-                if (unitsValidator.Validate(unitsModel).IsValid)
-                {
-                    if (unitsModel.Id > 0) unitsService.Update(unitsModel); else unitsService.Add(unitsModel);
-                }
+                if (unitDto.Id > 0) facade.UpdateUnit(unitDto); else facade.AddUnit(unitDto);
+
+                EventHelper.RaiseEvent(this, SaveUnitClickEventRaised, new EventArgs());
             };
+
             unitsDetaileUC.CancelUnitsDetailEventRaised += (sender, e) => EventHelper.RaiseEvent(this, CancelClickEventRaised, new EventArgs());
         }
 
@@ -68,10 +65,7 @@ namespace Presentation
         /// Отримання форми вводу даних одиниці виміру головною формою
         /// </summary>
         /// <returns>Форма вводу даних для створення/редагування одиниці виміру</returns>
-        public IUnitsDetailUC GetUnitsDetailUC()
-        {
-            return unitsDetaileUC;
-        }
+        public IUnitsDetailUC GetUnitsDetailUC() => unitsDetaileUC;
 
         /// <summary>
         /// Ініціалізація елементів форми вводу даних для створення нової одиниці виміру
@@ -88,19 +82,18 @@ namespace Presentation
         /// <param name="id">id існуючої одиниці виміру</param>
         public void SetupUnitsDetailForEdit(int id)
         {
-            UnitsModel unitsModel = (UnitsModel)unitsService.GetById(id);
-            Dictionary<string, string> modelDictionary = BuildModelDictionary(unitsModel);
+            Dictionary<string, string> modelDictionary = BuildModelDictionary(facade.GetUnitById(id));
             unitsDetaileUC.SetupControls(modelDictionary);
             EventHelper.RaiseEvent(this, ReadyToShowUnitsDetailEventRaised, new EventArgs());
         }
 
-        private Dictionary<string, string> BuildModelDictionary(UnitsModel unitsModel)
+        private Dictionary<string, string> BuildModelDictionary(UnitsDtoModel unitDto)
         {
             var modelDictionary = new Dictionary<string, string>()
             {
-                { "Id", unitsModel.Id.ToString() },
-                { "Name", unitsModel.Name },
-                { "Notes", unitsModel.Notes }
+                { "Id", unitDto.Id.ToString() },
+                { "Name", unitDto.Name },
+                { "Notes", unitDto.Notes }
             };
 
             return modelDictionary;

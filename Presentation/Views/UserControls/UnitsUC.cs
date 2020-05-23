@@ -1,39 +1,75 @@
 ﻿using Common;
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Presentation.Views.UserControls
 {
+    /// <summary>
+    /// Представлення списку одиниць виміру
+    /// </summary>
     public partial class UnitsUC : UserControl, IUnitsUC
     {
+        private IErrorMessageView errorMessageView;
+
+        private SortOrder orderOfSort = SortOrder.Ascending;
+
+        /// <summary>
+        /// Подія виклику представлення для створення нової одиниці виміру
+        /// </summary>
         public event EventHandler AddNewUnitEventRaised;
 
+        /// <summary>
+        /// Подія виклику представлення для редагування обраної одиниці виміру
+        /// </summary>
         public event EventHandler EditUnitEventRaised;
 
+        /// <summary>
+        /// Подія виклику форми підтвердження видалення одиниці виміру
+        /// </summary>
         public event EventHandler DeleteUnitEventRaised;
 
-        public UnitsUC()
+        /// <summary>
+        /// Подія сортування у представленні списку одиниць виміру
+        /// </summary>
+        public event EventHandler<DataEventArgs> SortUnitsByBindingPropertyNameEventRaised;
+
+        /// <summary>
+        /// Конструктор представлення списку одиниць виміру
+        /// </summary>
+        /// <param name="errorMessageView">Екземпляр універсальної форми відображення помилки</param>
+        public UnitsUC(IErrorMessageView errorMessageView)
         {
             InitializeComponent();
+            this.errorMessageView = errorMessageView;
         }
 
+        /// <summary>
+        /// Налаштування даних в представленні списку одиниць виміру
+        /// </summary>
+        /// <param name="bindingSource">Прив'язка даних списку одиниць виміру</param>
         public void SetupControls(BindingSource bindingSource)
         {
             dgvUnits.DataSource = bindingSource;
             dgvUnits.Columns["Id"].HeaderText = "Id";
-            dgvUnits.Columns["Name"].HeaderText = "Назва";
-            dgvUnits.Columns["Notes"].HeaderText = "Опис";
-
+            dgvUnits.Columns["Id"].DisplayIndex = 0;
             dgvUnits.Columns["Id"].Width = 20;
             dgvUnits.Columns["Id"].Visible = false;
+
+            dgvUnits.Columns["Name"].HeaderText = "Назва";
             dgvUnits.Columns["Name"].Width = 50;
-            dgvUnits.Columns["Notes"].Width = 100;
+            dgvUnits.Columns["Name"].DisplayIndex = 1;
+
+            dgvUnits.Columns["Notes"].HeaderText = "Опис";
+            dgvUnits.Columns["Notes"].Width = 140;
+            dgvUnits.Columns["Notes"].DisplayIndex = 2;
 
             DataGridViewImageColumn imageColumn = new DataGridViewImageColumn
             {
                 HeaderText = "Опції",
                 Name = "Options",
                 Width = 60,
+                DisplayIndex = 3,
                 Image = Properties.Resources.OptionsBlackDotsOnWhite20x20
             };
 
@@ -48,17 +84,60 @@ namespace Presentation.Views.UserControls
 
         private void AddMenuItem_Click(object sender, EventArgs e)
         {
-            EventHelper.RaiseEvent(this, AddNewUnitEventRaised, e);
+            try
+            {
+                EventHelper.RaiseEvent(this, AddNewUnitEventRaised, e);
+            }
+            catch (Exception ex)
+            {
+                errorMessageView.ShowErrorMessageView("Управління товарами", ex.Message);
+            }
         }
 
         private void EditMenuItem_Click(object sender, EventArgs e)
         {
-            EventHelper.RaiseEvent(this, EditUnitEventRaised, e);
+            try
+            {
+                EventHelper.RaiseEvent(this, EditUnitEventRaised, e);
+            }
+            catch (Exception ex)
+            {
+                errorMessageView.ShowErrorMessageView("Управління товарами", ex.Message);
+            }
         }
 
         private void DeleteMenuItem_Click(object sender, EventArgs e)
         {
-            EventHelper.RaiseEvent(this, DeleteUnitEventRaised, e);
+            try
+            {
+                EventHelper.RaiseEvent(this, DeleteUnitEventRaised, e);
+            }
+            catch (Exception ex)
+            {
+                errorMessageView.ShowErrorMessageView("Управління товарами", ex.Message);
+            }
+        }
+
+        private void DgvUnits_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            try
+            {
+                if (dgvUnits.Columns[e.ColumnIndex].Name != "Options")
+                {
+                    var sortParameters = new Dictionary<string, string>()
+                {
+                    { "PropertyName", dgvUnits.Columns[e.ColumnIndex].Name },
+                    { "OrderOfSort", orderOfSort.ToString() }
+                };
+                    dgvUnits.DataSource = null;
+                    EventHelper.RaiseEvent(this, SortUnitsByBindingPropertyNameEventRaised, new DataEventArgs { ModelDictionary = sortParameters });
+                    orderOfSort = (orderOfSort == SortOrder.Ascending) ? SortOrder.Descending : SortOrder.Ascending;
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessageView.ShowErrorMessageView("Управління товарами", ex.Message);
+            }
         }
 
         #endregion

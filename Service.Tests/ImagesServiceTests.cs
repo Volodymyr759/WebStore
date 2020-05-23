@@ -1,11 +1,13 @@
-﻿using Domain.Models.Images;
+﻿using Infrastructure.DataAccess.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Services.ImagesService;
+using Services.CategoriesServices;
+using Services.GroupsServices;
+using Services.ImagesServices;
+using Services.ProductsServices;
+using Services.SuppliersServices;
+using Services.UnitsServices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Tests
 {
@@ -14,85 +16,121 @@ namespace Service.Tests
     {
         bool operationSucceeded;
         ImagesService imagesService;
+        string errorMessage;
+        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
 
         public ImagesServiceTests()
         {
-            imagesService = new ImagesService();
+            SuppliersService suppliersService = new SuppliersService(new SuppliersRepository(connString));
+            imagesService = new ImagesService(new ImagesRepository(connString),
+                new ProductsService(new ProductsRepository(connString),
+                                    new CategoriesService(new CategoriesRepository(connString), suppliersService),
+                                    new GroupsService(new GroupsRepository(connString)),
+                                    suppliersService,
+                                    new UnitsService(new UnitsRepository(connString))));
         }
 
         [TestMethod()]
-        public void Add_ShouldReturn_Success()
+        public void AddImage_ShouldReturn_Success()
         {
             operationSucceeded = false;
-            ImagesModel imagesModel = new ImagesModel();
+            errorMessage = "";
+            ImagesDtoModel imageDto = new ImagesDtoModel()
+            {
+                FileName = "somefile.png",
+                ProductId = 1,
+                ProductName = "Product name",
+                LinkWebStore = "some weblink",
+                LinkSupplier = "some suppliers link",
+                LocalPath = "some local path"
+            };
             try
             {
-                imagesService.Add(imagesModel);
+                imagesService.AddImage(imageDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void DeleteById_ShouldReturn_Success()
+        public void DeleteImageById_ShouldReturn_Success()
         {
+            errorMessage = "";
             operationSucceeded = false;
             try
             {
-                imagesService.DeleteById(1);
+                imagesService.DeleteImageById(11111);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void GetById_ShouldReturn_Success()
+        public void GetImageById_ShouldReturn_NotNull()
         {
-            ImagesModel imagesModel = null;
+            ImagesDtoModel imagesDto = null;
+            errorMessage = "";
             try
             {
-                imagesModel = (ImagesModel)imagesService.GetById(1);
+                imagesDto = imagesService.GetImageById(1);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsNotNull(imagesModel);
+            Assert.IsNotNull(imagesDto, errorMessage);
         }
 
         [TestMethod()]
-        public void GetImagesToList_ShouldReturn_NotEmpty()
+        public void GetImages_ShouldReturn_ListImagesDtoModel()
         {
-            var imagesModels = new List<ImagesDtoModel>();
+            errorMessage = "";
+            List<ImagesDtoModel> imagesDtos = new List<ImagesDtoModel>();
             try
             {
-                imagesModels = imagesService.GetImagesToList();
+                imagesDtos = (List<ImagesDtoModel>)imagesService.GetImages();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(imagesModels.Count > 0);
+            Assert.IsTrue(imagesDtos.Count>0, errorMessage);
         }
 
         [TestMethod()]
-        public void Update_ShouldReturn_Success()
+        public void UpdateImage_ShouldReturn_Success()
         {
             operationSucceeded = false;
-            ImagesModel imagesModel = new ImagesModel();
+            errorMessage = "";
+            ImagesDtoModel imageDto = new ImagesDtoModel()
+            {
+                Id = 1,
+                
+                FileName = "updated somefile.png",
+                ProductId = 1,
+                ProductName = "Product name",
+                LinkWebStore = "some weblink",
+                LinkSupplier = "some suppliers link",
+                LocalPath = "some local path"
+            };
             try
             {
-                imagesService.Update(imagesModel);
+                imagesService.UpdateImage(imageDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

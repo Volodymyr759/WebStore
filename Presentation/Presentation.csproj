@@ -22,6 +22,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,8 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Presenters\BasePresenter.cs" />
-    <Compile Include="Presenters\IBasePresenter.cs" />
     <Compile Include="Presenters\UserControls\CategoriesDetailPresenter.cs" />
     <Compile Include="Presenters\UserControls\CategoriesPresenter.cs" />
     <Compile Include="Presenters\UserControls\GroupsDetailPresenter.cs" />
@@ -67,6 +67,7 @@
     <Compile Include="Presenters\UserControls\IParametersPresenter.cs" />
     <Compile Include="Presenters\UserControls\IProductsDetailPresenter.cs" />
     <Compile Include="Presenters\UserControls\IProductsPresenter.cs" />
+    <Compile Include="Presenters\UserControls\ISettingsPresenter.cs" />
     <Compile Include="Presenters\UserControls\ISuppliersDetailPresenter.cs" />
     <Compile Include="Presenters\UserControls\ISuppliersPresenter.cs" />
     <Compile Include="Presenters\UserControls\IUnitsDetailPresenter.cs" />
@@ -75,11 +76,17 @@
     <Compile Include="Presenters\UserControls\ParametersPresenter.cs" />
     <Compile Include="Presenters\UserControls\ProductsDetailPresenter.cs" />
     <Compile Include="Presenters\UserControls\ProductsPresenter.cs" />
+    <Compile Include="Presenters\UserControls\SettingsPresenter.cs" />
     <Compile Include="Presenters\UserControls\SuppliersDetailPresenter.cs" />
     <Compile Include="Presenters\UserControls\SuppliersPresenter.cs" />
     <Compile Include="Presenters\UserControls\UnitsDetailPresenter.cs" />
     <Compile Include="Presenters\UserControls\UnitsPresenter.cs" />
-    <Compile Include="Validators\UnitsValidator.cs" />
+    <Compile Include="Views\AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\DeleteConfirmView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,6 +102,7 @@
     <Compile Include="Views\IDeleteConfirmView.cs" />
     <Compile Include="Views\IErrorMessageView.cs" />
     <Compile Include="Views\IMainView.cs" />
+    <Compile Include="Views\UserControls\ISettingsUC.cs" />
     <Compile Include="Views\UserControls\IUnitsUC.cs" />
     <Compile Include="Views\MainView.cs">
       <SubType>Form</SubType>
@@ -104,6 +112,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\UserControls\SettingsUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserControls\SettingsUC.Designer.cs">
+      <DependentUpon>SettingsUC.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\UserControls\UnitsUC.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -201,6 +215,9 @@
     <Compile Include="Views\UserControls\UnitsDetailUC.Designer.cs">
       <DependentUpon>UnitsDetailUC.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\DeleteConfirmView.resx">
       <DependentUpon>DeleteConfirmView.cs</DependentUpon>
     </EmbeddedResource>
@@ -220,6 +237,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Views\UserControls\SettingsUC.resx">
+      <DependentUpon>SettingsUC.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\UserControls\UnitsUC.resx">
       <DependentUpon>UnitsUC.cs</DependentUpon>
     </EmbeddedResource>
@@ -277,7 +297,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="webstore.sdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -324,13 +344,13 @@
       <Project>{5a4f4afd-bae9-4627-9450-a89de5e95f0f}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
-      <Project>{CC8015F6-FFFD-4EE2-9BFF-C2DD734713F9}</Project>
-      <Name>DataAccess</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{3805bead-140b-4e20-b9b3-b946e098d6bf}</Project>
       <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
+      <Project>{C781BC00-4898-460E-982A-F3C041166888}</Project>
+      <Name>Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\Services\Services.csproj">
       <Project>{a90d18a5-5d5f-4884-8ae7-55ebc8568000}</Project>
@@ -338,9 +358,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation">
-      <Version>8.6.2</Version>
-    </PackageReference>
     <PackageReference Include="Unity">
       <Version>5.8.6</Version>
     </PackageReference>

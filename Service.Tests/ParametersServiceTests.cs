@@ -1,11 +1,13 @@
-﻿using Domain.Models.Parameters;
+﻿using Infrastructure.DataAccess.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Services.ParametersService;
+using Services.CategoriesServices;
+using Services.GroupsServices;
+using Services.ParametersServices;
+using Services.ProductsServices;
+using Services.SuppliersServices;
+using Services.UnitsServices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Tests
 {
@@ -13,86 +15,121 @@ namespace Service.Tests
     public class ParametersServiceTests
     {
         bool operationSucceeded;
+        string errorMessage;
         ParametersService parametersService;
+        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
 
         public ParametersServiceTests()
         {
-            parametersService = new ParametersService();
+            UnitsService unitsService = new UnitsService(new UnitsRepository(connString));
+            SuppliersService suppliersService = new SuppliersService(new SuppliersRepository(connString));
+            ParametersService parametersService = new ParametersService(new ParametersRepository(connString),
+                                    new ProductsService(new ProductsRepository(connString),
+                                        new CategoriesService(new CategoriesRepository(connString), suppliersService),
+                                        new GroupsService(new GroupsRepository(connString)),
+                                        suppliersService, unitsService),
+                                    unitsService);
+            this.parametersService = parametersService;
         }
 
         [TestMethod()]
-        public void Add_ShouldReturn_Success()
+        public void AddParameter_ShouldReturn_Success()
         {
             operationSucceeded = false;
-            ParametersModel parametersModel = new ParametersModel();
+            errorMessage = "";
+            ParametersDtoModel parameterDto = new ParametersDtoModel()
+            {
+                Name = "Parameter1",
+                ProductId = 1,
+                ProductName = "Product name",
+                UnitId = 1,
+                UnitName = "Unit",
+                Value = "value1"
+            };
             try
             {
-                parametersService.Add(parametersModel);
+                parametersService.AddParameter(parameterDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void DeleteById_ShouldReturn_Success()
+        public void DeleteParameterById_ShouldReturn_Success()
         {
+            errorMessage = "";
             operationSucceeded = false;
             try
             {
-                parametersService.DeleteById(1);
+                parametersService.DeleteParameterById(11111);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod()]
-        public void GetById_ShouldReturn_Success()
+        public void GetParameterById_ShouldReturn_NotNull()
         {
-            ParametersModel parametersModel = null;
+            errorMessage = "";
+            ParametersDtoModel parametersModel = null;
             try
             {
-                parametersModel = (ParametersModel)parametersService.GetById(1);
+                parametersModel = parametersService.GetParameterById(1);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsNotNull(parametersModel);
+            Assert.IsNotNull(parametersModel, errorMessage);
         }
 
         [TestMethod()]
-        public void GetParametersToList_ShouldReturn_NotEmpty()
+        public void GetParameters_ShouldReturn_ListParameterDtoModel()
         {
-            var parametersModels = new List<ParametersDtoModel>();
+            errorMessage = "";
+            List<ParametersDtoModel> parametersDtos = new List<ParametersDtoModel>();
             try
             {
-                parametersModels = parametersService.GetParametersToList();
+                parametersDtos = (List<ParametersDtoModel>)parametersService.GetParameters();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(parametersModels.Count > 0);
+            Assert.IsTrue(parametersDtos.Count > 0, errorMessage);
         }
 
         [TestMethod()]
-        public void Update_ShouldReturn_Success()
+        public void UpdateParameter_ShouldReturn_Success()
         {
+            errorMessage = "";
             operationSucceeded = false;
-            ParametersModel parametersModel = new ParametersModel();
+            ParametersDtoModel parameterDto = new ParametersDtoModel()
+            {
+                Id = 1,
+                ProductId = 1,
+                Name = "Updated Parameter1",
+                UnitId = 2,
+                Value = "value1"
+            };
             try
             {
-                parametersService.Update(parametersModel);
+                parametersService.UpdateParameter(parameterDto);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

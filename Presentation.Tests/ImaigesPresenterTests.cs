@@ -2,33 +2,57 @@
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.Tests
 {
     [TestClass()]
-    public class ImaigesPresenterTests
+    public class ImagesPresenterTests
     {
-        private ImagesPresenter imaigesPresenter;
+        private ImagesPresenter imagesPresenter;
+        private string errorMessage;
+
+        public ImagesPresenterTests()
+        {
+            ErrorMessageView errorMessageView = new ErrorMessageView();
+            DeleteConfirmView deleteConfirmView = new DeleteConfirmView();
+            ImagesDetailUC imagesDetailUC = new ImagesDetailUC(errorMessageView);
+            ImagesDetailPresenter imagesDetailPresenter = new ImagesDetailPresenter(imagesDetailUC, 
+                ServicesInitializator.facade);
+            imagesPresenter = new ImagesPresenter(new ImagesUC(errorMessageView), imagesDetailPresenter, 
+                ServicesInitializator.facade, deleteConfirmView, errorMessageView);
+        }
 
         [TestMethod()]
-        public void GetImaigesUCTest_ShouldReturnImageUC()
+        public void GetImagesUCTest_ShouldReturnImageUC()
         {
-            imaigesPresenter = new ImagesPresenter();
             ImagesUC imageUC = null;
-
+            errorMessage = "";
             try
             {
-                imageUC = (ImagesUC)imaigesPresenter.GetImaigesUC();
+                imageUC = (ImagesUC)imagesPresenter.GetImagesUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-
-            Assert.IsNotNull(imageUC);
+            Assert.IsNotNull(imageUC, errorMessage);
         }
+
+        [TestMethod()]
+        public void LoadImagesTest_ShouldReturn_ImagesUC()
+        {
+            ImagesUC imagesUC = null;
+            errorMessage = "";
+            try
+            {
+                imagesUC = (ImagesUC)imagesPresenter.LoadImages(@"C:\Users\Володимир\Desktop\Одеса");
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
+            }
+            Assert.IsNotNull(imagesUC, errorMessage);
+        }
+
     }
 }

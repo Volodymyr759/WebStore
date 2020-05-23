@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Common
 {
-   public class DataEventArgs
+    /// <summary>
+    /// Клас для передачі повідомлень у подіях між рівнями
+    /// </summary>
+    public class DataEventArgs
     {
         private Dictionary<string, string> modelDictionary;
 
+        /// <summary>
+        /// Словник для передачі повідомлень
+        /// </summary>
         public Dictionary<string, string> ModelDictionary
         {
             get

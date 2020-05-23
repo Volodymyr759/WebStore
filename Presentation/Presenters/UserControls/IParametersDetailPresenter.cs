@@ -3,17 +3,25 @@ using System;
 
 namespace Presentation.Presenters.UserControls
 {
+    /// <summary>
+    /// Інтерфейс презентера представлення деталей характеристики товару
+    /// </summary>
     public interface IParametersDetailPresenter
     {
         /// <summary>
-        /// Подія готовності форми для відображення у головній формі
+        /// Подія готовності для відображення у головній формі
         /// </summary>
         event EventHandler ReadyToShowParametersDetailEventRaised;
 
         /// <summary>
-        /// Подія відміни збереження
+        /// Подія відміни збереження характеристики товару
         /// </summary>
         event EventHandler CancelClickEventRaised;
+
+        /// <summary>
+        /// Подія збереження запису обраної характеристики товару
+        /// </summary>
+        event EventHandler SaveParameterClickEventRaised;
 
         /// <summary>
         /// Отримання презентером форми вводу даних для створення/редагування характеристики
