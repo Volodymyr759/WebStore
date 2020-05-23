@@ -1,5 +1,4 @@
-﻿using Services.ProductsServices;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Services.ImagesServices
 {

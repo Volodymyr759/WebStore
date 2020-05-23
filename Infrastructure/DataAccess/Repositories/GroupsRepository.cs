@@ -7,7 +7,7 @@ using Services.GroupsServices;
 namespace Infrastructure.DataAccess.Repositories
 {
     /// <summary>
-    /// Репозиторій груп товарів
+    /// Репозиторій груп товарів власного каталогу
     /// </summary>
     public class GroupsRepository : IGroupsRepository
     {

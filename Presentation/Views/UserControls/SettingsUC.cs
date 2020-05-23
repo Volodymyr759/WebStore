@@ -34,8 +34,8 @@ namespace Presentation.Views.UserControls
         /// <param name="setupValues">отримує Dictionary з презентера</param>
         public void SetupControls(Dictionary<string, string> setupValues)
         {
-            textBoxFolderImagesOdesa.Text = setupValues["textBoxFolderImagesOdesa"];
-            textBoxFolderImagesKyiv.Text = setupValues["textBoxFolderImagesKyiv"];
+            textBoxFolderImages1.Text = setupValues["textBoxFolderImages1"];
+            textBoxFolderImages2.Text = setupValues["textBoxFolderImages2"];
             checkBoxRunShedule.Checked = setupValues["checkBoxRunShedule"] == "checked" ? true : false;
             textBoxStart.Text = setupValues["textBoxStart"];
             textBoxInterval.Text = setupValues["textBoxInterval"];
@@ -44,7 +44,7 @@ namespace Presentation.Views.UserControls
             checkBoxLoadNewProducts.Checked = setupValues["checkBoxLoadNewProducts"] == "checked" ? true : false;
         }
 
-        private void ButtonSetFolderImagesOdesa_Click(object sender, EventArgs e)
+        private void ButtonSetFolderImages1_Click(object sender, EventArgs e)
         {
             try
             {
@@ -53,9 +53,9 @@ namespace Presentation.Views.UserControls
                 if (result == DialogResult.OK)
                 {
                     Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
-                    config.AppSettings.Settings.Remove("textBoxFolderImagesOdesa");
-                    config.AppSettings.Settings.Add("textBoxFolderImagesOdesa", folder.SelectedPath);
-                    textBoxFolderImagesOdesa.Text = folder.SelectedPath;
+                    config.AppSettings.Settings.Remove("textBoxFolderImages1");
+                    config.AppSettings.Settings.Add("textBoxFolderImages1", folder.SelectedPath);
+                    textBoxFolderImages1.Text = folder.SelectedPath;
                     config.Save(ConfigurationSaveMode.Minimal);
                 }
             }
@@ -65,7 +65,7 @@ namespace Presentation.Views.UserControls
             }
         }
 
-        private void ButtonSetFolderImagesKyiv_Click(object sender, EventArgs e)
+        private void ButtonSetFolderImages2_Click(object sender, EventArgs e)
         {
             try
             {
@@ -74,9 +74,9 @@ namespace Presentation.Views.UserControls
                 if (result == DialogResult.OK)
                 {
                     Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
-                    config.AppSettings.Settings.Remove("textBoxFolderImagesKyiv");
-                    config.AppSettings.Settings.Add("textBoxFolderImagesKyiv", folder.SelectedPath);
-                    textBoxFolderImagesKyiv.Text = folder.SelectedPath;
+                    config.AppSettings.Settings.Remove("textBoxFolderImages2");
+                    config.AppSettings.Settings.Add("textBoxFolderImages2", folder.SelectedPath);
+                    textBoxFolderImages2.Text = folder.SelectedPath;
                     config.Save(ConfigurationSaveMode.Minimal);
                 }
             }
@@ -93,8 +93,8 @@ namespace Presentation.Views.UserControls
                 const string isChecked = "checked";
                 var sheduleDictionary = new Dictionary<string, string>()
                 {
-                    { "textBoxFolderImagesOdesa", textBoxFolderImagesOdesa.Text },
-                    { "textBoxFolderImagesKyiv", textBoxFolderImagesKyiv.Text },
+                    { "textBoxFolderImages1", textBoxFolderImages1.Text },
+                    { "textBoxFolderImages2", textBoxFolderImages2.Text },
                     { "textBoxStart", textBoxStart.Text },
                     { "textBoxInterval", textBoxInterval.Text },
                 };

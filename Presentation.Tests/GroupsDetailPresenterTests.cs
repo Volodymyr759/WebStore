@@ -14,7 +14,6 @@ namespace Presentation.Tests
         public GroupsDetailPresenterTests()
         {
             ErrorMessageView errorMessageView = new ErrorMessageView();
-            //DeleteConfirmView deleteConfirmView = new DeleteConfirmView();
             GroupsDetailUC groupsDetailUC = new GroupsDetailUC(errorMessageView);
             groupsDetailPresenter = new GroupsDetailPresenter(groupsDetailUC, ServicesInitializator.facade);
         }

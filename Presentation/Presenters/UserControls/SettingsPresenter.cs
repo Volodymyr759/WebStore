@@ -37,8 +37,8 @@ namespace Presentation.Presenters.UserControls
         private void OnSaveSheduleSettingsEventRaised(object sender, DataEventArgs sheduleDictionary)
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
-            config.AppSettings.Settings.Remove("textBoxFolderImagesOdesa");
-            config.AppSettings.Settings.Remove("textBoxFolderImagesKyiv");
+            config.AppSettings.Settings.Remove("textBoxFolderImages1");
+            config.AppSettings.Settings.Remove("textBoxFolderImages2");
             config.AppSettings.Settings.Remove("checkBoxRunShedule");
             config.AppSettings.Settings.Remove("textBoxStart");
             config.AppSettings.Settings.Remove("textBoxInterval");
@@ -46,8 +46,8 @@ namespace Presentation.Presenters.UserControls
             config.AppSettings.Settings.Remove("checkBoxCheckPrices");
             config.AppSettings.Settings.Remove("checkBoxLoadNewProducts");
 
-            config.AppSettings.Settings.Add("textBoxFolderImagesOdesa", sheduleDictionary.ModelDictionary["textBoxFolderImagesOdesa"]);
-            config.AppSettings.Settings.Add("textBoxFolderImagesKyiv", sheduleDictionary.ModelDictionary["textBoxFolderImagesKyiv"]);
+            config.AppSettings.Settings.Add("textBoxFolderImages1", sheduleDictionary.ModelDictionary["textBoxFolderImages1"]);
+            config.AppSettings.Settings.Add("textBoxFolderImages2", sheduleDictionary.ModelDictionary["textBoxFolderImages2"]);
             config.AppSettings.Settings.Add("checkBoxRunShedule", sheduleDictionary.ModelDictionary["checkBoxRunShedule"]);
             config.AppSettings.Settings.Add("textBoxStart", sheduleDictionary.ModelDictionary["textBoxStart"]);
             config.AppSettings.Settings.Add("textBoxInterval", sheduleDictionary.ModelDictionary["textBoxInterval"]);
@@ -66,8 +66,8 @@ namespace Presentation.Presenters.UserControls
         {
             Dictionary<string, string> setupValues = new Dictionary<string, string>
             {
-                { "textBoxFolderImagesOdesa", ConfigurationManager.AppSettings["textBoxFolderImagesOdesa"] },
-                { "textBoxFolderImagesKyiv", ConfigurationManager.AppSettings["textBoxFolderImagesKyiv"] },
+                { "textBoxFolderImages1", ConfigurationManager.AppSettings["textBoxFolderImages1"] },
+                { "textBoxFolderImages2", ConfigurationManager.AppSettings["textBoxFolderImages2"] },
                 { "checkBoxRunShedule", ConfigurationManager.AppSettings["checkBoxRunShedule"] },
                 { "textBoxStart", ConfigurationManager.AppSettings["textBoxStart"] },
                 { "textBoxInterval", ConfigurationManager.AppSettings["textBoxInterval"] },
