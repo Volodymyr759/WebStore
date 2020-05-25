@@ -8,46 +8,51 @@ using Services.SuppliersServices;
 using Services.UnitsServices;
 using System;
 using System.Collections.Generic;
+using Moq;
+using Domain.Models.Parameters;
+using Domain.Models.Units;
 
 namespace Service.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class ParametersServiceTests
     {
-        bool operationSucceeded;
         string errorMessage;
+        bool operationSucceeded;
         ParametersService parametersService;
-        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
+        Mock<IParametersRepository> fakeParametersRepository = new Mock<IParametersRepository>();
 
-        public ParametersServiceTests()
+        [TestInitialize]
+        public void TestInit()
         {
-            UnitsService unitsService = new UnitsService(new UnitsRepository(connString));
-            SuppliersService suppliersService = new SuppliersService(new SuppliersRepository(connString));
-            ParametersService parametersService = new ParametersService(new ParametersRepository(connString),
-                                    new ProductsService(new ProductsRepository(connString),
-                                        new CategoriesService(new CategoriesRepository(connString), suppliersService),
-                                        new GroupsService(new GroupsRepository(connString)),
-                                        suppliersService, unitsService),
-                                    unitsService);
-            this.parametersService = parametersService;
+            errorMessage = "";
+            operationSucceeded = false;
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AddParameter_ShouldReturn_Success()
         {
-            operationSucceeded = false;
-            errorMessage = "";
-            ParametersDtoModel parameterDto = new ParametersDtoModel()
-            {
-                Name = "Parameter1",
-                ProductId = 1,
-                ProductName = "Product name",
-                UnitId = 1,
-                UnitName = "Unit",
-                Value = "value1"
-            };
             try
             {
+                ParametersModel parameter = new ParametersModel
+                {
+                    Name = "Parameter1",
+                    ProductId = 1,
+                    UnitId = 1,
+                    Value = "value1"
+                };
+                fakeParametersRepository.Setup(a => a.Add(parameter));
+                parametersService = new ParametersService(fakeParametersRepository.Object,
+                    new Mock<IProductsService>().Object, new Mock<IUnitsService>().Object);
+                ParametersDtoModel parameterDto = new ParametersDtoModel
+                {
+                    Name = parameter.Name,
+                    ProductId = parameter.ProductId,
+                    ProductName = "Product name",
+                    UnitId = parameter.UnitId,
+                    UnitName = "Unit",
+                    Value = parameter.Value
+                };
                 parametersService.AddParameter(parameterDto);
                 operationSucceeded = true;
             }
@@ -58,14 +63,15 @@ namespace Service.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DeleteParameterById_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
-                parametersService.DeleteParameterById(11111);
+                fakeParametersRepository.Setup(a => a.DeleteById(1));
+                parametersService = new ParametersService(fakeParametersRepository.Object,
+                    new Mock<IProductsService>().Object, new Mock<IUnitsService>().Object);
+                parametersService.DeleteParameterById(1);
                 operationSucceeded = true;
             }
             catch (Exception ex)
@@ -75,13 +81,21 @@ namespace Service.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetParameterById_ShouldReturn_NotNull()
         {
-            errorMessage = "";
             ParametersDtoModel parametersModel = null;
             try
             {
+                fakeParametersRepository.Setup(a => a.GetById(1)).Returns(new ParametersModel { Id = 1, Name = "Param", ProductId = 1, UnitId = 1, Value = "W" });
+                Mock<IProductsService> fakeProductsService = new Mock<IProductsService>();
+                fakeProductsService.Setup(a => a.GetProductById(1)).Returns(new ProductsDtoModel { Id = 1, NameWebStore = "Product name" });
+                Mock<IUnitsService> fakeUnitsService = new Mock<IUnitsService>();
+                fakeUnitsService.Setup(a => a.GetUnitById(1)).Returns(new UnitsDtoModel { Id = 1, Name = "p." });
+
+                parametersService = new ParametersService(fakeParametersRepository.Object,
+                    fakeProductsService.Object, fakeUnitsService.Object);
+
                 parametersModel = parametersService.GetParameterById(1);
             }
             catch (Exception ex)
@@ -91,37 +105,50 @@ namespace Service.Tests
             Assert.IsNotNull(parametersModel, errorMessage);
         }
 
-        [TestMethod()]
-        public void GetParameters_ShouldReturn_ListParameterDtoModel()
+        [TestMethod]
+        public void GetParameters_ShouldReturn_NotNull()
         {
-            errorMessage = "";
             List<ParametersDtoModel> parametersDtos = new List<ParametersDtoModel>();
             try
             {
+                fakeParametersRepository.Setup(a => a.GetAll()).Returns(new List<ParametersModel>());
+                parametersService = new ParametersService(fakeParametersRepository.Object,
+                    new Mock<IProductsService>().Object, new Mock<IUnitsService>().Object);
+
                 parametersDtos = (List<ParametersDtoModel>)parametersService.GetParameters();
             }
             catch (Exception ex)
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(parametersDtos.Count > 0, errorMessage);
+            Assert.IsNotNull(parametersDtos, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void UpdateParameter_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
-            ParametersDtoModel parameterDto = new ParametersDtoModel()
-            {
-                Id = 1,
-                ProductId = 1,
-                Name = "Updated Parameter1",
-                UnitId = 2,
-                Value = "value1"
-            };
             try
             {
+                ParametersModel parameter = new ParametersModel
+                {
+                    Name = "NewParameter",
+                    ProductId = 1,
+                    UnitId = 1,
+                    Value = "New value"
+                };
+                fakeParametersRepository.Setup(a => a.Update(parameter));
+                parametersService = new ParametersService(fakeParametersRepository.Object,
+                    new Mock<IProductsService>().Object, new Mock<IUnitsService>().Object);
+                ParametersDtoModel parameterDto = new ParametersDtoModel
+                {
+                    Name = parameter.Name,
+                    ProductId = parameter.ProductId,
+                    ProductName = "Product name",
+                    UnitId = parameter.UnitId,
+                    UnitName = "Unit",
+                    Value = parameter.Value
+                };
+
                 parametersService.UpdateParameter(parameterDto);
                 operationSucceeded = true;
             }

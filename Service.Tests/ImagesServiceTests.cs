@@ -1,4 +1,5 @@
-﻿using Infrastructure.DataAccess.Repositories;
+﻿using Domain.Models.Images;
+using Infrastructure.DataAccess.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Services.CategoriesServices;
 using Services.GroupsServices;
@@ -8,44 +9,50 @@ using Services.SuppliersServices;
 using Services.UnitsServices;
 using System;
 using System.Collections.Generic;
+using Moq;
+using Domain.Models.Products;
 
 namespace Service.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class ImagesServiceTests
     {
+        string errorMessage;
         bool operationSucceeded;
         ImagesService imagesService;
-        string errorMessage;
-        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
+        Mock<IImagesRepository> fakeImagesRepository = new Mock<IImagesRepository>();
 
-        public ImagesServiceTests()
+        [TestInitialize]
+        public void TestInit()
         {
-            SuppliersService suppliersService = new SuppliersService(new SuppliersRepository(connString));
-            imagesService = new ImagesService(new ImagesRepository(connString),
-                new ProductsService(new ProductsRepository(connString),
-                                    new CategoriesService(new CategoriesRepository(connString), suppliersService),
-                                    new GroupsService(new GroupsRepository(connString)),
-                                    suppliersService,
-                                    new UnitsService(new UnitsRepository(connString))));
+            errorMessage = "";
+            operationSucceeded = false;
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AddImage_ShouldReturn_Success()
         {
-            operationSucceeded = false;
-            errorMessage = "";
-            ImagesDtoModel imageDto = new ImagesDtoModel()
-            {
-                FileName = "somefile.png",
-                ProductId = 1,
-                ProductName = "Product name",
-                LinkWebStore = "some weblink",
-                LinkSupplier = "some suppliers link",
-                LocalPath = "some local path"
-            };
             try
             {
+                ImagesModel image = new ImagesModel()
+                {
+                    FileName = "somefile.png",
+                    ProductId = 1,
+                    LinkWebStore = "some weblink",
+                    LinkSupplier = "some suppliers link",
+                    LocalPath = "some local path"
+                };
+                fakeImagesRepository.Setup(a => a.Add(image));
+                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<IProductsService>().Object);
+                ImagesDtoModel imageDto = new ImagesDtoModel
+                {
+                    FileName = image.FileName,
+                    ProductId = image.ProductId,
+                    ProductName = "Product name",
+                    LinkWebStore = image.LinkWebStore,
+                    LinkSupplier = image.LinkSupplier,
+                    LocalPath = image.LocalPath
+                };
                 imagesService.AddImage(imageDto);
                 operationSucceeded = true;
             }
@@ -56,14 +63,15 @@ namespace Service.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DeleteImageById_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
-                imagesService.DeleteImageById(11111);
+                fakeImagesRepository.Setup(a => a.DeleteById(1));
+                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<IProductsService>().Object);
+
+                imagesService.DeleteImageById(1);
                 operationSucceeded = true;
             }
             catch (Exception ex)
@@ -73,14 +81,18 @@ namespace Service.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetImageById_ShouldReturn_NotNull()
         {
             ImagesDtoModel imagesDto = null;
-            errorMessage = "";
             try
             {
-                imagesDto = imagesService.GetImageById(1);
+                fakeImagesRepository.Setup(a => a.GetById(2)).Returns(new ImagesModel { ProductId = 1 });
+                Mock<IProductsService> fakeProductsService = new Mock<IProductsService>();
+                fakeProductsService.Setup(a => a.GetProductById(1)).Returns(new ProductsDtoModel { Id = 1, NameWebStore = "Product name" });
+
+                imagesService = new ImagesService(fakeImagesRepository.Object, fakeProductsService.Object);
+                imagesDto = imagesService.GetImageById(2);
             }
             catch (Exception ex)
             {
@@ -89,40 +101,49 @@ namespace Service.Tests
             Assert.IsNotNull(imagesDto, errorMessage);
         }
 
-        [TestMethod()]
-        public void GetImages_ShouldReturn_ListImagesDtoModel()
+        [TestMethod]
+        public void GetImages_ShouldReturn_NotNull()
         {
-            errorMessage = "";
             List<ImagesDtoModel> imagesDtos = new List<ImagesDtoModel>();
             try
             {
+                fakeImagesRepository.Setup(a => a.GetAll()).Returns(new List<ImagesModel>());
+                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<IProductsService>().Object);
                 imagesDtos = (List<ImagesDtoModel>)imagesService.GetImages();
             }
             catch (Exception ex)
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(imagesDtos.Count>0, errorMessage);
+            Assert.IsNotNull(imagesDtos, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void UpdateImage_ShouldReturn_Success()
         {
-            operationSucceeded = false;
-            errorMessage = "";
-            ImagesDtoModel imageDto = new ImagesDtoModel()
-            {
-                Id = 1,
-                
-                FileName = "updated somefile.png",
-                ProductId = 1,
-                ProductName = "Product name",
-                LinkWebStore = "some weblink",
-                LinkSupplier = "some suppliers link",
-                LocalPath = "some local path"
-            };
             try
             {
+                ImagesModel image = new ImagesModel
+                {
+                    FileName = "somefile.png",
+                    ProductId = 1,
+                    LinkWebStore = "some weblink",
+                    LinkSupplier = "some suppliers link",
+                    LocalPath = "some local path"
+                };
+                fakeImagesRepository.Setup(a => a.Update(image));
+                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<IProductsService>().Object);
+
+                ImagesDtoModel imageDto = new ImagesDtoModel
+                {
+                    FileName = image.FileName,
+                    ProductId = image.ProductId,
+                    ProductName = "Product name",
+                    LinkWebStore = image.LinkWebStore,
+                    LinkSupplier = image.LinkSupplier,
+                    LocalPath = image.LocalPath
+                };
+
                 imagesService.UpdateImage(imageDto);
                 operationSucceeded = true;
             }

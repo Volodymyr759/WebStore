@@ -1,33 +1,37 @@
-﻿using Infrastructure.DataAccess.Repositories;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Services.UnitsServices;
 using System;
 using System.Collections.Generic;
+using Moq;
+using Domain.Models.Units;
 
 namespace Service.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class UnitsServiceTests
     {
+        string errorMessage;
         bool operationSucceeded;
         UnitsService unitsService;
-        string errorMessage;
-        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
+        Mock<IUnitsRepository> fakeUnitsRepository = new Mock<IUnitsRepository>();
 
-        public UnitsServiceTests()
+        [TestInitialize]
+        public void TestInit()
         {
-            unitsService = new UnitsService(new UnitsRepository(connString));
+            errorMessage = "";
+            operationSucceeded = false;
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AddUnit_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
-            UnitsDtoModel unitDto = new UnitsDtoModel { Name = DateTime.Now.Millisecond.ToString(), Notes = "Test" };
             try
             {
-                unitsService.AddUnit(unitDto);
+                UnitsModel unit = new UnitsModel { Name = "g", Notes = "gram" };
+                fakeUnitsRepository.Setup(a => a.Add(unit));
+                unitsService = new UnitsService(fakeUnitsRepository.Object);
+
+                unitsService.AddUnit(new UnitsDtoModel { Name = unit.Name, Notes = unit.Notes });
                 operationSucceeded = true;
             }
             catch (Exception ex)
@@ -37,14 +41,15 @@ namespace Service.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DeleteUnitById_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
-                unitsService.DeleteUnitById(11111);
+                fakeUnitsRepository.Setup(a => a.DeleteById(1));
+                unitsService = new UnitsService(fakeUnitsRepository.Object);
+
+                unitsService.DeleteUnitById(1);
                 operationSucceeded = true;
             }
             catch (Exception ex)
@@ -54,13 +59,15 @@ namespace Service.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetUnitById_ShouldReturn_NotNull()
         {
-            errorMessage = "";
             UnitsDtoModel unitDto = null;
             try
             {
+                fakeUnitsRepository.Setup(a => a.GetById(1)).Returns(new UnitsModel());
+                unitsService = new UnitsService(fakeUnitsRepository.Object);
+
                 unitDto = unitsService.GetUnitById(1);
             }
             catch (Exception ex)
@@ -70,13 +77,16 @@ namespace Service.Tests
             Assert.IsNotNull(unitDto, errorMessage);
         }
 
-        [TestMethod()]
-        public void GetUnits_ShouldReturn_ListUnitsDtoModel()
+        [TestMethod]
+        public void GetUnits_ShouldReturn_NotNull()
         {
-            errorMessage = "";
+            var units = new List<UnitsModel> { new UnitsModel() };
             var unitsDtos = new List<UnitsDtoModel>();
             try
             {
+                fakeUnitsRepository.Setup(a => a.GetAll()).Returns(units);
+                unitsService = new UnitsService(fakeUnitsRepository.Object);
+
                 unitsDtos = (List<UnitsDtoModel>)unitsService.GetUnits();
             }
             catch (Exception ex)
@@ -86,14 +96,16 @@ namespace Service.Tests
             Assert.IsTrue(unitsDtos.Count > 0, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void Update_ShouldReturn_Success()
         {
-            operationSucceeded = false;
-            errorMessage = "";
-            UnitsDtoModel unitDto = new UnitsDtoModel { Id = 1, Name = DateTime.Now.Millisecond.ToString(), Notes = "Test" };
             try
             {
+                UnitsModel unit = new UnitsModel { Id = 1, Name = "g", Notes = "gram" };
+                fakeUnitsRepository.Setup(a => a.Update(unit));
+                unitsService = new UnitsService(fakeUnitsRepository.Object);
+
+                UnitsDtoModel unitDto = new UnitsDtoModel { Id = 1, Name = "g", Notes = "updated notes" };
                 unitsService.UpdateUnit(unitDto);
                 operationSucceeded = true;
             }
@@ -101,7 +113,7 @@ namespace Service.Tests
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded,errorMessage);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

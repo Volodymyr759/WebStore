@@ -1,38 +1,51 @@
-﻿using Infrastructure.DataAccess.Repositories;
+﻿using Domain.Models.Suppliers;
+using Infrastructure.DataAccess.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Services.SuppliersServices;
 using System;
 using System.Collections.Generic;
 
 namespace Service.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class SuppliersServiceTests
     {
+        string errorMessage;
         bool operationSucceeded;
         SuppliersService suppliersService;
-        string errorMessage;
-        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
+        Mock<ISuppliersRepository> fakeSuppliersRepository = new Mock<ISuppliersRepository>();
 
-        public SuppliersServiceTests()
-        {
-            suppliersService = new SuppliersService(new SuppliersRepository(connString));
-        }
-
-        [TestMethod()]
-        public void AddSupplier_ShouldReturn_Success()
+        [TestInitialize]
+        public void TestInit()
         {
             errorMessage = "";
             operationSucceeded = false;
-            SuppliersDtoModel supplierDto = new SuppliersDtoModel()
-            {
-                Name = "New supplier",
-                Link = "Suppliers link1",
-                Currency = "Eur",
-                Notes = "some notes for supplier1"
-            };
+        }
+
+        [TestMethod]
+        public void AddSupplier_ShouldReturn_Success()
+        {
             try
             {
+                SuppliersModel supplier = new SuppliersModel
+                {
+                    Name = "New supplier",
+                    Link = "Suppliers link1",
+                    Currency = "Eur",
+                    Notes = "some notes for supplier1"
+                };
+                fakeSuppliersRepository.Setup(a => a.Add(supplier));
+                suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
+
+                SuppliersDtoModel supplierDto = new SuppliersDtoModel()
+                {
+                    Name = supplier.Name,
+                    Link = supplier.Link,
+                    Currency = supplier.Currency,
+                    Notes = supplier.Notes
+                };
+
                 suppliersService.AddSupplier(supplierDto);
                 operationSucceeded = true;
             }
@@ -43,14 +56,15 @@ namespace Service.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DeleteSupplierById_ShouldReturn_Success()
         {
-            operationSucceeded = false;
-            errorMessage = "";
             try
             {
-                suppliersService.DeleteSupplierById(11111);
+                fakeSuppliersRepository.Setup(a => a.DeleteById(1));
+                suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
+
+                suppliersService.DeleteSupplierById(1);
                 operationSucceeded = true;
             }
             catch (Exception ex)
@@ -60,14 +74,16 @@ namespace Service.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetSupplierById_ShouldReturn_NotNull()
         {
-            errorMessage = "";
             SuppliersDtoModel supplierDto = null;
             try
             {
-                supplierDto = suppliersService.GetSupplierById(2);
+                fakeSuppliersRepository.Setup(a => a.GetById(1)).Returns(new SuppliersModel());
+                suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
+
+                supplierDto = suppliersService.GetSupplierById(1);
             }
             catch (Exception ex)
             {
@@ -76,13 +92,16 @@ namespace Service.Tests
             Assert.IsNotNull(supplierDto, errorMessage);
         }
 
-        [TestMethod()]
-        public void GetSuppliers_ShouldReturn_ListSuppliersDtoModel()
+        [TestMethod]
+        public void GetSuppliers_ShouldReturn_NotNull()
         {
-            errorMessage = "";
+            var suppliers = new List<SuppliersModel> { new SuppliersModel() };
             var suppliersDtos = new List<SuppliersDtoModel>();
             try
             {
+                fakeSuppliersRepository.Setup(a => a.GetAll()).Returns(suppliers);
+                suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
+
                 suppliersDtos = (List<SuppliersDtoModel>)suppliersService.GetSuppliers();
             }
             catch (Exception ex)
@@ -92,21 +111,29 @@ namespace Service.Tests
             Assert.IsTrue(suppliersDtos.Count > 0, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void UpdateSupplier_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
-            SuppliersDtoModel supplierDto = new SuppliersDtoModel()
-            {
-                Id = 3,
-                Name = "New supplier",
-                Link = "Suppliers link1",
-                Currency = "Eur",
-                Notes = "some notes for supplier1"
-            };
             try
             {
+                SuppliersModel supplier = new SuppliersModel
+                {
+                    Name = "Name to update",
+                    Link = "link to update",
+                    Currency = "Eur",
+                    Notes = "notes to update"
+                };
+                fakeSuppliersRepository.Setup(a => a.Update(supplier));
+                suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
+
+                SuppliersDtoModel supplierDto = new SuppliersDtoModel()
+                {
+                    Name = supplier.Name,
+                    Link = supplier.Link,
+                    Currency = supplier.Currency,
+                    Notes = supplier.Notes
+                };
+
                 suppliersService.UpdateSupplier(supplierDto);
                 operationSucceeded = true;
             }
