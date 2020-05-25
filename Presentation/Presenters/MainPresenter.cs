@@ -128,7 +128,11 @@ namespace Presentation
             mainView.FindOldProductsMenuClickEventRaised += (sender, e) => OnFindOldProductsMenuClickEventRaised(sender, e);
             mainView.CheckAvailabilityMenuClickEventRaised += (sender, e) => SetupMainView(mainPanel, (UserControl)productsPresenter.CheckAvailability());
             mainView.CheckPricesMenuClickEventRaised += (sender, e) => SetupMainView(mainPanel, (UserControl)productsPresenter.CheckPrices());
-            mainView.GetImagesMenuClickEventRaised += (sender, e) => SetupMainView(mainPanel, (UserControl)imagesPresenter.LoadImages(ConfigurationManager.AppSettings["textBoxFolderImages1"]));
+            mainView.GetImagesMenuClickEventRaised += (sender, e) =>
+            {
+                SetupMainView(mainPanel, (UserControl)imagesPresenter.LoadImages(
+                    new string[] { ConfigurationManager.AppSettings["textBoxFolderImages1"] } ));
+            };
             mainView.GetParametersMenuClickEventRaised += (sender, e) => SetupMainView(mainPanel, (UserControl)parametersPresenter.LoadParameters());
 
             unitsDetailPresenter.ReadyToShowUnitsDetailEventRaised += (sender, e) => SetupMainView(rightPanel, (UserControl)unitsDetailPresenter.GetUnitsDetailUC());

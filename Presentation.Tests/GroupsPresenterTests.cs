@@ -5,11 +5,10 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class GroupsPresenterTests
     {
         private GroupsPresenter groupsPresenter;
-        string errorMessage;
 
         public GroupsPresenterTests()
         {
@@ -20,11 +19,11 @@ namespace Presentation.Tests
             groupsPresenter = new GroupsPresenter(new GroupsUC(errorMessageView), groupsDetailPresenter, ServicesInitializator.facade, deleteConfirmView, errorMessageView);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetGroupsUCTest_ShouldReturnGroupsUC()
         {
             GroupsUC groupsUC = null;
-            errorMessage = "";
+            string errorMessage = "";
             try
             {
                 groupsUC = (GroupsUC)groupsPresenter.GetGroupsUC();

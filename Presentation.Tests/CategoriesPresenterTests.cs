@@ -5,11 +5,10 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class CategoriesPresenterTests
     {
         private CategoriesPresenter categoriesPresenter;
-        private string errorMessage;
 
         public CategoriesPresenterTests()
         {
@@ -21,10 +20,10 @@ namespace Presentation.Tests
                 categoriesDetailPresenter, ServicesInitializator.facade, deleteConfirmView, errorMessageView);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetCategoriesUCTest_ShouldReturnCategoriesUC()
         {
-            errorMessage = "";
+            string errorMessage = "";
             CategoriesUC categoriesUC = null;
             try
             {

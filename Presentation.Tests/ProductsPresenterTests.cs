@@ -5,11 +5,12 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class ProductsPresenterTests
     {
         private ProductsPresenter productsPresenter;
         private string errorMessage;
+        private ProductsUC productsUC;
 
         public ProductsPresenterTests()
         {
@@ -22,11 +23,16 @@ namespace Presentation.Tests
                 deleteConfirmView, errorMessageView);
         }
 
-        [TestMethod()]
+        [TestInitialize]
+        public void TestInit()
+        {
+            errorMessage = "";
+            productsUC = null;
+        }
+
+        [TestMethod]
         public void GetProductsUCTest_ShouldReturn_ProductsUC()
         {
-            ProductsUC productsUC = null;
-            errorMessage = "";
             try
             {
                 productsUC = (ProductsUC)productsPresenter.GetProductsUC();
@@ -38,11 +44,9 @@ namespace Presentation.Tests
             Assert.IsNotNull(productsUC, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetNewProductsTest_ShouldReturn_ProductsUC()
         {
-            ProductsUC productsUC = null;
-            errorMessage = "";
             try
             {
                 productsUC = (ProductsUC)productsPresenter.GetNewProducts();
@@ -54,11 +58,9 @@ namespace Presentation.Tests
             Assert.IsNotNull(productsUC, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void CheckAvailabilityTest_ShouldReturn_ProductsUC()
         {
-            ProductsUC productsUC = null;
-            errorMessage = "";
             try
             {
                 productsUC = (ProductsUC)productsPresenter.CheckAvailability();
@@ -70,11 +72,9 @@ namespace Presentation.Tests
             Assert.IsNotNull(productsUC, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void CheckPricesTest_ShouldReturn_ProductsUC()
         {
-            ProductsUC productsUC = null;
-            errorMessage = "";
             try
             {
                 productsUC = (ProductsUC)productsPresenter.CheckPrices();

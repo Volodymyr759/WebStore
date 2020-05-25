@@ -365,9 +365,9 @@ namespace Services
         /// <summary>
         /// Завантажує зображення з джерела постачальника
         /// </summary>
-        /// <param name="localFolderForImagesPath">Локальний каталог для завантаження зображень</param>
+        /// <param name="localFoldersForImagesPath">Локальні каталоги для завантаження зображень</param>
         /// <returns>Список зображень</returns>
-        public void GetExternalImages(string localFolderForImagesPath)
+        public void GetExternalImages(string[] localFoldersForImagesPath)
         {
             List<ProductsDtoModel> productsWithoutSavedImages =
                 GetProductsDto().Where(p => p.LinkSupplier.Contains("diasha")).ToList();
@@ -377,7 +377,7 @@ namespace Services
                     .Where(p => p.Id == imagesDto.ProductId).FirstOrDefault();
                 if (productDto != null) productsWithoutSavedImages.Remove(productDto);
             }
-            foreach (var i in imagesAgent.GetExternalImages(productsWithoutSavedImages, localFolderForImagesPath, true))
+            foreach (var i in imagesAgent.GetExternalImages(productsWithoutSavedImages, localFoldersForImagesPath[0], true))
                 imagesService.AddImage(i);
         }
 

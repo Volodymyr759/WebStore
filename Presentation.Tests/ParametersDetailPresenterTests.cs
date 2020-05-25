@@ -5,10 +5,12 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class ParametersDetailPresenterTests
     {
         private ParametersDetailPresenter parametersDetailPresenter;
+        private string errorMessage;
+        private bool operationSucceeded;
 
         public ParametersDetailPresenterTests()
         {
@@ -17,7 +19,14 @@ namespace Presentation.Tests
             parametersDetailPresenter = new ParametersDetailPresenter(parametersDetailUC, ServicesInitializator.facade);
         }
 
-        [TestMethod()]
+        [TestInitialize]
+        public void TestInit()
+        {
+            errorMessage = "";
+            operationSucceeded = false;
+        }
+
+        [TestMethod]
         public void GetParametersDetailUC_ShouldReturnParametersDetailUC()
         {
             ParametersDetailUC parametersDetailUC = null;
@@ -25,43 +34,44 @@ namespace Presentation.Tests
             {
                 parametersDetailUC = (ParametersDetailUC)parametersDetailPresenter.GetParametersDetailUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
 
-            Assert.IsNotNull(parametersDetailUC);
+            Assert.IsNotNull(parametersDetailUC, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupParametersDetailForAdd_ShouldReturn_Success()
         {
-            bool operationSucceeded = false;
             try
             {
                 parametersDetailPresenter.SetupParametersDetailForAdd();
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
 
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupParametersDetailForEdit_ShouldReturn_Success()
         {
-            bool operationSucceeded = false;
             try
             {
                 parametersDetailPresenter.SetupParametersDetailForEdit(1);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
 
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

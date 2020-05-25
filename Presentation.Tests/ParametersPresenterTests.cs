@@ -5,11 +5,12 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class ParametersPresenterTests
     {
         private ParametersPresenter parametersPresenter;
         private string errorMessage;
+        private ParametersUC parametersUC;
 
         public ParametersPresenterTests()
         {
@@ -23,11 +24,16 @@ namespace Presentation.Tests
                 deleteConfirmView, errorMessageView);
         }
 
-        [TestMethod()]
-        public void GetParametersUCTest_ShouldReturnParametersUC()
+        [TestInitialize]
+        public void TestInit()
         {
-            ParametersUC parametersUC = null;
             errorMessage = "";
+            parametersUC = null;
+        }
+
+        [TestMethod]
+        public void GetParametersUCTest_ShouldReturn_ParametersUC()
+        {
             try
             {
                 parametersUC = (ParametersUC)parametersPresenter.GetParametersUC();
@@ -36,15 +42,12 @@ namespace Presentation.Tests
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-
             Assert.IsNotNull(parametersUC, errorMessage);
         }
 
         [TestMethod()]
         public void LoadParametersTest_ShouldReturn_ParametersUC()
         {
-            ParametersUC parametersUC = null;
-            errorMessage = "";
             try
             {
                 parametersUC = (ParametersUC)parametersPresenter.LoadParameters();

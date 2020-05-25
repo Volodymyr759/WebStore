@@ -5,28 +5,34 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class ImagesPresenterTests
     {
         private ImagesPresenter imagesPresenter;
         private string errorMessage;
+        private ImagesUC imageUC;
 
         public ImagesPresenterTests()
         {
             ErrorMessageView errorMessageView = new ErrorMessageView();
             DeleteConfirmView deleteConfirmView = new DeleteConfirmView();
             ImagesDetailUC imagesDetailUC = new ImagesDetailUC(errorMessageView);
-            ImagesDetailPresenter imagesDetailPresenter = new ImagesDetailPresenter(imagesDetailUC, 
+            ImagesDetailPresenter imagesDetailPresenter = new ImagesDetailPresenter(imagesDetailUC,
                 ServicesInitializator.facade);
-            imagesPresenter = new ImagesPresenter(new ImagesUC(errorMessageView), imagesDetailPresenter, 
+            imagesPresenter = new ImagesPresenter(new ImagesUC(errorMessageView), imagesDetailPresenter,
                 ServicesInitializator.facade, deleteConfirmView, errorMessageView);
         }
 
-        [TestMethod()]
-        public void GetImagesUCTest_ShouldReturnImageUC()
+        [TestInitialize]
+        public void TestInit()
         {
-            ImagesUC imageUC = null;
             errorMessage = "";
+            imageUC = null;
+        }
+
+        [TestMethod]
+        public void GetImagesUCTest_ShouldReturn_ImageUC()
+        {
             try
             {
                 imageUC = (ImagesUC)imagesPresenter.GetImagesUC();
@@ -38,20 +44,18 @@ namespace Presentation.Tests
             Assert.IsNotNull(imageUC, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void LoadImagesTest_ShouldReturn_ImagesUC()
         {
-            ImagesUC imagesUC = null;
-            errorMessage = "";
             try
             {
-                imagesUC = (ImagesUC)imagesPresenter.LoadImages(@"C:\Users\Володимир\Desktop\Одеса");
+                imageUC = (ImagesUC)imagesPresenter.LoadImages(new string[] { @"D:\" });
             }
             catch (Exception ex)
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsNotNull(imagesUC, errorMessage);
+            Assert.IsNotNull(imageUC, errorMessage);
         }
 
     }

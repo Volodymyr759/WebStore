@@ -5,11 +5,12 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class SuppliersDetailPresenterTests
     {
         private SuppliersDetailPresenter suppliersDetailPresenter;
-        bool operationSucceeded;
+        private string errorMessage;
+        private bool operationSucceeded;
 
         public SuppliersDetailPresenterTests()
         {
@@ -18,7 +19,14 @@ namespace Presentation.Tests
                 ServicesInitializator.facade);
         }
 
-        [TestMethod()]
+        [TestInitialize]
+        public void TestInit()
+        {
+            errorMessage = "";
+            operationSucceeded = false;
+        }
+
+        [TestMethod]
         public void GetSuppliersDetailUC_ShouldReturnSuppliersDetailUC()
         {
             SuppliersDetailUC suppliersDetailUC = null;
@@ -26,40 +34,41 @@ namespace Presentation.Tests
             {
                 suppliersDetailUC = (SuppliersDetailUC)suppliersDetailPresenter.GetSuppliersDetailUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsNotNull(suppliersDetailUC);
+            Assert.IsNotNull(suppliersDetailUC, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupSuppliersDetailForAdd_ShouldReturn_Success()
         {
-            operationSucceeded = false;
             try
             {
                 suppliersDetailPresenter.SetupSuppliersDetailForAdd();
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupSuppliersDetailForEdit_ShouldReturn_Success()
         {
-            operationSucceeded = false;
             try
             {
                 suppliersDetailPresenter.SetupSuppliersDetailForEdit(1);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

@@ -23,8 +23,8 @@ namespace Presentation.Presenters.UserControls
         /// <summary>
         /// Завантаження зображень з джерел даних постачальників
         /// </summary>
-        /// <param name="localFolder">Адреса локальної папки для зображень товарів постачальника</param>
+        /// <param name="localFolders">Адреси локальних папок для зображень товарів постачальників</param>
         /// <returns></returns>
-        IImagesUC LoadImages(string localFolder);
+        IImagesUC LoadImages(string[] localFolders);
     }
 }

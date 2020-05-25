@@ -5,11 +5,12 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class CategoriesDetailPresenterTests
     {
         private CategoriesDetailPresenter categoriesDetailPresenter;
-        string errorMessage;
+        private string errorMessage;
+        private bool operationSucceeded;
 
         public CategoriesDetailPresenterTests()
         {
@@ -17,10 +18,16 @@ namespace Presentation.Tests
                 ServicesInitializator.facade);
         }
 
-        [TestMethod()]
-        public void GetCategoriesDetailUC_ShouldReturn_CategoriesDetailUC()
+        [TestInitialize]
+        public void TestInit()
         {
             errorMessage = "";
+            operationSucceeded = false;
+        }
+
+        [TestMethod]
+        public void GetCategoriesDetailUC_ShouldReturn_CategoriesDetailUC()
+        {
             CategoriesDetailUC categoriesDetailUC = null;
             try
             {
@@ -33,11 +40,9 @@ namespace Presentation.Tests
             Assert.IsNotNull(categoriesDetailUC, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupCategoriesDetailForAdd_ShouldReturn_Success()
         {
-            errorMessage = "";
-            bool operationSucceeded = false;
             try
             {
                 categoriesDetailPresenter.SetupCategoriesDetailForAdd();
@@ -50,11 +55,9 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupCategoriesDetailForEdit_ShouldReturn_Success()
         {
-            errorMessage = "";
-            bool operationSucceeded = false;
             try
             {
                 categoriesDetailPresenter.SetupCategoriesDetailForEdit(1);

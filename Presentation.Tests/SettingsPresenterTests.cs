@@ -5,11 +5,10 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class SettingsPresenterTests
     {
         private SettingsPresenter settingsPresenter;
-        private string errorMessage;
 
         public SettingsPresenterTests()
         {
@@ -17,11 +16,11 @@ namespace Presentation.Tests
             settingsPresenter = new SettingsPresenter(new SettingsUC(errorMessageView), errorMessageView);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetSettingsUCTest_ShouldReturn_SettingsUC()
         {
             SettingsUC settingsUC = null;
-            errorMessage = "";
+            string errorMessage = "";
             try
             {
                 settingsUC = (SettingsUC)settingsPresenter.GetSettingsUC();

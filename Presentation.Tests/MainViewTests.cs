@@ -13,13 +13,13 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class MainViewTests
     {
-        bool operationSucceeded;
-        MainView mainView;
-        MainPresenter mainPresenter;
-        string errorMessage;
+        private string errorMessage;
+        private bool operationSucceeded;
+        private MainView mainView;
+        private MainPresenter mainPresenter;
 
         public MainViewTests()
         {
@@ -81,16 +81,21 @@ namespace Presentation.Tests
             mainPresenter.TestEventRaised += (sender, e) => SetOperationSuccessToTrue();
         }
 
+        [TestInitialize]
+        public void TestInit()
+        {
+            errorMessage = "";
+            operationSucceeded = false;
+        }
+
         private void SetOperationSuccessToTrue()
         {
             operationSucceeded = true;
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void NewfileToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 mainView.NewfileToolStripMenuItem_Click(this, new EventArgs());
@@ -103,11 +108,9 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void OpenToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 mainView.OpenToolStripMenuItem_Click(this, new EventArgs());
@@ -120,14 +123,13 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ExportcsvToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 mainView.ExportcsvToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
             catch (Exception ex)
             {
@@ -136,14 +138,13 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ExportxmlToolStripMenuItem1_Click_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 mainView.ExportxmlToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
             catch (Exception ex)
             {
@@ -152,113 +153,118 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ProductsToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            operationSucceeded = false;
             try
             {
                 mainView.ProductsToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void CategoriesToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            operationSucceeded = false;
             try
             {
                 mainView.CategoriesToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GroupspromuaToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            operationSucceeded = false;
             try
             {
-                mainView.GroupspromuaToolStripMenuItem_Click(this, new EventArgs());
+                mainView.GroupsToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SuppliersToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            operationSucceeded = false;
             try
             {
                 mainView.SuppliersToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ParametersToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            operationSucceeded = false;
             try
             {
                 mainView.ParametersToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ImagesToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            operationSucceeded = false;
             try
             {
                 mainView.ImagesToolStripMenuItem_Click(this, new EventArgs());
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void UnitsToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            operationSucceeded = false;
             try
             {
                 mainView.UnitsToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SettingsToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 mainView.SettingsToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
             catch (Exception ex)
             {
@@ -267,14 +273,13 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FindNewProductsToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 mainView.FindNewProductsToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
             catch (Exception ex)
             {
@@ -283,14 +288,13 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FindOldProductsToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 mainView.FindOldProductsToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
             catch (Exception ex)
             {
@@ -299,14 +303,13 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void CheckAvailabilityToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 mainView.CheckAvailabilityToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
             catch (Exception ex)
             {
@@ -315,14 +318,13 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void CheckPricesToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 mainView.CheckPricesToolStripMenuItem_Click(this, new EventArgs());
+                operationSucceeded = true;
             }
             catch (Exception ex)
             {
@@ -331,11 +333,9 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HelpinfoToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 mainView.HelpinfoToolStripMenuItem_Click(this, new EventArgs());
@@ -348,11 +348,9 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AboutToolStripMenuItem_Click_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 mainView.AboutToolStripMenuItem_Click(this, new EventArgs());

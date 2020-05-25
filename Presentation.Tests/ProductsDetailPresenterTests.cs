@@ -5,10 +5,12 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class ProductsDetailPresenterTests
     {
         private ProductsDetailPresenter productsDetailPresenter;
+        private string errorMessage;
+        private bool operationSucceeded;
 
         public ProductsDetailPresenterTests()
         {
@@ -17,7 +19,14 @@ namespace Presentation.Tests
             productsDetailPresenter = new ProductsDetailPresenter(productsDetailUC, ServicesInitializator.facade);
         }
 
-        [TestMethod()]
+        [TestInitialize]
+        public void TestInit()
+        {
+            errorMessage = "";
+            operationSucceeded = false;
+        }
+
+        [TestMethod]
         public void GetProductsDetailUC_ShouldReturnProductsDetailUC()
         {
             ProductsDetailUC productsDetailUC = null;
@@ -25,43 +34,44 @@ namespace Presentation.Tests
             {
                 productsDetailUC = (ProductsDetailUC)productsDetailPresenter.GetProductsDetailUC();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
 
-            Assert.IsNotNull(productsDetailUC);
+            Assert.IsNotNull(productsDetailUC, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupProductsDetailForAdd_ShouldReturn_Success()
         {
-            bool operationSucceeded = false;
             try
             {
                 productsDetailPresenter.SetupProductsDetailForAdd();
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
 
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupProductsDetailForEdit_ShouldReturn_Success()
         {
-            bool operationSucceeded = false;
             try
             {
                 productsDetailPresenter.SetupProductsDetailForEdit(1);
                 operationSucceeded = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                errorMessage = ex.Message + " | " + ex.StackTrace;
             }
 
-            Assert.IsTrue(operationSucceeded);
+            Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
 }

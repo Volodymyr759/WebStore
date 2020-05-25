@@ -68,11 +68,11 @@ namespace Presentation.Presenters.UserControls
         /// <summary>
         /// Повертає екземпляр представлення списку зображень товарів після завантаження файлів з джерел постачальників
         /// </summary>
-        /// <param name="localFolder">Адреса локальної папки для збереження файлів</param>
+        /// <param name="localFolders">Адреси локальних папок для зображень товарів постачальників</param>
         /// <returns>Екземпляр представлення списку зображень</returns>
-        public IImagesUC LoadImages(string localFolder)
+        public IImagesUC LoadImages(string[] localFolders)
         {
-            facade.GetExternalImages(localFolder);
+            facade.GetExternalImages(localFolders);
             imagesUC.SetupControls(BuildDataSource(facade.GetImagesDto()));
             return imagesUC;
         }

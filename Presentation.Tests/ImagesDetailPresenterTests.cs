@@ -5,11 +5,12 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class ImagesDetailPresenterTests
     {
         private ImagesDetailPresenter imagesDetailPresenter;
         private string errorMessage;
+        private bool operationSucceeded;
 
         public ImagesDetailPresenterTests()
         {
@@ -18,10 +19,16 @@ namespace Presentation.Tests
             imagesDetailPresenter = new ImagesDetailPresenter(imagesDetailUC, ServicesInitializator.facade);
         }
 
-        [TestMethod()]
-        public void GetImagesDetailUC_ShouldReturnImagesDetailUC()
+        [TestInitialize]
+        public void TestInit()
         {
             errorMessage = "";
+            operationSucceeded = false;
+        }
+
+        [TestMethod]
+        public void GetImagesDetailUC_ShouldReturnImagesDetailUC()
+        {
             ImagesDetailUC imagesDetailUC = null;
             try
             {
@@ -34,11 +41,9 @@ namespace Presentation.Tests
             Assert.IsNotNull(imagesDetailUC, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupImagesDetailForAdd_ShouldReturn_Success()
         {
-            errorMessage = "";
-            bool operationSucceeded = false;
             try
             {
                 imagesDetailPresenter.SetupImagesDetailForAdd();
@@ -51,11 +56,9 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupImagesDetailForEdit_ShouldReturn_Success()
         {
-            errorMessage = "";
-            bool operationSucceeded = false;
             try
             {
                 imagesDetailPresenter.SetupImagesDetailForEdit(1);

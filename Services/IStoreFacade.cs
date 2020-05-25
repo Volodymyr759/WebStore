@@ -257,9 +257,9 @@ namespace Services
         /// <summary>
         /// Завантажує зображення з джерела постачальника
         /// </summary>
-        /// <param name="localFolderForImagesPath">Локальний каталог для завантаження зображень</param>
+        /// <param name="localFoldersForImagesPath">Локальні каталоги для завантаження зображень</param>
         /// <returns>Список зображень</returns>
-        void GetExternalImages(string localFolderForImagesPath);
+        void GetExternalImages(string[] localFoldersForImagesPath);
 
         /// <summary>
         /// Завантажує характеристики з джерела постачальника

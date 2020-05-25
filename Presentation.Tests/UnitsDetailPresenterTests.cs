@@ -4,12 +4,12 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class UnitsDetailPresenterTests
     {
         private UnitsDetailPresenter unitsDetailPresenter;
-        bool operationSucceeded;
-        string errorMessage;
+        private bool operationSucceeded;
+        private string errorMessage;
 
         public UnitsDetailPresenterTests()
         {
@@ -18,10 +18,16 @@ namespace Presentation.Tests
                 ServicesInitializator.facade);
         }
 
-        [TestMethod()]
-        public void GetUnitsDetailUC_ShouldReturnUnitsDetailUC()
+        [TestInitialize]
+        public void TestInit()
         {
             errorMessage = "";
+            operationSucceeded = false;
+        }
+
+        [TestMethod]
+        public void GetUnitsDetailUC_ShouldReturnUnitsDetailUC()
+        {
             UnitsDetailUC unitsDetailUC = null;
             try
             {
@@ -34,11 +40,9 @@ namespace Presentation.Tests
             Assert.IsNotNull(unitsDetailUC, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupUnitsDetailForAdd_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 unitsDetailPresenter.SetupUnitsDetailForAdd();
@@ -51,11 +55,9 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupUnitsDetailForEdit_ShouldReturn_Success()
         {
-            errorMessage = "";
-            operationSucceeded = false;
             try
             {
                 unitsDetailPresenter.SetupUnitsDetailForEdit(1);

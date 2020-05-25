@@ -5,25 +5,23 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class SuppliersPresenterTests
     {
         private SuppliersPresenter suppliersPresenter;
-        string errorMessage;
 
         public SuppliersPresenterTests()
         {
             ErrorMessageView errorMessageView = new ErrorMessageView();
             suppliersPresenter = new SuppliersPresenter(new SuppliersUC(errorMessageView),
                 new SuppliersDetailPresenter(new SuppliersDetailUC(errorMessageView), ServicesInitializator.facade),
-                ServicesInitializator.facade, 
-                new DeleteConfirmView(), errorMessageView);
+                ServicesInitializator.facade, new DeleteConfirmView(), errorMessageView);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetSuppliersUCTest_ShouldReturnSuppliersUC()
         {
-            errorMessage = "";
+            string errorMessage = "";
             SuppliersUC suppliersUC = null;
             try
             {

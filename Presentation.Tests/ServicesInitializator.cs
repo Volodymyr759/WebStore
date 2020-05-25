@@ -13,7 +13,7 @@ namespace Presentation.Tests
 {
     public static class ServicesInitializator
     {
-        const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
+        const string connString = @"Data Source=D:\webstore.sdf";
 
         public static GroupsService groupsService = new GroupsService(new GroupsRepository(connString));
 

@@ -5,11 +5,12 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class GroupsDetailPresenterTests
     {
         private GroupsDetailPresenter groupsDetailPresenter;
-        string errorMessage;
+        private string errorMessage;
+        private bool operationSucceeded;
 
         public GroupsDetailPresenterTests()
         {
@@ -18,11 +19,17 @@ namespace Presentation.Tests
             groupsDetailPresenter = new GroupsDetailPresenter(groupsDetailUC, ServicesInitializator.facade);
         }
 
-        [TestMethod()]
+        [TestInitialize]
+        public void TestInit()
+        {
+            errorMessage = "";
+            operationSucceeded = false;
+        }
+
+        [TestMethod]
         public void GetGroupsDetailUC_ShouldReturnGroupsDetailUC()
         {
             GroupsDetailUC groupsDetailUC = null;
-            errorMessage = "";
             try
             {
                 groupsDetailUC = (GroupsDetailUC)groupsDetailPresenter.GetGroupsDetailUC();
@@ -35,11 +42,9 @@ namespace Presentation.Tests
             Assert.IsNotNull(groupsDetailUC, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupGroupsDetailForAdd()
         {
-            errorMessage = "";
-            bool operationSucceeded = false;
             try
             {
                 groupsDetailPresenter.SetupGroupsDetailForAdd();
@@ -53,11 +58,9 @@ namespace Presentation.Tests
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetupGroupsDetailForEdit_ShouldReturn_Success()
         {
-            bool operationSucceeded = false;
-            errorMessage = "";
             try
             {
                 groupsDetailPresenter.SetupGroupsDetailForEdit(1);

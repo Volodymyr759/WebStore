@@ -4,11 +4,10 @@ using System;
 
 namespace Presentation.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class UnitsPresenterTests
     {
         private UnitsPresenter unitsPresenter;
-        string errorMessage;
 
         public UnitsPresenterTests()
         {
@@ -20,11 +19,11 @@ namespace Presentation.Tests
                 new DeleteConfirmView(), errorMessageView);
         }
 
-        [TestMethod()]
-        public void GetUnitsUCTest_ShouldReturnUnitsUC()
+        [TestMethod]
+        public void GetUnitsUCTest_ShouldReturn_UnitsUC()
         {
             UnitsUC unitsUC = null;
-            errorMessage = "";
+            string errorMessage = "";
             try
             {
                 unitsUC = (UnitsUC)unitsPresenter.GetUnitsUC();
