@@ -22,6 +22,6 @@ Planned user roles and uses:
 
 Technical description:
  Architecture: MVP (passive view), NET Framework 4.7.2
- Tests: MSTest
+ Tests: MSTest (Moq)
  Patterns: DI (Unity), Facade, Factory method
  Validation: FluentValidation
