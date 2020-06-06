@@ -14,19 +14,15 @@ namespace Services.Validators
         public ParametersValidator()
         {
             RuleFor(p => p.Name)
-                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Введіть назву характеристики від 1 до 100 символів.")
                 .Length(1, 100).WithMessage("Довжина назви характеристики від 1 до 100 символів.");
             RuleFor(p => p.ProductId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Оберіть товар для характеристики.")
                 .GreaterThan(0).WithMessage("Не обрано товар для характеристики.");
             RuleFor(p => p.UnitId)
-                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Оберіть одиницю виміру характеристики.")
                 .GreaterThan(0).WithMessage("Не обрано одиницю виміру характеристики.");
             RuleFor(p => p.Value)
-                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("Введіть значення характеристики від 1 до 20 символів.")
                 .Length(1, 20).WithMessage("Довжина значення характеристики від 1 до 20 символів.");
 

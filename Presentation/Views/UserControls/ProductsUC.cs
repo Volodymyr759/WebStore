@@ -194,7 +194,6 @@ namespace Presentation.Views.UserControls
                 Image = Properties.Resources.OptionsBlackDotsOnWhite20x20,
                 DisplayIndex = 15
             };
-            dgvProducts.Columns.Add(imageColumn);
 
             if (dgvProducts.Columns["Options"] == null) dgvProducts.Columns.Add(imageColumn);
             dgvProducts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;

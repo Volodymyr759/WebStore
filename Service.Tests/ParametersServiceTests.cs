@@ -1,16 +1,10 @@
-﻿using Infrastructure.DataAccess.Repositories;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Services.CategoriesServices;
-using Services.GroupsServices;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Services.ParametersServices;
-using Services.ProductsServices;
-using Services.SuppliersServices;
-using Services.UnitsServices;
 using System;
 using System.Collections.Generic;
 using Moq;
 using Domain.Models.Parameters;
-using Domain.Models.Units;
+using Services;
 
 namespace Service.Tests
 {
@@ -42,8 +36,7 @@ namespace Service.Tests
                     Value = "value1"
                 };
                 fakeParametersRepository.Setup(a => a.Add(parameter));
-                parametersService = new ParametersService(fakeParametersRepository.Object,
-                    new Mock<IProductsService>().Object, new Mock<IUnitsService>().Object);
+                parametersService = new ParametersService(fakeParametersRepository.Object, new Mock<ICommonRepository>().Object);
                 ParametersDtoModel parameterDto = new ParametersDtoModel
                 {
                     Name = parameter.Name,
@@ -69,8 +62,7 @@ namespace Service.Tests
             try
             {
                 fakeParametersRepository.Setup(a => a.DeleteById(1));
-                parametersService = new ParametersService(fakeParametersRepository.Object,
-                    new Mock<IProductsService>().Object, new Mock<IUnitsService>().Object);
+                parametersService = new ParametersService(fakeParametersRepository.Object, new Mock<ICommonRepository>().Object);
                 parametersService.DeleteParameterById(1);
                 operationSucceeded = true;
             }
@@ -88,13 +80,11 @@ namespace Service.Tests
             try
             {
                 fakeParametersRepository.Setup(a => a.GetById(1)).Returns(new ParametersModel { Id = 1, Name = "Param", ProductId = 1, UnitId = 1, Value = "W" });
-                Mock<IProductsService> fakeProductsService = new Mock<IProductsService>();
-                fakeProductsService.Setup(a => a.GetProductById(1)).Returns(new ProductsDtoModel { Id = 1, NameWebStore = "Product name" });
-                Mock<IUnitsService> fakeUnitsService = new Mock<IUnitsService>();
-                fakeUnitsService.Setup(a => a.GetUnitById(1)).Returns(new UnitsDtoModel { Id = 1, Name = "p." });
+                Mock<ICommonRepository> fakeCommonRepository = new Mock<ICommonRepository>();
+                fakeCommonRepository.Setup(a => a.GetProductsIdNames()).Returns(new Dictionary<int, string> { { 1, "Product name" } });
+                fakeCommonRepository.Setup(a => a.GetUnitsIdNames()).Returns(new Dictionary<int, string> { { 1, "p." } });
 
-                parametersService = new ParametersService(fakeParametersRepository.Object,
-                    fakeProductsService.Object, fakeUnitsService.Object);
+                parametersService = new ParametersService(fakeParametersRepository.Object, fakeCommonRepository.Object);
 
                 parametersModel = parametersService.GetParameterById(1);
             }
@@ -112,8 +102,7 @@ namespace Service.Tests
             try
             {
                 fakeParametersRepository.Setup(a => a.GetAll()).Returns(new List<ParametersModel>());
-                parametersService = new ParametersService(fakeParametersRepository.Object,
-                    new Mock<IProductsService>().Object, new Mock<IUnitsService>().Object);
+                parametersService = new ParametersService(fakeParametersRepository.Object, new Mock<ICommonRepository>().Object);
 
                 parametersDtos = (List<ParametersDtoModel>)parametersService.GetParameters();
             }
@@ -137,8 +126,7 @@ namespace Service.Tests
                     Value = "New value"
                 };
                 fakeParametersRepository.Setup(a => a.Update(parameter));
-                parametersService = new ParametersService(fakeParametersRepository.Object,
-                    new Mock<IProductsService>().Object, new Mock<IUnitsService>().Object);
+                parametersService = new ParametersService(fakeParametersRepository.Object, new Mock<ICommonRepository>().Object);
                 ParametersDtoModel parameterDto = new ParametersDtoModel
                 {
                     Name = parameter.Name,

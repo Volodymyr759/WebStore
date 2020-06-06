@@ -11,7 +11,7 @@ namespace Infrastructure.DataAccess.Repositories
     /// </summary>
     public class SuppliersRepository : ISuppliersRepository
     {
-        private string connectionString;
+        private readonly string connectionString;
 
         #region Constructors
 

@@ -36,6 +36,8 @@ namespace Presentation
                     .RegisterType<IMainView, MainView>(new ContainerControlledLifetimeManager())
                     .RegisterType<IMainPresenter, MainPresenter>(new ContainerControlledLifetimeManager())
 
+                    .RegisterType<ICommonRepository, CommonRepository>(new ContainerControlledLifetimeManager())
+
                     .RegisterType<ISettingsPresenter, SettingsPresenter>(new ContainerControlledLifetimeManager())
                     .RegisterType<ISettingsUC, SettingsUC>(new ContainerControlledLifetimeManager())
 

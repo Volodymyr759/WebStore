@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess\Repositories\CategoriesRepository.cs" />
+    <Compile Include="DataAccess\Repositories\CommonRepository.cs" />
     <Compile Include="DataAccess\Repositories\GroupsRepository.cs" />
     <Compile Include="DataAccess\Repositories\ImagesRepository.cs" />
     <Compile Include="DataAccess\Repositories\ParametersRepository.cs" />

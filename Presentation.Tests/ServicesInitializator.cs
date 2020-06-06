@@ -21,18 +21,15 @@ namespace Presentation.Tests
 
         public static SuppliersService suppliersService = new SuppliersService(new SuppliersRepository(connString));
 
-        public static CategoriesService categoriesService = new CategoriesService(new CategoriesRepository(connString),
-                 suppliersService);
-        public static ProductsService productsService = new ProductsService(new ProductsRepository(connString),
-                 categoriesService,
-                 groupsService,
-                 suppliersService,
-                 unitsService);
-        public static ImagesService imagesService = new ImagesService(new ImagesRepository(connString), 
-                productsService);
+        public static CommonRepository commonRepository = new CommonRepository(connString);
 
-        public static ParametersService parametersService = new ParametersService(new ParametersRepository(connString),
-                productsService, unitsService);
+        public static CategoriesService categoriesService = new CategoriesService(new CategoriesRepository(connString),
+                 commonRepository);
+
+        public static ProductsService productsService = new ProductsService(new ProductsRepository(connString), commonRepository);
+        public static ImagesService imagesService = new ImagesService(new ImagesRepository(connString), commonRepository);
+
+        public static ParametersService parametersService = new ParametersService(new ParametersRepository(connString), commonRepository);
 
         public static StoreFacade facade = new StoreFacade(categoriesService,
             groupsService, imagesService, parametersService, productsService, suppliersService, unitsService, 

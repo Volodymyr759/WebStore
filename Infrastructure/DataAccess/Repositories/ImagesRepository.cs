@@ -11,7 +11,7 @@ namespace Infrastructure.DataAccess.Repositories
     /// </summary>
     public class ImagesRepository : IImagesRepository
     {
-        private string connectionString;
+        private readonly string connectionString;
 
         /// <summary>
         /// Конструктор репозиторію зображень

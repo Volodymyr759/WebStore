@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Domain.Models.Categories;
-using Services.SuppliersServices;
 using Services.Validators;
 
 namespace Services.CategoriesServices
@@ -12,19 +10,21 @@ namespace Services.CategoriesServices
     /// </summary>
     public class CategoriesService : ICategoriesService
     {
-        ICategoriesRepository categoriesRepository;
-        ISuppliersService suppliersService;
+        private readonly ICategoriesRepository categoriesRepository;
+
+        private readonly ICommonRepository commonRepository;
+
         CategoriesValidator categoriesValidator = new CategoriesValidator();
 
         /// <summary>
         /// Конструктор сервісу категорій
         /// </summary>
         /// <param name="categoriesRepository">Екземпляр репозиторію категорії</param>
-        /// <param name="suppliersService">Екземпляр сервісу постачальників</param>
-        public CategoriesService(ICategoriesRepository categoriesRepository, ISuppliersService suppliersService)
+        /// <param name="commonRepository">Екземпляр репозиторію загальних довідників</param>
+        public CategoriesService(ICategoriesRepository categoriesRepository, ICommonRepository commonRepository)
         {
             this.categoriesRepository = categoriesRepository;
-            this.suppliersService = suppliersService;
+            this.commonRepository = commonRepository;
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Services.CategoriesServices
                 Id = category.Id,
                 Name = category.Name,
                 SupplierId = category.SupplierId,
-                SupplierName = suppliersService.GetSupplierById(category.SupplierId).Name,
+                SupplierName = commonRepository.GetSuppliersIdNames()[category.SupplierId],
                 Link = category.Link,
                 Rate = category.Rate,
                 Notes = category.Notes
@@ -91,7 +91,7 @@ namespace Services.CategoriesServices
         public IEnumerable<CategoriesDtoModel> GetCategories()
         {
             List<CategoriesDtoModel> categoriesDtos = new List<CategoriesDtoModel>();
-            List<SuppliersDtoModel> suppliers = suppliersService.GetSuppliers().ToList();
+            Dictionary<int, string> suppliersIdNames = commonRepository.GetSuppliersIdNames();
             foreach (CategoriesModel category in categoriesRepository.GetAll())
             {
                 categoriesDtos.Add(new CategoriesDtoModel
@@ -99,7 +99,7 @@ namespace Services.CategoriesServices
                     Id = category.Id,
                     Name = category.Name,
                     SupplierId = category.SupplierId,
-                    SupplierName = suppliers.Where(s => s.Id == category.SupplierId).FirstOrDefault().Name,
+                    SupplierName = suppliersIdNames[category.SupplierId],
                     Link = category.Link,
                     Rate = category.Rate,
                     Notes = category.Notes

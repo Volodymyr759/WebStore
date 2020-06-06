@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Domain.Models.Images;
-using Services.ProductsServices;
 using Services.Validators;
 
 namespace Services.ImagesServices
@@ -12,19 +10,21 @@ namespace Services.ImagesServices
     /// </summary>
     public class ImagesService : IImagesService
     {
-        IImagesRepository imagesRepository;
-        IProductsService productsService;
-        ImagesValidator imagesValidator = new ImagesValidator();
+        private readonly IImagesRepository imagesRepository;
+
+        private readonly ICommonRepository commonRepository;
+
+        private readonly ImagesValidator imagesValidator = new ImagesValidator();
 
         /// <summary>
         /// Конструктор сервісу зображень
         /// </summary>
         /// <param name="imagesRepository">Екземпляр репозиторію зображень</param>
-        /// <param name="productsService">Екземпляр сервісу товарів</param>
-        public ImagesService(IImagesRepository imagesRepository, IProductsService productsService)
+        /// <param name="commonRepository">Екземпляр репозиторію загальних довідників</param>
+        public ImagesService(IImagesRepository imagesRepository, ICommonRepository commonRepository)
         {
             this.imagesRepository = imagesRepository;
-            this.productsService = productsService;
+            this.commonRepository = commonRepository;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Services.ImagesServices
             {
                 Id = image.Id,
                 ProductId = image.ProductId,
-                ProductName = productsService.GetProductById(image.ProductId)?.NameWebStore,
+                ProductName = commonRepository.GetProductsIdNames()[image.ProductId],
                 FileName = image.FileName,
                 LinkWebStore = image.LinkWebStore ?? "",
                 LinkSupplier = image.LinkSupplier,
@@ -90,14 +90,14 @@ namespace Services.ImagesServices
         public IEnumerable<ImagesDtoModel> GetImages()
         {
             List<ImagesDtoModel> imagesDtos = new List<ImagesDtoModel>();
-            List<ProductsDtoModel> products = productsService.GetProducts().ToList();
+            Dictionary<int, string> productsIdNames = commonRepository.GetProductsIdNames();
             foreach (ImagesModel image in imagesRepository.GetAll())
             {
                 imagesDtos.Add(new ImagesDtoModel
                 {
                     Id = image.Id,
                     ProductId = image.ProductId,
-                    ProductName = products.Where(p => p.Id == image.ProductId).FirstOrDefault().NameWebStore,
+                    ProductName = productsIdNames[image.ProductId],
                     FileName = image.FileName,
                     LinkWebStore = image.LinkWebStore ?? "",
                     LinkSupplier = image.LinkSupplier,

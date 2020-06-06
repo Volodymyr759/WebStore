@@ -11,7 +11,7 @@ namespace Infrastructure.DataAccess.Repositories
     /// </summary>
     public class ParametersRepository : IParametersRepository
     {
-        private string connectionString;
+        private readonly string connectionString;
 
         /// <summary>
         /// Конструктор характеристики товару

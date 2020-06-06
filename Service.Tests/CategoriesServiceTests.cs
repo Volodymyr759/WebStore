@@ -1,12 +1,10 @@
-﻿using Infrastructure.DataAccess.Repositories;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Services.CategoriesServices;
 using Moq;
 using System;
 using System.Collections.Generic;
 using Domain.Models.Categories;
-using Services.SuppliersServices;
-using Domain.Models.Suppliers;
+using Services;
 
 namespace Service.Tests
 {
@@ -40,7 +38,7 @@ namespace Service.Tests
                 };
                 fakeCategoriesRepository.Setup(a => a.Add(category));
                 categoriesService = new CategoriesService(fakeCategoriesRepository.Object,
-                    new Mock<ISuppliersService>().Object);
+                    new Mock<ICommonRepository>().Object);
 
                 CategoriesDtoModel categoriesDto = new CategoriesDtoModel
                 {
@@ -69,7 +67,7 @@ namespace Service.Tests
             {
                 fakeCategoriesRepository.Setup(a => a.DeleteById(1));
                 categoriesService = new CategoriesService(fakeCategoriesRepository.Object,
-                    new Mock<ISuppliersService>().Object);
+                    new Mock<ICommonRepository>().Object);
 
                 categoriesService.DeleteCategoryById(1);
                 operationSucceeded = true;
@@ -88,11 +86,11 @@ namespace Service.Tests
             try
             {
                 fakeCategoriesRepository.Setup(a => a.GetById(1)).Returns(new CategoriesModel { SupplierId = 2 });
-                Mock<ISuppliersService> fakeSuppliersService = new Mock<ISuppliersService>();
-                fakeSuppliersService.Setup(a => a.GetSupplierById(2)).Returns(new SuppliersDtoModel { Id = 2, Name = "Supplier" });
+                Mock<ICommonRepository> fakeCommonRepository = new Mock<ICommonRepository>();
+                fakeCommonRepository.Setup(a => a.GetSuppliersIdCurrencies()).Returns(new Dictionary<int, string> { { 2, "Supplier" } });
 
                 categoriesService = new CategoriesService(fakeCategoriesRepository.Object,
-                    fakeSuppliersService.Object);
+                    fakeCommonRepository.Object);
 
                 categoriesDto = categoriesService.GetCategoryById(1);
             }
@@ -111,7 +109,7 @@ namespace Service.Tests
             {
                 fakeCategoriesRepository.Setup(a => a.GetAll()).Returns(new List<CategoriesModel> { new CategoriesModel() });
                 categoriesService = new CategoriesService(fakeCategoriesRepository.Object,
-                    new Mock<ISuppliersService>().Object);
+                    new Mock<ICommonRepository>().Object);
                 categoriesDtos = (List<CategoriesDtoModel>)categoriesService.GetCategories();
             }
             catch (Exception ex)
@@ -136,7 +134,7 @@ namespace Service.Tests
                 };
                 fakeCategoriesRepository.Setup(a => a.Update(category));
                 categoriesService = new CategoriesService(fakeCategoriesRepository.Object,
-                    new Mock<ISuppliersService>().Object);
+                    new Mock<ICommonRepository>().Object);
 
                 CategoriesDtoModel categoriesDto = new CategoriesDtoModel
                 {

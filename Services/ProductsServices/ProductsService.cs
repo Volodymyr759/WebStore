@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Domain.Models.Products;
-using Services.CategoriesServices;
-using Services.GroupsServices;
-using Services.SuppliersServices;
-using Services.UnitsServices;
 using Services.Validators;
 
 namespace Services.ProductsServices
@@ -15,11 +10,8 @@ namespace Services.ProductsServices
     /// </summary>
     public class ProductsService : IProductsService
     {
-        IProductsRepository productsRepository;
-        ICategoriesService categoriesSevice;
-        IGroupsService groupsService;
-        ISuppliersService suppliersService;
-        IUnitsService unitsService;
+        private readonly IProductsRepository productsRepository;
+        private readonly ICommonRepository commonRepository;
 
         ProductsValidator productsValidator = new ProductsValidator();
 
@@ -27,21 +19,12 @@ namespace Services.ProductsServices
         /// Конструктор сервісу товарів
         /// </summary>
         /// <param name="productsRepository">Екземпляр репозиторію товарів</param>
-        /// <param name="categoriesSevice">Екземпляр сервісу категорій</param>
-        /// <param name="groupsService">Екземпляр сервісу груп</param>
-        /// <param name="suppliersService">Екземпляр сервіу постачальників</param>
-        /// <param name="unitsService">Екземпляр сервісу одиниць виміру</param>
+        /// <param name="commonRepository">Екземпляр репозиторію загальних довідників</param>
         public ProductsService(IProductsRepository productsRepository,
-                                ICategoriesService categoriesSevice,
-                                IGroupsService groupsService,
-                                ISuppliersService suppliersService,
-                                IUnitsService unitsService)
+                                ICommonRepository commonRepository)
         {
             this.productsRepository = productsRepository;
-            this.categoriesSevice = categoriesSevice;
-            this.groupsService = groupsService;
-            this.suppliersService = suppliersService;
-            this.unitsService = unitsService;
+            this.commonRepository = commonRepository;
         }
 
         /// <summary>
@@ -97,17 +80,17 @@ namespace Services.ProductsServices
             ProductsDtoModel productDto = new ProductsDtoModel
             {
                 Id = product.Id,
-                SupplierName = suppliersService.GetSupplierById(product.SupplierId).Name,
-                CategoryName = categoriesSevice.GetCategoryById(product.CategoryId).Name,
-                GroupName = groupsService.GetGroupById((int)product.GroupId).Name ?? "",
-                UnitName = unitsService.GetUnitById(product.UnitId).Name,
+                SupplierName = commonRepository.GetSuppliersIdNames()[product.SupplierId],
+                CategoryName = commonRepository.GetCategoriesIdNames()[product.CategoryId],
+                GroupName = commonRepository.GetGroupsIdNames()[(int)product.GroupId] ?? "",
+                UnitName = commonRepository.GetUnitsIdNames()[product.UnitId],
                 NameWebStore = product.NameWebStore,
                 NameSupplier = product.NameSupplier,
                 CodeWebStore = product.CodeWebStore,
                 CodeSupplier = product.CodeSupplier,
                 PriceWebStore = product.PriceWebStore,
                 PriceSupplier = product.PriceSupplier,
-                Currency = suppliersService.GetSupplierById(product.SupplierId).Currency,
+                Currency = commonRepository.GetSuppliersIdCurrencies()[product.SupplierId],
                 Available = product.Available,
                 LinkWebStore = product.LinkWebStore,
                 LinkSupplier = product.LinkSupplier,
@@ -123,30 +106,32 @@ namespace Services.ProductsServices
         public IEnumerable<ProductsDtoModel> GetProducts()
         {
             List<ProductsDtoModel> productsDtos = new List<ProductsDtoModel>();
-            List<SuppliersDtoModel> suppliers = suppliersService.GetSuppliers().ToList();
-            List<CategoriesDtoModel> categories = categoriesSevice.GetCategories().ToList();
-            List<GroupsDtoModel> groups = groupsService.GetGroups().ToList();
-            List<UnitsDtoModel> units = unitsService.GetUnits().ToList();
+            Dictionary<int, string> suppliersIdNames = commonRepository.GetSuppliersIdNames();
+            Dictionary<int, string> suppliersIdCurrencies = commonRepository.GetSuppliersIdCurrencies();
+            Dictionary<int, string> categoriesIdNames = commonRepository.GetCategoriesIdNames();
+            Dictionary<int, string> groupsIdNames = commonRepository.GetGroupsIdNames();
+            Dictionary<int, string> unitsIdNames = commonRepository.GetUnitsIdNames();
+
             foreach (ProductsModel product in productsRepository.GetAll())
             {
                 productsDtos.Add(new ProductsDtoModel
                 {
                     Id = product.Id,
                     SupplierId = product.SupplierId,
-                    SupplierName = suppliers.Where(s => s.Id == product.SupplierId).FirstOrDefault().Name,
+                    SupplierName = suppliersIdNames[product.SupplierId],
                     CategoryId = product.CategoryId,
-                    CategoryName = categories.Where(c => c.Id == product.CategoryId).FirstOrDefault().Name,
+                    CategoryName = categoriesIdNames[product.CategoryId],
                     GroupId = product.GroupId ?? 0,
-                    GroupName = product.GroupId == 0 ? "" : groups.Where(g => g.Id == product.GroupId).FirstOrDefault().Name,
+                    GroupName = product.GroupId == 0 ? "" : groupsIdNames[(int)product.GroupId],
                     UnitId = product.UnitId,
-                    UnitName = units.Where(u => u.Id == product.UnitId).FirstOrDefault().Name,
+                    UnitName = unitsIdNames[product.UnitId],
                     NameWebStore = product.NameWebStore,
                     NameSupplier = product.NameSupplier,
                     CodeWebStore = product.CodeWebStore,
                     CodeSupplier = product.CodeSupplier,
                     PriceWebStore = product.PriceWebStore,
                     PriceSupplier = product.PriceSupplier,
-                    Currency = suppliers.Where(s => s.Id == product.SupplierId).FirstOrDefault().Currency,
+                    Currency = suppliersIdCurrencies[product.SupplierId],
                     Available = product.Available,
                     LinkWebStore = product.LinkWebStore,
                     LinkSupplier = product.LinkSupplier,

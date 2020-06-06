@@ -1,14 +1,10 @@
-﻿using Infrastructure.DataAccess.Repositories;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Services.CategoriesServices;
-using Services.GroupsServices;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Services.ProductsServices;
-using Services.SuppliersServices;
-using Services.UnitsServices;
 using System;
 using System.Collections.Generic;
 using Moq;
 using Domain.Models.Products;
+using Services;
 
 namespace Service.Tests
 {
@@ -19,17 +15,7 @@ namespace Service.Tests
         bool operationSucceeded;
         ProductsService productsService;
         Mock<IProductsRepository> fakeProductsRepository = new Mock<IProductsRepository>();
-        //const string connString = @"Data Source=C:\Users\Володимир\source\repos\WebStore\Presentation\bin\Debug\webstore.sdf";
 
-        //public ProductsServiceTests()
-        //{
-        //    SuppliersService suppliersService = new SuppliersService(new SuppliersRepository(connString));
-        //    productsService = new ProductsService(new ProductsRepository(connString),
-        //                            new CategoriesService(new CategoriesRepository(connString), suppliersService),
-        //                            new GroupsService(new GroupsRepository(connString)),
-        //                            suppliersService,
-        //                            new UnitsService(new UnitsRepository(connString)));
-        //}
         [TestInitialize]
         public void TestInit()
         {
@@ -61,8 +47,7 @@ namespace Service.Tests
                 };
                 fakeProductsRepository.Setup(a => a.Add(product));
                 productsService = new ProductsService(fakeProductsRepository.Object,
-                    new Mock<ICategoriesService>().Object, new Mock<IGroupsService>().Object,
-                    new Mock<ISuppliersService>().Object, new Mock<IUnitsService>().Object);
+                    new Mock<ICommonRepository>().Object);
 
                 ProductsDtoModel productDto = new ProductsDtoModel()
                 {
@@ -98,9 +83,7 @@ namespace Service.Tests
             try
             {
                 fakeProductsRepository.Setup(a => a.DeleteById(1));
-                productsService = new ProductsService(fakeProductsRepository.Object,
-                    new Mock<ICategoriesService>().Object, new Mock<IGroupsService>().Object,
-                    new Mock<ISuppliersService>().Object, new Mock<IUnitsService>().Object);
+                productsService = new ProductsService(fakeProductsRepository.Object, new Mock<ICommonRepository>().Object);
 
                 productsService.DeleteProductById(1);
                 operationSucceeded = true;
@@ -136,18 +119,13 @@ namespace Service.Tests
                     LinkSupplier = "link2",
                     Notes = "some notes"
                 });
-                Mock<ICategoriesService> fakeCategoriesService = new Mock<ICategoriesService>();
-                fakeCategoriesService.Setup(a => a.GetCategoryById(1)).Returns(new CategoriesDtoModel { Id = 1, Name = "Category" });
-                Mock<IGroupsService> fakeGroupsService = new Mock<IGroupsService>();
-                fakeGroupsService.Setup(a => a.GetGroupById(1)).Returns(new GroupsDtoModel { Id = 1, Name = "Group" });
-                Mock<ISuppliersService> fakeSuppliersService = new Mock<ISuppliersService>();
-                fakeSuppliersService.Setup(a => a.GetSupplierById(1)).Returns(new SuppliersDtoModel { Id = 1, Name = "Supplier" });
-                Mock<IUnitsService> fakeUnitsService = new Mock<IUnitsService>();
-                fakeUnitsService.Setup(a => a.GetUnitById(1)).Returns(new UnitsDtoModel { Id = 1, Name = "p." });
+                Mock<ICommonRepository> fakeCommonRepository = new Mock<ICommonRepository>();
+                fakeCommonRepository.Setup(a => a.GetCategoriesIdNames()).Returns(new Dictionary<int, string> { { 1, "Category" } });
+                fakeCommonRepository.Setup(a => a.GetGroupsIdNames()).Returns(new Dictionary<int, string> { { 1, "Group" } });
+                fakeCommonRepository.Setup(a => a.GetSuppliersIdNames()).Returns(new Dictionary<int, string> { { 1, "Supplier" } });
+                fakeCommonRepository.Setup(a => a.GetUnitsIdNames()).Returns(new Dictionary<int, string> { { 1, "p." } });
 
-                productsService = new ProductsService(fakeProductsRepository.Object,
-                    fakeCategoriesService.Object, fakeGroupsService.Object,
-                    fakeSuppliersService.Object, fakeUnitsService.Object);
+                productsService = new ProductsService(fakeProductsRepository.Object, fakeCommonRepository.Object);
 
                 productsModel = productsService.GetProductById(1);
             }
@@ -165,9 +143,7 @@ namespace Service.Tests
             try
             {
                 fakeProductsRepository.Setup(a => a.GetAll());
-                productsService = new ProductsService(fakeProductsRepository.Object,
-                    new Mock<ICategoriesService>().Object, new Mock<IGroupsService>().Object,
-                    new Mock<ISuppliersService>().Object, new Mock<IUnitsService>().Object);
+                productsService = new ProductsService(fakeProductsRepository.Object, new Mock<ICommonRepository>().Object);
 
                 productsDtos = (List<ProductsDtoModel>)productsService.GetProducts();
             }
@@ -201,9 +177,7 @@ namespace Service.Tests
                     Notes = "new notes"
                 };
                 fakeProductsRepository.Setup(a => a.Update(product));
-                productsService = new ProductsService(fakeProductsRepository.Object,
-                    new Mock<ICategoriesService>().Object, new Mock<IGroupsService>().Object,
-                    new Mock<ISuppliersService>().Object, new Mock<IUnitsService>().Object);
+                productsService = new ProductsService(fakeProductsRepository.Object, new Mock<ICommonRepository>().Object);
 
                 ProductsDtoModel productDto = new ProductsDtoModel()
                 {

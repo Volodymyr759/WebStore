@@ -1,16 +1,10 @@
 ﻿using Domain.Models.Images;
-using Infrastructure.DataAccess.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Services.CategoriesServices;
-using Services.GroupsServices;
 using Services.ImagesServices;
-using Services.ProductsServices;
-using Services.SuppliersServices;
-using Services.UnitsServices;
 using System;
 using System.Collections.Generic;
 using Moq;
-using Domain.Models.Products;
+using Services;
 
 namespace Service.Tests
 {
@@ -43,7 +37,7 @@ namespace Service.Tests
                     LocalPath = "some local path"
                 };
                 fakeImagesRepository.Setup(a => a.Add(image));
-                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<IProductsService>().Object);
+                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<ICommonRepository>().Object);
                 ImagesDtoModel imageDto = new ImagesDtoModel
                 {
                     FileName = image.FileName,
@@ -69,7 +63,7 @@ namespace Service.Tests
             try
             {
                 fakeImagesRepository.Setup(a => a.DeleteById(1));
-                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<IProductsService>().Object);
+                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<ICommonRepository>().Object);
 
                 imagesService.DeleteImageById(1);
                 operationSucceeded = true;
@@ -88,10 +82,10 @@ namespace Service.Tests
             try
             {
                 fakeImagesRepository.Setup(a => a.GetById(2)).Returns(new ImagesModel { ProductId = 1 });
-                Mock<IProductsService> fakeProductsService = new Mock<IProductsService>();
-                fakeProductsService.Setup(a => a.GetProductById(1)).Returns(new ProductsDtoModel { Id = 1, NameWebStore = "Product name" });
+                Mock<ICommonRepository> fakeCommonRepository = new Mock<ICommonRepository>();
+                fakeCommonRepository.Setup(a => a.GetProductsIdNames()).Returns(new Dictionary<int, string> { { 1, "Product name" } });
 
-                imagesService = new ImagesService(fakeImagesRepository.Object, fakeProductsService.Object);
+                imagesService = new ImagesService(fakeImagesRepository.Object, fakeCommonRepository.Object);
                 imagesDto = imagesService.GetImageById(2);
             }
             catch (Exception ex)
@@ -108,7 +102,7 @@ namespace Service.Tests
             try
             {
                 fakeImagesRepository.Setup(a => a.GetAll()).Returns(new List<ImagesModel>());
-                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<IProductsService>().Object);
+                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<ICommonRepository>().Object);
                 imagesDtos = (List<ImagesDtoModel>)imagesService.GetImages();
             }
             catch (Exception ex)
@@ -132,7 +126,7 @@ namespace Service.Tests
                     LocalPath = "some local path"
                 };
                 fakeImagesRepository.Setup(a => a.Update(image));
-                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<IProductsService>().Object);
+                imagesService = new ImagesService(fakeImagesRepository.Object, new Mock<ICommonRepository>().Object);
 
                 ImagesDtoModel imageDto = new ImagesDtoModel
                 {

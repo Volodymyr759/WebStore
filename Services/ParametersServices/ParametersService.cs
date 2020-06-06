@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Services.ProductsServices;
-using Services.UnitsServices;
 using Services.Validators;
 using Domain.Models.Parameters;
 
@@ -13,22 +10,21 @@ namespace Services.ParametersServices
     /// </summary>
     public class ParametersService : IParametersService
     {
-        IParametersRepository parametersRepository;
-        IProductsService productsService;
-        IUnitsService unitsService;
-        ParametersValidator parametersValidator = new ParametersValidator();
+        private readonly IParametersRepository parametersRepository;
+
+        private readonly ICommonRepository commonRepository;
+
+        private readonly ParametersValidator parametersValidator = new ParametersValidator();
 
         /// <summary>
         /// Конструктор сервісу характеристик
         /// </summary>
         /// <param name="parametersRepository">Екземпляр репозиторію характеристик</param>
-        /// <param name="productsService">Екземпляр сервісу товарів</param>
-        /// <param name="unitsService">Екземпляр сервісу одиниць виміру</param>
-        public ParametersService(IParametersRepository parametersRepository, IProductsService productsService, IUnitsService unitsService)
+        /// <param name="commonRepository">Екземпляр репозиторію загальних довідників</param>
+        public ParametersService(IParametersRepository parametersRepository, ICommonRepository commonRepository)
         {
             this.parametersRepository = parametersRepository;
-            this.productsService = productsService;
-            this.unitsService = unitsService;
+            this.commonRepository = commonRepository;
         }
 
         /// <summary>
@@ -78,9 +74,9 @@ namespace Services.ParametersServices
                 Id = id,
                 Name = parameter.Name,
                 ProductId = parameter.ProductId,
-                ProductName = productsService.GetProductById(parameter.ProductId).NameWebStore,
+                ProductName = commonRepository.GetProductsIdNames()[parameter.ProductId],
                 UnitId = parameter.UnitId,
-                UnitName = unitsService.GetUnitById(parameter.UnitId).Name,
+                UnitName = commonRepository.GetUnitsIdNames()[parameter.UnitId],
                 Value = parameter.Value
             };
             return parametersDto;
@@ -93,8 +89,10 @@ namespace Services.ParametersServices
         public IEnumerable<ParametersDtoModel> GetParameters()
         {
             List<ParametersDtoModel> parametersDtos = new List<ParametersDtoModel>();
-            List<ProductsDtoModel> products = productsService.GetProducts().ToList();
-            List<UnitsDtoModel> units = unitsService.GetUnits().ToList();
+            //List<ProductsDtoModel> products = productsService.GetProducts().ToList();
+            Dictionary<int, string> productsIdNames = commonRepository.GetProductsIdNames();
+            //List<UnitsDtoModel> units = unitsService.GetUnits().ToList();
+            Dictionary<int, string> unitsIdNames = commonRepository.GetUnitsIdNames();
             foreach (ParametersModel parameter in parametersRepository.GetAll())
             {
                 parametersDtos.Add(new ParametersDtoModel
@@ -102,9 +100,9 @@ namespace Services.ParametersServices
                     Id = parameter.Id,
                     Name = parameter.Name,
                     ProductId = parameter.ProductId,
-                    ProductName = products.Where(p => p.Id == parameter.ProductId).FirstOrDefault().NameWebStore,
+                    ProductName = productsIdNames[parameter.ProductId],
                     UnitId = parameter.UnitId,
-                    UnitName = units.Where(p => p.Id == parameter.UnitId).FirstOrDefault().Name,
+                    UnitName = unitsIdNames[parameter.UnitId],
                     Value = parameter.Value
                 });
             }
