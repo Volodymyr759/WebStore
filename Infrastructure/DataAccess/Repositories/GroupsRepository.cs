@@ -28,31 +28,38 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="groupsModel">Екземпляр групи</param>
         public void Add(IGroupsModel groupsModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string sqlQuery = "insert into Groups(Name, Number, Identifier, AncestorNumber, AncestorIdentifier, ProductType, Link, Notes) " +
-            "values(@Name, @Number, @Identifier, @AncestorNumber, @AncestorIdentifier, @ProductType, @Link, @Notes)";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Name", groupsModel.Name);
-                    cmd.Parameters.AddWithValue("@Number", groupsModel.Number);
-                    cmd.Parameters.AddWithValue("@Identifier", groupsModel.Identifier);
-                    cmd.Parameters.AddWithValue("@AncestorNumber", groupsModel.AncestorNumber);
-                    cmd.Parameters.AddWithValue("@AncestorIdentifier", groupsModel.AncestorIdentifier);
-                    cmd.Parameters.AddWithValue("@ProductType", groupsModel.ProductType);
-                    cmd.Parameters.AddWithValue("@Link", groupsModel.Link);
-                    cmd.Parameters.AddWithValue("@Notes", groupsModel.Notes);
-
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка створення групи в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string sqlQuery = "insert into Groups(Name, Number, Identifier, AncestorNumber, AncestorIdentifier, ProductType, Link, Notes) " +
+                    "values(@Name, @Number, @Identifier, @AncestorNumber, @AncestorIdentifier, @ProductType, @Link, @Notes)";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Name", groupsModel.Name);
+                cmd.Parameters.AddWithValue("@Number", groupsModel.Number);
+                cmd.Parameters.AddWithValue("@Identifier", groupsModel.Identifier);
+                cmd.Parameters.AddWithValue("@AncestorNumber", groupsModel.AncestorNumber);
+                cmd.Parameters.AddWithValue("@AncestorIdentifier", groupsModel.AncestorIdentifier);
+                cmd.Parameters.AddWithValue("@ProductType", groupsModel.ProductType);
+                cmd.Parameters.AddWithValue("@Link", groupsModel.Link);
+                cmd.Parameters.AddWithValue("@Notes", groupsModel.Notes);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка створення групи в базі даних.");
+                }
             }
         }
 
@@ -62,22 +69,30 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="id">Ідентифікатор групи</param>
         public void DeleteById(int id)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string query = "delete from Groups where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(query, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка видалення групи з бази даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "delete from Groups where Id=@Id";
+                var cmd = new SqlCeCommand(query, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка видалення групи з бази даних.");
+                }
             }
         }
 
@@ -87,14 +102,22 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Список груп</returns>
         public IEnumerable<IGroupsModel> GetAll()
         {
-            try
+            var listgroupsModel = new List<GroupsModel>();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                var listgroupsModel = new List<GroupsModel>();
-                string query = "select * from Groups";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    using (SqlCeCommand command = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select * from Groups";
+                using (SqlCeCommand command = new SqlCeCommand(query, db))
+                {
+                    try
                     {
                         using (SqlCeDataReader reader = command.ExecuteReader())
                         {
@@ -116,14 +139,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання списку груп з бази даних.");
+                    }
                 }
-                return listgroupsModel;
             }
-            catch
-            {
-                throw new Exception("Помилка отримання списку груп з бази даних.");
-            }
+            return listgroupsModel;
         }
 
         /// <summary>
@@ -133,17 +155,25 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Екземпляр групи</returns>
         public IGroupsModel GetById(int id)
         {
-            try
+            GroupsModel group = new GroupsModel();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                GroupsModel group = new GroupsModel();
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    string query = "select Id, Name, Number, Identifier, AncestorNumber, AncestorIdentifier, ProductType, Link, Notes from Groups where Id=@Id";
-                    using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select Id, Name, Number, Identifier, AncestorNumber, AncestorIdentifier, ProductType, Link, Notes from Groups where Id=@Id";
+                using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                {
+                    cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    try
                     {
-                        cmd.Prepare();
-                        cmd.Parameters.AddWithValue("@Id", id);
                         using (SqlCeDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
@@ -160,14 +190,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання групи з бази даних.");
+                    }
                 }
-                return group;
             }
-            catch
-            {
-                throw new Exception("Помилка отримання групи з бази даних.");
-            }
+            return group;
         }
 
         /// <summary>
@@ -176,32 +205,40 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="groupsModel">Екземпляр групи</param>
         public void Update(IGroupsModel groupsModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                var sqlQuery = "update Groups set Name=@Name, Number=@Number, Identifier=@Identifier, AncestorNumber=@AncestorNumber, " +
-            "AncestorIdentifier=@AncestorIdentifier, ProductType=@ProductType, Link=@Link,  Notes=@Notes where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Name", groupsModel.Name);
-                    cmd.Parameters.AddWithValue("@Number", groupsModel.Number);
-                    cmd.Parameters.AddWithValue("@Identifier", groupsModel.Identifier);
-                    cmd.Parameters.AddWithValue("@AncestorNumber", groupsModel.AncestorNumber);
-                    cmd.Parameters.AddWithValue("@AncestorIdentifier", groupsModel.AncestorIdentifier);
-                    cmd.Parameters.AddWithValue("@ProductType", groupsModel.ProductType);
-                    cmd.Parameters.AddWithValue("@Link", groupsModel.Link);
-                    cmd.Parameters.AddWithValue("@Notes", groupsModel.Notes);
-                    cmd.Parameters.AddWithValue("@Id", groupsModel.Id);
-
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка оновлення групи в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                var sqlQuery = "update Groups set Name=@Name, Number=@Number, Identifier=@Identifier, AncestorNumber=@AncestorNumber, " +
+                    "AncestorIdentifier=@AncestorIdentifier, ProductType=@ProductType, Link=@Link,  Notes=@Notes where Id=@Id";
+
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Name", groupsModel.Name);
+                cmd.Parameters.AddWithValue("@Number", groupsModel.Number);
+                cmd.Parameters.AddWithValue("@Identifier", groupsModel.Identifier);
+                cmd.Parameters.AddWithValue("@AncestorNumber", groupsModel.AncestorNumber);
+                cmd.Parameters.AddWithValue("@AncestorIdentifier", groupsModel.AncestorIdentifier);
+                cmd.Parameters.AddWithValue("@ProductType", groupsModel.ProductType);
+                cmd.Parameters.AddWithValue("@Link", groupsModel.Link);
+                cmd.Parameters.AddWithValue("@Notes", groupsModel.Notes);
+                cmd.Parameters.AddWithValue("@Id", groupsModel.Id);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Помилка оновлення групи в базі даних.");
+                }
             }
         }
     }

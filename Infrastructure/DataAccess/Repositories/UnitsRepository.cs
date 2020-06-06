@@ -32,23 +32,31 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="unitsModel">Екземпляр одиниці виміру</param>
         public void Add(IUnitsModel unitsModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string sqlQuery = "insert into Units(Name, Notes) values(@Name, @Notes)";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
-                    var cmd = new SqlCeCommand(sqlQuery, db);
                     db.Open();
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Name", unitsModel.Name);
-                    cmd.Parameters.AddWithValue("@Notes", unitsModel.Notes);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка додавання одиниці виміру в базу даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string sqlQuery = "insert into Units(Name, Notes) values(@Name, @Notes)";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Name", unitsModel.Name);
+                cmd.Parameters.AddWithValue("@Notes", unitsModel.Notes);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка додавання одиниці виміру в базу даних.");
+                }
             }
         }
 
@@ -58,22 +66,29 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="id">Ідентифікатор одиниці виміру</param>
         public void DeleteById(int id)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string query = "delete from Units where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    SqlCeCommand cmd = new SqlCeCommand(query, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка оновлення одиниці виміру в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "delete from Units where Id=@Id";
+                SqlCeCommand cmd = new SqlCeCommand(query, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Id", id);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка оновлення одиниці виміру в базі даних.");
+                }
             }
         }
 
@@ -83,14 +98,22 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Список одиниць виміру</returns>
         public IEnumerable<IUnitsModel> GetAll()
         {
-            try
+            List<UnitsModel> units = new List<UnitsModel>();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                List<UnitsModel> units = new List<UnitsModel>();
-                string query = "select * from Units";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    using (SqlCeCommand command = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select * from Units";
+                using (SqlCeCommand command = new SqlCeCommand(query, db))
+                {
+                    try
                     {
                         using (SqlCeDataReader reader = command.ExecuteReader())
                         {
@@ -106,14 +129,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання списку одиниць виміру з бази даних.");
+                    }
                 }
-                return units;
             }
-            catch
-            {
-                throw new Exception("Помилка отримання списку одиниць виміру з бази даних.");
-            }
+            return units;
         }
 
         /// <summary>
@@ -123,17 +145,25 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Екземпляр одиниці виміру</returns>
         public IUnitsModel GetById(int id)
         {
-            try
+            UnitsModel unit = new UnitsModel();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                UnitsModel unit = new UnitsModel();
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    string query = "select Id, Name, Notes from Units where Id=@Id";
-                    using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select Id, Name, Notes from Units where Id=@Id";
+                using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                {
+                    cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    try
                     {
-                        cmd.Prepare();
-                        cmd.Parameters.AddWithValue("@Id", id);
                         using (SqlCeDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
@@ -144,14 +174,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання одиниці виміру з бази даних.");
+                    }
                 }
-                return unit;
             }
-            catch
-            {
-                throw new Exception("Помилка отримання одиниці виміру з бази даних.");
-            }
+            return unit;
         }
 
         /// <summary>
@@ -160,24 +189,31 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="unitsModel">Екземпляр одиниці виміру</param>
         public void Update(IUnitsModel unitsModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                var sqlQuery = "update Units set Name=@Name, Notes=@Notes where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Name", unitsModel.Name);
-                    cmd.Parameters.AddWithValue("@Notes", unitsModel.Notes);
-                    cmd.Parameters.AddWithValue("@Id", unitsModel.Id);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка оновлення одиниці виімру в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                var sqlQuery = "update Units set Name=@Name, Notes=@Notes where Id=@Id";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Name", unitsModel.Name);
+                cmd.Parameters.AddWithValue("@Notes", unitsModel.Notes);
+                cmd.Parameters.AddWithValue("@Id", unitsModel.Id);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка оновлення одиниці виімру в базі даних.");
+                }
             }
         }
     }

@@ -52,7 +52,7 @@
     <Compile Include="MainViewTests.cs" />
     <Compile Include="ParametersDetailPresenterTests.cs" />
     <Compile Include="ParametersPresenterTests.cs" />
-    <Compile Include="ServicesInitializator.cs" />
+    <Compile Include="ServicesInitialiser.cs" />
     <Compile Include="SettingsPresenterTests.cs" />
     <Compile Include="ProductsDetailPresenterTests.cs" />
     <Compile Include="ProductsPresenterTests.cs" />

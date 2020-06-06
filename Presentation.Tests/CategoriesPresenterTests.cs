@@ -14,10 +14,10 @@ namespace Presentation.Tests
         {
             ErrorMessageView errorMessageView = new ErrorMessageView();
             CategoriesDetailUC categoriesDetailUC = new CategoriesDetailUC(errorMessageView);
-            CategoriesDetailPresenter categoriesDetailPresenter = new CategoriesDetailPresenter(categoriesDetailUC, ServicesInitializator.facade);
+            CategoriesDetailPresenter categoriesDetailPresenter = new CategoriesDetailPresenter(categoriesDetailUC, ServicesInitialiser.facade);
             DeleteConfirmView deleteConfirmView = new DeleteConfirmView();
             categoriesPresenter = new CategoriesPresenter(new CategoriesUC(errorMessageView), 
-                categoriesDetailPresenter, ServicesInitializator.facade, deleteConfirmView, errorMessageView);
+                categoriesDetailPresenter, ServicesInitialiser.facade, deleteConfirmView, errorMessageView);
         }
 
         [TestMethod]

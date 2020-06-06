@@ -28,44 +28,52 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="productsModel">Екземпляр товару</param>
         public void Add(IProductsModel productsModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
+                try
+                {
+                    db.Open();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
                 string sqlQuery = "insert into Products(SupplierId, CategoryId, GroupId, NameWebStore, NameSupplier, CodeWebStore, " +
-            "CodeSupplier, UnitId, PriceWebStore, PriceSupplier, Available, LinkWebStore, LinkSupplier, Notes) " +
-            "values(@SupplierId, @CategoryId, @GroupId, @NameWebStore, @NameSupplier,  @CodeWebStore, @CodeSupplier, " +
-            "@UnitId, @PriceWebStore, @PriceSupplier, @Available, @LinkWebStore, @LinkSupplier, @Notes)";
+                    "CodeSupplier, UnitId, PriceWebStore, PriceSupplier, Available, LinkWebStore, LinkSupplier, Notes) " +
+                    "values(@SupplierId, @CategoryId, @GroupId, @NameWebStore, @NameSupplier,  @CodeWebStore, @CodeSupplier, " +
+                    "@UnitId, @PriceWebStore, @PriceSupplier, @Available, @LinkWebStore, @LinkSupplier, @Notes)";
                 if (productsModel.GroupId == null)
                 {
                     sqlQuery = sqlQuery.Replace("@GroupId, ", "");
                     sqlQuery = sqlQuery.Replace("GroupId, ", "");
                 }
-                using (var db = new SqlCeConnection(connectionString))
-                {
-                    db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@SupplierId", productsModel.SupplierId);
-                    cmd.Parameters.AddWithValue("@CategoryId", productsModel.CategoryId);
-                    if (productsModel.GroupId != null) cmd.Parameters.AddWithValue("@GroupId", productsModel.GroupId);
-                    cmd.Parameters.AddWithValue("@NameWebStore", productsModel.NameWebStore);
-                    cmd.Parameters.AddWithValue("@NameSupplier", productsModel.NameSupplier);
-                    cmd.Parameters.AddWithValue("@CodeWebStore", productsModel.CodeWebStore);
-                    cmd.Parameters.AddWithValue("@CodeSupplier", productsModel.CodeSupplier);
-                    cmd.Parameters.AddWithValue("@UnitId", productsModel.UnitId);
-                    cmd.Parameters.AddWithValue("@PriceWebStore", productsModel.PriceWebStore);
-                    cmd.Parameters.AddWithValue("@PriceSupplier", productsModel.PriceSupplier);
-                    cmd.Parameters.AddWithValue("@Available", productsModel.Available);
-                    cmd.Parameters.AddWithValue("@LinkWebStore", productsModel.LinkWebStore);
-                    cmd.Parameters.AddWithValue("@LinkSupplier", productsModel.LinkSupplier);
-                    cmd.Parameters.AddWithValue("@Notes", productsModel.Notes);
 
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@SupplierId", productsModel.SupplierId);
+                cmd.Parameters.AddWithValue("@CategoryId", productsModel.CategoryId);
+                if (productsModel.GroupId != null) cmd.Parameters.AddWithValue("@GroupId", productsModel.GroupId);
+                cmd.Parameters.AddWithValue("@NameWebStore", productsModel.NameWebStore);
+                cmd.Parameters.AddWithValue("@NameSupplier", productsModel.NameSupplier);
+                cmd.Parameters.AddWithValue("@CodeWebStore", productsModel.CodeWebStore);
+                cmd.Parameters.AddWithValue("@CodeSupplier", productsModel.CodeSupplier);
+                cmd.Parameters.AddWithValue("@UnitId", productsModel.UnitId);
+                cmd.Parameters.AddWithValue("@PriceWebStore", productsModel.PriceWebStore);
+                cmd.Parameters.AddWithValue("@PriceSupplier", productsModel.PriceSupplier);
+                cmd.Parameters.AddWithValue("@Available", productsModel.Available);
+                cmd.Parameters.AddWithValue("@LinkWebStore", productsModel.LinkWebStore);
+                cmd.Parameters.AddWithValue("@LinkSupplier", productsModel.LinkSupplier);
+                cmd.Parameters.AddWithValue("@Notes", productsModel.Notes);
+
+                try
+                {
                     cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка створення товару в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка створення товару в базі даних.");
+                }
             }
         }
 
@@ -75,22 +83,29 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="id">Ідентифікатор товару</param>
         public void DeleteById(int id)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string query = "delete from Products where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    SqlCeCommand cmd = new SqlCeCommand(query, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка видалення товару з бази даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "delete from Products where Id=@Id";
+                SqlCeCommand cmd = new SqlCeCommand(query, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Id", id);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка видалення товару з бази даних.");
+                }
             }
         }
 
@@ -100,16 +115,24 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Список товарів</returns>
         public IEnumerable<IProductsModel> GetAll()
         {
-            try
+            List<ProductsModel> products = new List<ProductsModel>();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                List<ProductsModel> products = new List<ProductsModel>();
-                string query = "select Id, SupplierId, CategoryId, GroupId, UnitId, NameWebStore, NameSupplier, CodeWebStore, " +
-                    "CodeSupplier, PriceWebStore, PriceSupplier, Available, LinkWebStore, LinkSupplier, Notes " +
-                    "from Products";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    using (SqlCeCommand command = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select Id, SupplierId, CategoryId, GroupId, UnitId, NameWebStore, NameSupplier, CodeWebStore, " +
+                    "CodeSupplier, PriceWebStore, PriceSupplier, Available, LinkWebStore, LinkSupplier, Notes from Products";
+
+                using (SqlCeCommand command = new SqlCeCommand(query, db))
+                {
+                    try
                     {
                         using (SqlCeDataReader reader = command.ExecuteReader())
                         {
@@ -137,14 +160,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання списку товарів з бази даних.");
+                    }
                 }
-                return products;
             }
-            catch (Exception)
-            {
-                throw new Exception("Помилка отримання списку товарів з бази даних.");
-            }
+            return products;
         }
 
         /// <summary>
@@ -154,19 +176,26 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Екземпляр товару</returns>
         public IProductsModel GetById(int id)
         {
-            try
+            ProductsModel product = new ProductsModel();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                ProductsModel product = new ProductsModel();
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    string query = "select Id, SupplierId, CategoryId, GroupId, UnitId, NameWebStore, NameSupplier, CodeWebStore, " +
-                    "CodeSupplier, PriceWebStore, PriceSupplier, Available, LinkWebStore, LinkSupplier, Notes " +
-                    "from Products where Id=@Id";
-                    using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select Id, SupplierId, CategoryId, GroupId, UnitId, NameWebStore, NameSupplier, CodeWebStore, " +
+                    "CodeSupplier, PriceWebStore, PriceSupplier, Available, LinkWebStore, LinkSupplier, Notes from Products where Id=@Id";
+                using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                {
+                    cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    try
                     {
-                        cmd.Prepare();
-                        cmd.Parameters.AddWithValue("@Id", id);
                         using (SqlCeDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
@@ -189,14 +218,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання товару з бази даних.");
+                    }
                 }
-                return product;
             }
-            catch (Exception)
-            {
-                throw new Exception("Помилка отримання товару з бази даних.");
-            }
+            return product;
         }
 
         /// <summary>
@@ -205,40 +233,47 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="productsModel">Екземпляр товару</param>
         public void Update(IProductsModel productsModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                var sqlQuery = "update Products set SupplierId=@SupplierId, CategoryId=@CategoryId, GroupId=@GroupId, " +
-            "NameWebStore=@NameWebStore, NameSupplier=@NameSupplier, CodeWebStore=@CodeWebStore, CodeSupplier=@CodeSupplier, " +
-            "UnitId=@UnitId, PriceWebStore=@PriceWebStore, PriceSupplier=@PriceSupplier, Available=@Available, " +
-            "LinkWebStore=@LinkWebStore, LinkSupplier=@LinkSupplier, Notes=@Notes where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@SupplierId", productsModel.SupplierId);
-                    cmd.Parameters.AddWithValue("@CategoryId", productsModel.CategoryId);
-                    if (productsModel.GroupId != null) cmd.Parameters.AddWithValue("@GroupId", productsModel.GroupId);
-                    cmd.Parameters.AddWithValue("@NameWebStore", productsModel.NameWebStore);
-                    cmd.Parameters.AddWithValue("@NameSupplier", productsModel.NameSupplier);
-                    cmd.Parameters.AddWithValue("@CodeWebStore", productsModel.CodeWebStore);
-                    cmd.Parameters.AddWithValue("@CodeSupplier", productsModel.CodeSupplier);
-                    cmd.Parameters.AddWithValue("@UnitId", productsModel.UnitId);
-                    cmd.Parameters.AddWithValue("@PriceWebStore", productsModel.PriceWebStore);
-                    cmd.Parameters.AddWithValue("@PriceSupplier", productsModel.PriceSupplier);
-                    cmd.Parameters.AddWithValue("@Available", productsModel.Available);
-                    cmd.Parameters.AddWithValue("@LinkWebStore", productsModel.LinkWebStore);
-                    cmd.Parameters.AddWithValue("@LinkSupplier", productsModel.LinkSupplier);
-                    cmd.Parameters.AddWithValue("@Notes", productsModel.Notes);
-                    cmd.Parameters.AddWithValue("@Id", productsModel.Id);
-
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка оновлення товару в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                var sqlQuery = "update Products set SupplierId=@SupplierId, CategoryId=@CategoryId, GroupId=@GroupId, " +
+                    "NameWebStore=@NameWebStore, NameSupplier=@NameSupplier, CodeWebStore=@CodeWebStore, CodeSupplier=@CodeSupplier, " +
+                    "UnitId=@UnitId, PriceWebStore=@PriceWebStore, PriceSupplier=@PriceSupplier, Available=@Available, " +
+                    "LinkWebStore=@LinkWebStore, LinkSupplier=@LinkSupplier, Notes=@Notes where Id=@Id";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@SupplierId", productsModel.SupplierId);
+                cmd.Parameters.AddWithValue("@CategoryId", productsModel.CategoryId);
+                if (productsModel.GroupId != null) cmd.Parameters.AddWithValue("@GroupId", productsModel.GroupId);
+                cmd.Parameters.AddWithValue("@NameWebStore", productsModel.NameWebStore);
+                cmd.Parameters.AddWithValue("@NameSupplier", productsModel.NameSupplier);
+                cmd.Parameters.AddWithValue("@CodeWebStore", productsModel.CodeWebStore);
+                cmd.Parameters.AddWithValue("@CodeSupplier", productsModel.CodeSupplier);
+                cmd.Parameters.AddWithValue("@UnitId", productsModel.UnitId);
+                cmd.Parameters.AddWithValue("@PriceWebStore", productsModel.PriceWebStore);
+                cmd.Parameters.AddWithValue("@PriceSupplier", productsModel.PriceSupplier);
+                cmd.Parameters.AddWithValue("@Available", productsModel.Available);
+                cmd.Parameters.AddWithValue("@LinkWebStore", productsModel.LinkWebStore);
+                cmd.Parameters.AddWithValue("@LinkSupplier", productsModel.LinkSupplier);
+                cmd.Parameters.AddWithValue("@Notes", productsModel.Notes);
+                cmd.Parameters.AddWithValue("@Id", productsModel.Id);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка оновлення товару в базі даних.");
+                }
             }
         }
     }

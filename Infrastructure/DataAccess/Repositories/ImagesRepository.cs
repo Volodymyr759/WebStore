@@ -28,27 +28,34 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="imagesModel">Екземпляр зображення</param>
         public void Add(IImagesModel imagesModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string sqlQuery = "insert into Images(ProductId, FileName, LinkWebStore, LinkSupplier, LocalPath) " +
-            "values(@ProductId, @FileName, @LinkWebStore, @LinkSupplier, @LocalPath)";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@ProductId", imagesModel.ProductId);
-                    cmd.Parameters.AddWithValue("@FileName", imagesModel.FileName);
-                    cmd.Parameters.AddWithValue("@LinkWebStore", imagesModel.LinkWebStore);
-                    cmd.Parameters.AddWithValue("@LinkSupplier", imagesModel.LinkSupplier);
-                    cmd.Parameters.AddWithValue("@LocalPath", imagesModel.LocalPath);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка створення зображення в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string sqlQuery = "insert into Images(ProductId, FileName, LinkWebStore, LinkSupplier, LocalPath) " +
+                    "values(@ProductId, @FileName, @LinkWebStore, @LinkSupplier, @LocalPath)";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@ProductId", imagesModel.ProductId);
+                cmd.Parameters.AddWithValue("@FileName", imagesModel.FileName);
+                cmd.Parameters.AddWithValue("@LinkWebStore", imagesModel.LinkWebStore);
+                cmd.Parameters.AddWithValue("@LinkSupplier", imagesModel.LinkSupplier);
+                cmd.Parameters.AddWithValue("@LocalPath", imagesModel.LocalPath);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка створення зображення в базі даних.");
+                }
             }
         }
 
@@ -58,22 +65,29 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="id">Ідентифікатор зображення</param>
         public void DeleteById(int id)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string query = "delete from Images where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    SqlCeCommand cmd = new SqlCeCommand(query, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка видалення зображення з бази даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "delete from Images where Id=@Id";
+                SqlCeCommand cmd = new SqlCeCommand(query, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Id", id);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка видалення зображення з бази даних.");
+                }
             }
         }
 
@@ -83,14 +97,22 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Список зображень</returns>
         public IEnumerable<IImagesModel> GetAll()
         {
-            try
+            List<ImagesModel> images = new List<ImagesModel>();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                List<ImagesModel> images = new List<ImagesModel>();
-                string query = "select Id, ProductId, FileName, LinkWebStore, LinkSupplier, LocalPath from Images";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    using (SqlCeCommand command = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select Id, ProductId, FileName, LinkWebStore, LinkSupplier, LocalPath from Images";
+                using (SqlCeCommand command = new SqlCeCommand(query, db))
+                {
+                    try
                     {
                         using (SqlCeDataReader reader = command.ExecuteReader())
                         {
@@ -109,14 +131,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання списку зображень з бази даних.");
+                    }
                 }
-                return images;
             }
-            catch
-            {
-                throw new Exception("Помилка отримання списку зображень з бази даних.");
-            }
+            return images;
         }
 
         /// <summary>
@@ -126,18 +147,26 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Екземпляр зображення</returns>
         public IImagesModel GetById(int id)
         {
-            try
+            ImagesModel image = new ImagesModel();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                ImagesModel image = new ImagesModel();
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    string query = "select Id, ProductId, FileName, LinkWebStore, LinkSupplier, LocalPath " +
-                        "from Images where Id=@Id";
-                    using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select Id, ProductId, FileName, LinkWebStore, LinkSupplier, LocalPath " +
+                    "from Images where Id=@Id";
+                using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                {
+                    cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    try
                     {
-                        cmd.Prepare();
-                        cmd.Parameters.AddWithValue("@Id", id);
                         using (SqlCeDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
@@ -151,14 +180,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання зображення з бази даних.");
+                    }
                 }
-                return image;
             }
-            catch
-            {
-                throw new Exception("Помилка отримання зображення з бази даних.");
-            }
+            return image;
         }
 
         /// <summary>
@@ -167,29 +195,36 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="imagesModel">Екземпляр зображення</param>
         public void Update(IImagesModel imagesModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                var sqlQuery = "update Images set ProductId=@ProductId, FileName=@FileName, LinkWebStore=@LinkWebStore, " +
-            "LinkSupplier=@LinkSupplier, LocalPath=@LocalPath where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@ProductId", imagesModel.ProductId);
-                    cmd.Parameters.AddWithValue("@FileName", imagesModel.FileName);
-                    cmd.Parameters.AddWithValue("@LinkWebStore", imagesModel.LinkWebStore);
-                    cmd.Parameters.AddWithValue("@LinkSupplier", imagesModel.LinkSupplier);
-                    cmd.Parameters.AddWithValue("@LocalPath", imagesModel.LocalPath);
-                    cmd.Parameters.AddWithValue("@Id", imagesModel.Id);
-
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка оновлення зображення в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                var sqlQuery = "update Images set ProductId=@ProductId, FileName=@FileName, LinkWebStore=@LinkWebStore, " +
+                    "LinkSupplier=@LinkSupplier, LocalPath=@LocalPath where Id=@Id";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@ProductId", imagesModel.ProductId);
+                cmd.Parameters.AddWithValue("@FileName", imagesModel.FileName);
+                cmd.Parameters.AddWithValue("@LinkWebStore", imagesModel.LinkWebStore);
+                cmd.Parameters.AddWithValue("@LinkSupplier", imagesModel.LinkSupplier);
+                cmd.Parameters.AddWithValue("@LocalPath", imagesModel.LocalPath);
+                cmd.Parameters.AddWithValue("@Id", imagesModel.Id);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Помилка оновлення зображення в базі даних.");
+                }
             }
         }
     }

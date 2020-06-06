@@ -16,7 +16,7 @@ namespace Presentation.Tests
         {
             ErrorMessageView errorMessageView = new ErrorMessageView();
             ParametersDetailUC parametersDetailUC = new ParametersDetailUC(errorMessageView);
-            parametersDetailPresenter = new ParametersDetailPresenter(parametersDetailUC, ServicesInitializator.facade);
+            parametersDetailPresenter = new ParametersDetailPresenter(parametersDetailUC, ServicesInitialiser.facade);
         }
 
         [TestInitialize]

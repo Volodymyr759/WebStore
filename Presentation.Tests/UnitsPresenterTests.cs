@@ -14,8 +14,8 @@ namespace Presentation.Tests
             ErrorMessageView errorMessageView = new ErrorMessageView();
             unitsPresenter = new UnitsPresenter(
                 new UnitsUC(errorMessageView),
-                ServicesInitializator.facade, 
-                new UnitsDetailPresenter(new UnitsDetailUC(errorMessageView), ServicesInitializator.facade), 
+                ServicesInitialiser.facade, 
+                new UnitsDetailPresenter(new UnitsDetailUC(errorMessageView), ServicesInitialiser.facade), 
                 new DeleteConfirmView(), errorMessageView);
         }
 

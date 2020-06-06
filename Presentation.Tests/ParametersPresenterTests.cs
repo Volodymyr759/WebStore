@@ -17,10 +17,10 @@ namespace Presentation.Tests
             ErrorMessageView errorMessageView = new ErrorMessageView();
             DeleteConfirmView deleteConfirmView = new DeleteConfirmView();
             ParametersDetailUC parametersDetailUC = new ParametersDetailUC(errorMessageView);
-            ParametersDetailPresenter parametersDetailPresenter = new ParametersDetailPresenter(parametersDetailUC, ServicesInitializator.facade);
+            ParametersDetailPresenter parametersDetailPresenter = new ParametersDetailPresenter(parametersDetailUC, ServicesInitialiser.facade);
             parametersPresenter = new ParametersPresenter(new ParametersUC(errorMessageView), 
                 parametersDetailPresenter, 
-                ServicesInitializator.facade,
+                ServicesInitialiser.facade,
                 deleteConfirmView, errorMessageView);
         }
 

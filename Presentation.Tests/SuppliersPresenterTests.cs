@@ -14,8 +14,8 @@ namespace Presentation.Tests
         {
             ErrorMessageView errorMessageView = new ErrorMessageView();
             suppliersPresenter = new SuppliersPresenter(new SuppliersUC(errorMessageView),
-                new SuppliersDetailPresenter(new SuppliersDetailUC(errorMessageView), ServicesInitializator.facade),
-                ServicesInitializator.facade, new DeleteConfirmView(), errorMessageView);
+                new SuppliersDetailPresenter(new SuppliersDetailUC(errorMessageView), ServicesInitialiser.facade),
+                ServicesInitialiser.facade, new DeleteConfirmView(), errorMessageView);
         }
 
         [TestMethod]

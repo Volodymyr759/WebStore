@@ -18,9 +18,9 @@ namespace Presentation.Tests
             DeleteConfirmView deleteConfirmView = new DeleteConfirmView();
             ImagesDetailUC imagesDetailUC = new ImagesDetailUC(errorMessageView);
             ImagesDetailPresenter imagesDetailPresenter = new ImagesDetailPresenter(imagesDetailUC,
-                ServicesInitializator.facade);
+                ServicesInitialiser.facade);
             imagesPresenter = new ImagesPresenter(new ImagesUC(errorMessageView), imagesDetailPresenter,
-                ServicesInitializator.facade, deleteConfirmView, errorMessageView);
+                ServicesInitialiser.facade, deleteConfirmView, errorMessageView);
         }
 
         [TestInitialize]

@@ -17,9 +17,9 @@ namespace Presentation.Tests
             ErrorMessageView errorMessageView = new ErrorMessageView();
             DeleteConfirmView deleteConfirmView = new DeleteConfirmView();
             ProductsDetailUC productsDetailUC = new ProductsDetailUC(errorMessageView);
-            ProductsDetailPresenter productsDetailPresenter = new ProductsDetailPresenter(productsDetailUC, ServicesInitializator.facade);
+            ProductsDetailPresenter productsDetailPresenter = new ProductsDetailPresenter(productsDetailUC, ServicesInitialiser.facade);
             productsPresenter = new ProductsPresenter(new ProductsUC(errorMessageView), productsDetailPresenter,
-                ServicesInitializator.facade,
+                ServicesInitialiser.facade,
                 deleteConfirmView, errorMessageView);
         }
 

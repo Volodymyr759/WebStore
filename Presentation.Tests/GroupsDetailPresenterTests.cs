@@ -16,7 +16,7 @@ namespace Presentation.Tests
         {
             ErrorMessageView errorMessageView = new ErrorMessageView();
             GroupsDetailUC groupsDetailUC = new GroupsDetailUC(errorMessageView);
-            groupsDetailPresenter = new GroupsDetailPresenter(groupsDetailUC, ServicesInitializator.facade);
+            groupsDetailPresenter = new GroupsDetailPresenter(groupsDetailUC, ServicesInitialiser.facade);
         }
 
         [TestInitialize]

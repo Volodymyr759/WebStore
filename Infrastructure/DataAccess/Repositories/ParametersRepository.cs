@@ -28,25 +28,32 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="parametersModel">Екземпляр характеристики товару</param>
         public void Add(IParametersModel parametersModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string sqlQuery = "insert into Parameters(ProductId, Name, UnitId, Value) values(@ProductId, @Name, @UnitId, @Value)";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@ProductId", parametersModel.ProductId);
-                    cmd.Parameters.AddWithValue("@Name", parametersModel.Name);
-                    cmd.Parameters.AddWithValue("@UnitId", parametersModel.UnitId);
-                    cmd.Parameters.AddWithValue("@Value", parametersModel.Value);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка створення характеристики в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string sqlQuery = "insert into Parameters(ProductId, Name, UnitId, Value) values(@ProductId, @Name, @UnitId, @Value)";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@ProductId", parametersModel.ProductId);
+                cmd.Parameters.AddWithValue("@Name", parametersModel.Name);
+                cmd.Parameters.AddWithValue("@UnitId", parametersModel.UnitId);
+                cmd.Parameters.AddWithValue("@Value", parametersModel.Value);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка створення характеристики в базі даних.");
+                }
             }
         }
 
@@ -56,22 +63,29 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="id">Ідентифікатор характеристики товару</param>
         public void DeleteById(int id)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string query = "delete from Parameters where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    SqlCeCommand cmd = new SqlCeCommand(query, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка видалення характеристики з бази даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "delete from Parameters where Id=@Id";
+                SqlCeCommand cmd = new SqlCeCommand(query, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Id", id);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка видалення характеристики з бази даних.");
+                }
             }
         }
 
@@ -81,14 +95,22 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Список характеристик товару</returns>
         public IEnumerable<IParametersModel> GetAll()
         {
-            try
+            List<ParametersModel> parameters = new List<ParametersModel>();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                List<ParametersModel> parameters = new List<ParametersModel>();
-                string query = "select Id, ProductId, Name, UnitId, Value from Parameters";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    using (SqlCeCommand command = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select Id, ProductId, Name, UnitId, Value from Parameters";
+                using (SqlCeCommand command = new SqlCeCommand(query, db))
+                {
+                    try
                     {
                         using (SqlCeDataReader reader = command.ExecuteReader())
                         {
@@ -106,14 +128,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання списку характеристик з бази даних.");
+                    }
                 }
-                return parameters;
             }
-            catch (Exception)
-            {
-                throw new Exception("Помилка отримання списку характеристик з бази даних.");
-            }
+            return parameters;
         }
 
         /// <summary>
@@ -123,18 +144,25 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Екземпляр характеристики товару</returns>
         public IParametersModel GetById(int id)
         {
-            try
+            ParametersModel parameter = new ParametersModel();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                ParametersModel parameter = new ParametersModel();
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    string query = "select Id, ProductId, Name, UnitId, Value " +
-                        "from Parameters where Id=@Id";
-                    using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select Id, ProductId, Name, UnitId, Value from Parameters where Id=@Id";
+                using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                {
+                    cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    try
                     {
-                        cmd.Prepare();
-                        cmd.Parameters.AddWithValue("@Id", id);
                         using (SqlCeDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
@@ -147,14 +175,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання характеристики з бази даних.");
+                    }
                 }
-                return parameter;
             }
-            catch (Exception)
-            {
-                throw new Exception("Помилка отримання характеристики з бази даних.");
-            }
+            return parameter;
         }
 
         /// <summary>
@@ -163,27 +190,34 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="parametersModel">Екземпляр характеристики товару</param>
         public void Update(IParametersModel parametersModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                var sqlQuery = "update Parameters set Name=@Name, ProductId=@ProductId, UnitId=@UnitId, Value=@Value where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@ProductId", parametersModel.ProductId);
-                    cmd.Parameters.AddWithValue("@Name", parametersModel.Name);
-                    cmd.Parameters.AddWithValue("@UnitId", parametersModel.UnitId);
-                    cmd.Parameters.AddWithValue("@Value", parametersModel.Value);
-                    cmd.Parameters.AddWithValue("@Id", parametersModel.Id);
-
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка оновлення характеристики в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                var sqlQuery = "update Parameters set Name=@Name, ProductId=@ProductId, UnitId=@UnitId, Value=@Value where Id=@Id";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@ProductId", parametersModel.ProductId);
+                cmd.Parameters.AddWithValue("@Name", parametersModel.Name);
+                cmd.Parameters.AddWithValue("@UnitId", parametersModel.UnitId);
+                cmd.Parameters.AddWithValue("@Value", parametersModel.Value);
+                cmd.Parameters.AddWithValue("@Id", parametersModel.Id);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка оновлення характеристики в базі даних.");
+                }
             }
         }
     }

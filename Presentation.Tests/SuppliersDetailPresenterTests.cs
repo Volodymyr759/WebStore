@@ -16,7 +16,7 @@ namespace Presentation.Tests
         {
             suppliersDetailPresenter = new SuppliersDetailPresenter(
                 new SuppliersDetailUC(new ErrorMessageView()),
-                ServicesInitializator.facade);
+                ServicesInitialiser.facade);
         }
 
         [TestInitialize]

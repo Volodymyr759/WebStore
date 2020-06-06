@@ -15,7 +15,7 @@ namespace Presentation.Tests
         public CategoriesDetailPresenterTests()
         {
             categoriesDetailPresenter = new CategoriesDetailPresenter(new CategoriesDetailUC(new ErrorMessageView()), 
-                ServicesInitializator.facade);
+                ServicesInitialiser.facade);
         }
 
         [TestInitialize]
@@ -60,7 +60,7 @@ namespace Presentation.Tests
         {
             try
             {
-                categoriesDetailPresenter.SetupCategoriesDetailForEdit(1);
+                categoriesDetailPresenter.SetupCategoriesDetailForEdit(2);
                 operationSucceeded = true;
             }
             catch (Exception ex)

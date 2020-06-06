@@ -28,41 +28,41 @@ namespace Presentation.Tests
             mainView = new MainView(errorMessageView);
 
             SettingsPresenter settingsPresenter = new SettingsPresenter(new SettingsUC(errorMessageView), errorMessageView);
-            StoreFacade facade = ServicesInitializator.facade;
+            StoreFacade facade = ServicesInitialiser.facade;
 
-            UnitsService unitsService = ServicesInitializator.unitsService;
+            UnitsService unitsService = ServicesInitialiser.unitsService;
             UnitsDetailUC unitsDetailUC = new UnitsDetailUC(errorMessageView);
             UnitsDetailPresenter unitsDetailPresenter = new UnitsDetailPresenter(unitsDetailUC, facade);
             UnitsPresenter unitsPresenter = new UnitsPresenter(new UnitsUC(errorMessageView), facade, unitsDetailPresenter, deleteConfirmView, errorMessageView);
 
-            SuppliersService supplierService = ServicesInitializator.suppliersService;
+            SuppliersService supplierService = ServicesInitialiser.suppliersService;
             SuppliersDetailUC suppliersDetailUC = new SuppliersDetailUC(errorMessageView);
             SuppliersDetailPresenter suppliersDetailPresenter = new SuppliersDetailPresenter(suppliersDetailUC, facade);
             SuppliersPresenter suppliersPresenter = new SuppliersPresenter(new SuppliersUC(errorMessageView), suppliersDetailPresenter, facade, deleteConfirmView, errorMessageView);
 
-            ProductsService productsService = ServicesInitializator.productsService;
+            ProductsService productsService = ServicesInitialiser.productsService;
             ProductsDetailUC productsDetailUC = new ProductsDetailUC(errorMessageView);
             ProductsDetailPresenter productsDetailPresenter = new ProductsDetailPresenter(productsDetailUC, facade);
             ProductsPresenter productsPresenter = new ProductsPresenter(new ProductsUC(errorMessageView), productsDetailPresenter,
                 facade, deleteConfirmView, errorMessageView);
 
-            ParametersService parametersService = ServicesInitializator.parametersService;
+            ParametersService parametersService = ServicesInitialiser.parametersService;
             ParametersDetailUC parametersDetailUC = new ParametersDetailUC(errorMessageView);
             ParametersDetailPresenter parametersDetailPresenter = new ParametersDetailPresenter(parametersDetailUC, facade);
             ParametersPresenter parametersPresenter = new ParametersPresenter(new ParametersUC(errorMessageView), 
                 parametersDetailPresenter, facade, deleteConfirmView, errorMessageView);
 
-            ImagesService imagesService = ServicesInitializator.imagesService;
+            ImagesService imagesService = ServicesInitialiser.imagesService;
             ImagesDetailUC imagesDetailUC = new ImagesDetailUC(errorMessageView);
             ImagesDetailPresenter imagesDetailPresenter = new ImagesDetailPresenter(imagesDetailUC, facade);
-            ImagesPresenter imagesPresenter = new ImagesPresenter(new ImagesUC(errorMessageView), imagesDetailPresenter, ServicesInitializator.facade, deleteConfirmView, errorMessageView);
+            ImagesPresenter imagesPresenter = new ImagesPresenter(new ImagesUC(errorMessageView), imagesDetailPresenter, ServicesInitialiser.facade, deleteConfirmView, errorMessageView);
 
-            GroupsService groupsService = ServicesInitializator.groupsService;
+            GroupsService groupsService = ServicesInitialiser.groupsService;
             GroupsDetailUC groupsDetailUC = new GroupsDetailUC(errorMessageView);
-            GroupsDetailPresenter groupsDetailPresenter = new GroupsDetailPresenter(groupsDetailUC, ServicesInitializator.facade);
-            GroupsPresenter groupsPresenter = new GroupsPresenter(new GroupsUC(errorMessageView), groupsDetailPresenter, ServicesInitializator.facade, deleteConfirmView, errorMessageView);
+            GroupsDetailPresenter groupsDetailPresenter = new GroupsDetailPresenter(groupsDetailUC, ServicesInitialiser.facade);
+            GroupsPresenter groupsPresenter = new GroupsPresenter(new GroupsUC(errorMessageView), groupsDetailPresenter, ServicesInitialiser.facade, deleteConfirmView, errorMessageView);
 
-            CategoriesService categoriesService = ServicesInitializator.categoriesService;
+            CategoriesService categoriesService = ServicesInitialiser.categoriesService;
             CategoriesDetailUC categoriesDetailUC = new CategoriesDetailUC(errorMessageView);
             CategoriesDetailPresenter categoriesDetailPresenter = new CategoriesDetailPresenter(categoriesDetailUC, facade);
             CategoriesPresenter categoriesPresenter = new CategoriesPresenter(new CategoriesUC(errorMessageView), categoriesDetailPresenter, facade, deleteConfirmView, errorMessageView);

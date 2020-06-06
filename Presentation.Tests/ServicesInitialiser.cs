@@ -11,7 +11,7 @@ using Services.UnitsServices;
 
 namespace Presentation.Tests
 {
-    public static class ServicesInitializator
+    public static class ServicesInitialiser
     {
         const string connString = @"Data Source=D:\webstore.sdf";
 

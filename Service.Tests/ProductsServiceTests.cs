@@ -104,8 +104,8 @@ namespace Service.Tests
                 fakeProductsRepository.Setup(a => a.GetById(1)).Returns(new ProductsModel
                 {
                     Id = 1,
-                    SupplierId = 1,
-                    CategoryId = 1,
+                    SupplierId = 4,
+                    CategoryId = 2,
                     GroupId = 1,
                     NameWebStore = "product1",
                     NameSupplier = "Product1",
@@ -120,9 +120,10 @@ namespace Service.Tests
                     Notes = "some notes"
                 });
                 Mock<ICommonRepository> fakeCommonRepository = new Mock<ICommonRepository>();
-                fakeCommonRepository.Setup(a => a.GetCategoriesIdNames()).Returns(new Dictionary<int, string> { { 1, "Category" } });
+                fakeCommonRepository.Setup(a => a.GetCategoriesIdNames()).Returns(new Dictionary<int, string> { { 2, "Category" } });
                 fakeCommonRepository.Setup(a => a.GetGroupsIdNames()).Returns(new Dictionary<int, string> { { 1, "Group" } });
-                fakeCommonRepository.Setup(a => a.GetSuppliersIdNames()).Returns(new Dictionary<int, string> { { 1, "Supplier" } });
+                fakeCommonRepository.Setup(a => a.GetSuppliersIdNames()).Returns(new Dictionary<int, string> { { 4, "Supplier" } });
+                fakeCommonRepository.Setup(a => a.GetSuppliersIdCurrencies()).Returns(new Dictionary<int, string> { { 4, "USD" } });
                 fakeCommonRepository.Setup(a => a.GetUnitsIdNames()).Returns(new Dictionary<int, string> { { 1, "p." } });
 
                 productsService = new ProductsService(fakeProductsRepository.Object, fakeCommonRepository.Object);

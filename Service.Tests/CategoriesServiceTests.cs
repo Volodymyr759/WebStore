@@ -85,14 +85,14 @@ namespace Service.Tests
             CategoriesDtoModel categoriesDto = null;
             try
             {
-                fakeCategoriesRepository.Setup(a => a.GetById(1)).Returns(new CategoriesModel { SupplierId = 2 });
+                fakeCategoriesRepository.Setup(a => a.GetById(2)).Returns(new CategoriesModel { Id = 2, SupplierId = 4, Name = "Category name", Link = "Categories link", Rate = 1, Notes="notes" });
                 Mock<ICommonRepository> fakeCommonRepository = new Mock<ICommonRepository>();
-                fakeCommonRepository.Setup(a => a.GetSuppliersIdCurrencies()).Returns(new Dictionary<int, string> { { 2, "Supplier" } });
+                fakeCommonRepository.Setup(a => a.GetSuppliersIdNames()).Returns(new Dictionary<int, string> { { 4, "Supplier" } });
 
                 categoriesService = new CategoriesService(fakeCategoriesRepository.Object,
                     fakeCommonRepository.Object);
 
-                categoriesDto = categoriesService.GetCategoryById(1);
+                categoriesDto = categoriesService.GetCategoryById(2);
             }
             catch (Exception ex)
             {

@@ -32,25 +32,32 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="suppliersModel">Екземпляр постачальника</param>
         public void Add(ISuppliersModel suppliersModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string sqlQuery = "insert into Suppliers(Name, Link, Currency, Notes) values(@Name, @Link, @Currency, @Notes)";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Name", suppliersModel.Name);
-                    cmd.Parameters.AddWithValue("@Link", suppliersModel.Link);
-                    cmd.Parameters.AddWithValue("@Currency", suppliersModel.Currency);
-                    cmd.Parameters.AddWithValue("@Notes", suppliersModel.Notes);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка створення постачальника в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string sqlQuery = "insert into Suppliers(Name, Link, Currency, Notes) values(@Name, @Link, @Currency, @Notes)";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Name", suppliersModel.Name);
+                cmd.Parameters.AddWithValue("@Link", suppliersModel.Link);
+                cmd.Parameters.AddWithValue("@Currency", suppliersModel.Currency);
+                cmd.Parameters.AddWithValue("@Notes", suppliersModel.Notes);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Помилка створення постачальника в базі даних.");
+                }
             }
         }
 
@@ -60,22 +67,29 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="id">Ідентифікатор постачальника</param>
         public void DeleteById(int id)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string query = "delete from Suppliers where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    SqlCeCommand cmd = new SqlCeCommand(query, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка видалення постачальника з бази даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "delete from Suppliers where Id=@Id";
+                SqlCeCommand cmd = new SqlCeCommand(query, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Id", id);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка видалення постачальника з бази даних.");
+                }
             }
         }
 
@@ -85,14 +99,22 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Список постачальників</returns>
         public IEnumerable<ISuppliersModel> GetAll()
         {
-            try
+            List<SuppliersModel> suppliers = new List<SuppliersModel>();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                List<SuppliersModel> suppliers = new List<SuppliersModel>();
-                string query = "select * from Suppliers";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    using (SqlCeCommand command = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select * from Suppliers";
+                using (SqlCeCommand command = new SqlCeCommand(query, db))
+                {
+                    try
                     {
                         using (SqlCeDataReader reader = command.ExecuteReader())
                         {
@@ -110,14 +132,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання списку постачальників з бази даних.");
+                    }
                 }
-                return suppliers;
             }
-            catch
-            {
-                throw new Exception("Помилка отримання списку постачальників з бази даних.");
-            }
+            return suppliers;
         }
 
         /// <summary>
@@ -127,17 +148,25 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Екземпляр постачальника</returns>
         public ISuppliersModel GetById(int id)
         {
-            try
+            SuppliersModel supplier = new SuppliersModel();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                SuppliersModel supplier = new SuppliersModel();
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    string query = "select Id, Name, Link, Currency, Notes from Suppliers where Id=@Id";
-                    using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select Id, Name, Link, Currency, Notes from Suppliers where Id=@Id";
+                using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                {
+                    cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    try
                     {
-                        cmd.Prepare();
-                        cmd.Parameters.AddWithValue("@Id", id);
                         using (SqlCeDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
@@ -150,14 +179,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання постачальника з бази даних.");
+                    }
                 }
-                return supplier;
             }
-            catch
-            {
-                throw new Exception("Помилка отримання постачальника з бази даних.");
-            }
+            return supplier;
         }
 
         /// <summary>
@@ -166,26 +194,33 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="suppliersModel">Екземпляр постачальника</param>
         public void Update(ISuppliersModel suppliersModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                var sqlQuery = "update Suppliers set Name=@Name, Link=@Link, Currency=@Currency, Notes=@Notes where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Name", suppliersModel.Name);
-                    cmd.Parameters.AddWithValue("@Link", suppliersModel.Link);
-                    cmd.Parameters.AddWithValue("@Currency", suppliersModel.Currency);
-                    cmd.Parameters.AddWithValue("@Notes", suppliersModel.Notes);
-                    cmd.Parameters.AddWithValue("@Id", suppliersModel.Id);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка оновлення постачальника в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string sqlQuery = "update Suppliers set Name=@Name, Link=@Link, Currency=@Currency, Notes=@Notes where Id=@Id";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Name", suppliersModel.Name);
+                cmd.Parameters.AddWithValue("@Link", suppliersModel.Link);
+                cmd.Parameters.AddWithValue("@Currency", suppliersModel.Currency);
+                cmd.Parameters.AddWithValue("@Notes", suppliersModel.Notes);
+                cmd.Parameters.AddWithValue("@Id", suppliersModel.Id);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка оновлення постачальника в базі даних.");
+                }
             }
         }
     }

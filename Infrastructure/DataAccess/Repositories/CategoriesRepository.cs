@@ -28,26 +28,34 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="categoriesModel">Екземпляр категорії</param>
         public void Add(ICategoriesModel categoriesModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string sqlQuery = "insert into Categories(Name, SupplierId, Link, Rate, Notes) values(@Name, @SupplierId, @Link, @Rate, @Notes)";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Name", categoriesModel.Name);
-                    cmd.Parameters.AddWithValue("@SupplierId", categoriesModel.SupplierId);
-                    cmd.Parameters.AddWithValue("@Link", categoriesModel.Link);
-                    cmd.Parameters.AddWithValue("@Rate", categoriesModel.Rate);
-                    cmd.Parameters.AddWithValue("@Notes", categoriesModel.Notes);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка створення категорії в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string sqlQuery = "insert into Categories(Name, SupplierId, Link, Rate, Notes) values(@Name, @SupplierId, @Link, @Rate, @Notes)";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Name", categoriesModel.Name);
+                cmd.Parameters.AddWithValue("@SupplierId", categoriesModel.SupplierId);
+                cmd.Parameters.AddWithValue("@Link", categoriesModel.Link);
+                cmd.Parameters.AddWithValue("@Rate", categoriesModel.Rate);
+                cmd.Parameters.AddWithValue("@Notes", categoriesModel.Notes);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка створення категорії в базі даних.");
+                }
             }
         }
 
@@ -57,21 +65,30 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="id">Ідентифікатор категорії</param>
         public void DeleteById(int id)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                string query = "delete from Categories where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    SqlCeCommand cmd = new SqlCeCommand(query, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Id", id);
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "delete from Categories where Id=@Id";
+                SqlCeCommand cmd = new SqlCeCommand(query, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                try
+                {
                     cmd.ExecuteNonQuery();
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка видалення категорії з бази даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка видалення категорії з бази даних.");
+                }
             }
         }
 
@@ -81,14 +98,22 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Список категорій</returns>
         public IEnumerable<ICategoriesModel> GetAll()
         {
-            try
+            var listcategoriesDto = new List<CategoriesModel>();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                var listcategoriesDto = new List<CategoriesModel>();
-                string query = "select Id, Name, SupplierId, Link, Rate, Notes from Categories order by Name";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    using (SqlCeCommand command = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select Id, Name, SupplierId, Link, Rate, Notes from Categories order by Name";
+                using (SqlCeCommand command = new SqlCeCommand(query, db))
+                {
+                    try
                     {
                         using (SqlCeDataReader reader = command.ExecuteReader())
                         {
@@ -107,14 +132,13 @@ namespace Infrastructure.DataAccess.Repositories
                             }
                         }
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання списку категорій з бази даних.");
+                    }
                 }
-                return listcategoriesDto;
             }
-            catch
-            {
-                throw new Exception("Помилка отримання списку категорій з бази даних.");
-            }
+            return listcategoriesDto;
         }
 
         /// <summary>
@@ -124,17 +148,26 @@ namespace Infrastructure.DataAccess.Repositories
         /// <returns>Екземпляр категорії</returns>
         public ICategoriesModel GetById(int id)
         {
-            try
+            CategoriesModel category = new CategoriesModel();
+            using (var db = new SqlCeConnection(connectionString))
             {
-                CategoriesModel category = new CategoriesModel();
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    string query = "select Id, Name, SupplierId, Link, Rate, Notes from Categories where Id=@Id";
-                    using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string query = "select Id, Name, SupplierId, Link, Rate, Notes from Categories where Id=@Id";
+                using (SqlCeCommand cmd = new SqlCeCommand(query, db))
+                {
+                    cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@Id", id);
+
+                    try
                     {
-                        cmd.Prepare();
-                        cmd.Parameters.AddWithValue("@Id", id);
                         using (SqlCeDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
@@ -147,15 +180,15 @@ namespace Infrastructure.DataAccess.Repositories
                                 category.Notes = reader["Notes"].ToString();
                             }
                         }
+
                     }
-                    db.Close();
+                    catch (SqlCeException)
+                    {
+                        throw new Exception("Помилка отримання категорії з бази даних.");
+                    }
                 }
-                return category;
             }
-            catch
-            {
-                throw new Exception("Помилка отримання категорії з бази даних.");
-            }
+            return category;
         }
 
         /// <summary>
@@ -164,27 +197,36 @@ namespace Infrastructure.DataAccess.Repositories
         /// <param name="categoriesModel">Екземпляр категорії</param>
         public void Update(ICategoriesModel categoriesModel)
         {
-            try
+            using (var db = new SqlCeConnection(connectionString))
             {
-                var sqlQuery = "update Categories set Name=@Name, SupplierId=@SupplierId, Link=@Link, Rate=@Rate, Notes=@Notes where Id=@Id";
-                using (var db = new SqlCeConnection(connectionString))
+                try
                 {
                     db.Open();
-                    var cmd = new SqlCeCommand(sqlQuery, db);
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue("@Name", categoriesModel.Name);
-                    cmd.Parameters.AddWithValue("@SupplierId", categoriesModel.SupplierId);
-                    cmd.Parameters.AddWithValue("@Link", categoriesModel.Link);
-                    cmd.Parameters.AddWithValue("@Rate", categoriesModel.Rate);
-                    cmd.Parameters.AddWithValue("@Notes", categoriesModel.Notes);
-                    cmd.Parameters.AddWithValue("@Id", categoriesModel.Id);
-                    cmd.ExecuteNonQuery();
-                    db.Close();
+
                 }
-            }
-            catch
-            {
-                throw new Exception("Помилка оновлення категорії в базі даних.");
+                catch (SqlCeException)
+                {
+                    throw new Exception("Немає підключення до бази даних.");
+                }
+
+                string sqlQuery = "update Categories set Name=@Name, SupplierId=@SupplierId, Link=@Link, Rate=@Rate, Notes=@Notes where Id=@Id";
+                var cmd = new SqlCeCommand(sqlQuery, db);
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@Name", categoriesModel.Name);
+                cmd.Parameters.AddWithValue("@SupplierId", categoriesModel.SupplierId);
+                cmd.Parameters.AddWithValue("@Link", categoriesModel.Link);
+                cmd.Parameters.AddWithValue("@Rate", categoriesModel.Rate);
+                cmd.Parameters.AddWithValue("@Notes", categoriesModel.Notes);
+                cmd.Parameters.AddWithValue("@Id", categoriesModel.Id);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlCeException)
+                {
+                    throw new Exception("Помилка оновлення категорії в базі даних.");
+                }
             }
         }
     }
