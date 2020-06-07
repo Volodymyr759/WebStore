@@ -1,51 +1,53 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
+using Services;
+using Services.ImagesServices;
+using Services.ProductsServices;
 using System;
+using System.Collections.Generic;
 
 namespace Presentation.Tests
 {
     [TestClass]
     public class ImagesDetailPresenterTests
     {
-        private ImagesDetailPresenter imagesDetailPresenter;
-        private string errorMessage;
-        private bool operationSucceeded;
+        private Mock<IStoreFacade> fakeFacadeService;
 
-        public ImagesDetailPresenterTests()
-        {
-            ErrorMessageView errorMessageView = new ErrorMessageView();
-            ImagesDetailUC imagesDetailUC = new ImagesDetailUC(errorMessageView);
-            imagesDetailPresenter = new ImagesDetailPresenter(imagesDetailUC, ServicesInitialiser.facade);
-        }
+        private ErrorMessageView errorMessageView = new ErrorMessageView();
+
+        private ImagesDetailPresenter imagesDetailPresenter;
+
+        private string errorMessage;
+
+        private bool operationSucceeded;
 
         [TestInitialize]
         public void TestInit()
         {
+            fakeFacadeService = new Mock<IStoreFacade>();
             errorMessage = "";
             operationSucceeded = false;
         }
 
-        [TestMethod]
-        public void GetImagesDetailUC_ShouldReturnImagesDetailUC()
+        [TestCleanup]
+        public void TestCleanUp()
         {
-            ImagesDetailUC imagesDetailUC = null;
-            try
-            {
-                imagesDetailUC = (ImagesDetailUC)imagesDetailPresenter.GetImagesDetailUC();
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message + " | " + ex.StackTrace;
-            }
-            Assert.IsNotNull(imagesDetailUC, errorMessage);
+            fakeFacadeService = null;
         }
 
         [TestMethod]
         public void SetupImagesDetailForAdd_ShouldReturn_Success()
         {
+            // Arrange
+            fakeFacadeService.Setup(p => p.GetProductsDto()).Returns(new List<ProductsDtoModel>());
+            imagesDetailPresenter = new ImagesDetailPresenter(new ImagesDetailUC(errorMessageView), 
+                fakeFacadeService.Object);
+
             try
             {
+                // Act
                 imagesDetailPresenter.SetupImagesDetailForAdd();
                 operationSucceeded = true;
             }
@@ -53,14 +55,32 @@ namespace Presentation.Tests
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
+
+            // Assert
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod]
         public void SetupImagesDetailForEdit_ShouldReturn_Success()
         {
+            // Arrange
+            ImagesDtoModel imagesDto = new ImagesDtoModel
+            {
+                Id = 1,
+                ProductId = 1,
+                ProductName = "product",
+                FileName = "filename",
+                LinkSupplier = "linksupplier",
+                LinkWebStore = "linkwebstore",
+                LocalPath = "localpath"
+            };
+            fakeFacadeService.Setup(i => i.GetImageById(1)).Returns(imagesDto);
+            imagesDetailPresenter = new ImagesDetailPresenter(new ImagesDetailUC(errorMessageView), 
+                fakeFacadeService.Object);
+
             try
             {
+                // Act
                 imagesDetailPresenter.SetupImagesDetailForEdit(1);
                 operationSucceeded = true;
             }
@@ -68,6 +88,8 @@ namespace Presentation.Tests
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
+
+            // Assert
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }

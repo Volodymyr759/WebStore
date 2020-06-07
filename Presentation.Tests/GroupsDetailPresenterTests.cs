@@ -1,6 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Presentation.Presenters.UserControls;
 using Presentation.Views.UserControls;
+using Services;
+using Services.GroupsServices;
 using System;
 
 namespace Presentation.Tests
@@ -8,61 +11,32 @@ namespace Presentation.Tests
     [TestClass]
     public class GroupsDetailPresenterTests
     {
-        private GroupsDetailPresenter groupsDetailPresenter;
-        private string errorMessage;
-        private bool operationSucceeded;
-
-        public GroupsDetailPresenterTests()
-        {
-            ErrorMessageView errorMessageView = new ErrorMessageView();
-            GroupsDetailUC groupsDetailUC = new GroupsDetailUC(errorMessageView);
-            groupsDetailPresenter = new GroupsDetailPresenter(groupsDetailUC, ServicesInitialiser.facade);
-        }
-
-        [TestInitialize]
-        public void TestInit()
-        {
-            errorMessage = "";
-            operationSucceeded = false;
-        }
-
-        [TestMethod]
-        public void GetGroupsDetailUC_ShouldReturnGroupsDetailUC()
-        {
-            GroupsDetailUC groupsDetailUC = null;
-            try
-            {
-                groupsDetailUC = (GroupsDetailUC)groupsDetailPresenter.GetGroupsDetailUC();
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message + " | " + ex.StackTrace;
-            }
-
-            Assert.IsNotNull(groupsDetailUC, errorMessage);
-        }
-
-        [TestMethod]
-        public void SetupGroupsDetailForAdd()
-        {
-            try
-            {
-                groupsDetailPresenter.SetupGroupsDetailForAdd();
-                operationSucceeded = true;
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message + " | " + ex.StackTrace;
-            }
-
-            Assert.IsTrue(operationSucceeded, errorMessage);
-        }
-
         [TestMethod]
         public void SetupGroupsDetailForEdit_ShouldReturn_Success()
         {
+            // Arrange
+            GroupsDtoModel groupsDto = new GroupsDtoModel
+            {
+                Id = 1,
+                Name = "name",
+                ProductType = "r",
+                Number = "number",
+                Identifier = "identifier",
+                AncestorNumber = "ancestornumber",
+                AncestorIdentifier = "ancestoridentifier",
+                Link = "link",
+                Notes = "notes"
+            };
+            Mock<IStoreFacade> fakeFacadeService = new Mock<IStoreFacade>();
+            fakeFacadeService.Setup(g => g.GetGroupById(1)).Returns(groupsDto);
+            GroupsDetailPresenter groupsDetailPresenter = new GroupsDetailPresenter(
+                new GroupsDetailUC(new ErrorMessageView()), fakeFacadeService.Object);
+            bool operationSucceeded = false;
+            string errorMessage = "";
+
             try
             {
+                // Act
                 groupsDetailPresenter.SetupGroupsDetailForEdit(1);
                 operationSucceeded = true;
             }
@@ -71,6 +45,7 @@ namespace Presentation.Tests
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
 
+            //Assert
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }

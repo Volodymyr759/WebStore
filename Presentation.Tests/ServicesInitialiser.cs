@@ -27,6 +27,7 @@ namespace Presentation.Tests
                  commonRepository);
 
         public static ProductsService productsService = new ProductsService(new ProductsRepository(connString), commonRepository);
+
         public static ImagesService imagesService = new ImagesService(new ImagesRepository(connString), commonRepository);
 
         public static ParametersService parametersService = new ParametersService(new ParametersRepository(connString), commonRepository);

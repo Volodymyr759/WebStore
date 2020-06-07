@@ -10,41 +10,49 @@ namespace Service.Tests
     [TestClass]
     public class SuppliersServiceTests
     {
-        string errorMessage;
-        bool operationSucceeded;
-        SuppliersService suppliersService;
-        Mock<ISuppliersRepository> fakeSuppliersRepository = new Mock<ISuppliersRepository>();
+        private string errorMessage;
+        private bool operationSucceeded;
+        private SuppliersService suppliersService;
+        private Mock<ISuppliersRepository> fakeSuppliersRepository;
 
         [TestInitialize]
         public void TestInit()
         {
+            fakeSuppliersRepository = new Mock<ISuppliersRepository>();
             errorMessage = "";
             operationSucceeded = false;
+        }
+
+        [TestCleanup]
+        public void TestCleanUp()
+        {
+            fakeSuppliersRepository = null;
         }
 
         [TestMethod]
         public void AddSupplier_ShouldReturn_Success()
         {
+            // Arrange
+            SuppliersModel supplier = new SuppliersModel
+            {
+                Name = "New supplier",
+                Link = "Suppliers link1",
+                Currency = "Eur",
+                Notes = "some notes for supplier1"
+            };
+            fakeSuppliersRepository.Setup(a => a.Add(supplier));
+            suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
+            SuppliersDtoModel supplierDto = new SuppliersDtoModel()
+            {
+                Name = supplier.Name,
+                Link = supplier.Link,
+                Currency = supplier.Currency,
+                Notes = supplier.Notes
+            };
+
             try
             {
-                SuppliersModel supplier = new SuppliersModel
-                {
-                    Name = "New supplier",
-                    Link = "Suppliers link1",
-                    Currency = "Eur",
-                    Notes = "some notes for supplier1"
-                };
-                fakeSuppliersRepository.Setup(a => a.Add(supplier));
-                suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
-
-                SuppliersDtoModel supplierDto = new SuppliersDtoModel()
-                {
-                    Name = supplier.Name,
-                    Link = supplier.Link,
-                    Currency = supplier.Currency,
-                    Notes = supplier.Notes
-                };
-
+                // Act
                 suppliersService.AddSupplier(supplierDto);
                 operationSucceeded = true;
             }
@@ -52,17 +60,21 @@ namespace Service.Tests
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
+
+            // Assert
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod]
         public void DeleteSupplierById_ShouldReturn_Success()
         {
+            // Arrange
+            fakeSuppliersRepository.Setup(a => a.DeleteById(1));
+            suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
+
             try
             {
-                fakeSuppliersRepository.Setup(a => a.DeleteById(1));
-                suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
-
+                // Act
                 suppliersService.DeleteSupplierById(1);
                 operationSucceeded = true;
             }
@@ -70,69 +82,79 @@ namespace Service.Tests
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
+
+            // Assert
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
 
         [TestMethod]
         public void GetSupplierById_ShouldReturn_NotNull()
         {
+            // Arrange
+            fakeSuppliersRepository.Setup(a => a.GetById(1)).Returns(new SuppliersModel());
+            suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
             SuppliersDtoModel supplierDto = null;
             try
             {
-                fakeSuppliersRepository.Setup(a => a.GetById(1)).Returns(new SuppliersModel());
-                suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
-
+                // Act
                 supplierDto = suppliersService.GetSupplierById(1);
             }
             catch (Exception ex)
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
+
+            // Assert
             Assert.IsNotNull(supplierDto, errorMessage);
         }
 
         [TestMethod]
         public void GetSuppliers_ShouldReturn_NotNull()
         {
-            var suppliers = new List<SuppliersModel> { new SuppliersModel() };
-            var suppliersDtos = new List<SuppliersDtoModel>();
+            // Arrange
+            List<SuppliersModel> suppliers = new List<SuppliersModel> { new SuppliersModel() };
+            List<SuppliersDtoModel> suppliersDtos = new List<SuppliersDtoModel>();
+            fakeSuppliersRepository.Setup(a => a.GetAll()).Returns(suppliers);
+            suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
+
             try
             {
-                fakeSuppliersRepository.Setup(a => a.GetAll()).Returns(suppliers);
-                suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
-
+                // Act
                 suppliersDtos = (List<SuppliersDtoModel>)suppliersService.GetSuppliers();
             }
             catch (Exception ex)
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
+
+            // Assert
             Assert.IsTrue(suppliersDtos.Count > 0, errorMessage);
         }
 
         [TestMethod]
         public void UpdateSupplier_ShouldReturn_Success()
         {
+            // Arrange
+            SuppliersModel supplier = new SuppliersModel
+            {
+                Name = "Name to update",
+                Link = "link to update",
+                Currency = "Eur",
+                Notes = "notes to update"
+            };
+            fakeSuppliersRepository.Setup(a => a.Update(supplier));
+            suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
+            SuppliersDtoModel supplierDto = new SuppliersDtoModel()
+            {
+                Name = supplier.Name,
+                Link = supplier.Link,
+                Currency = supplier.Currency,
+                Notes = supplier.Notes
+            };
+
             try
             {
-                SuppliersModel supplier = new SuppliersModel
-                {
-                    Name = "Name to update",
-                    Link = "link to update",
-                    Currency = "Eur",
-                    Notes = "notes to update"
-                };
-                fakeSuppliersRepository.Setup(a => a.Update(supplier));
-                suppliersService = new SuppliersService(fakeSuppliersRepository.Object);
-
-                SuppliersDtoModel supplierDto = new SuppliersDtoModel()
-                {
-                    Name = supplier.Name,
-                    Link = supplier.Link,
-                    Currency = supplier.Currency,
-                    Notes = supplier.Notes
-                };
-
+                // Act
                 suppliersService.UpdateSupplier(supplierDto);
                 operationSucceeded = true;
             }
@@ -140,6 +162,8 @@ namespace Service.Tests
             {
                 errorMessage = ex.Message + " | " + ex.StackTrace;
             }
+
+            // Assert
             Assert.IsTrue(operationSucceeded, errorMessage);
         }
     }
