@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Services.Validators;
 using Domain.Models.Parameters;
+using AutoMapper;
 
 namespace Services.ParametersServices
 {
@@ -33,13 +34,9 @@ namespace Services.ParametersServices
         /// <param name="parameterDto">Екземпляр характеристики</param>
         public void AddParameter(ParametersDtoModel parameterDto)
         {
-            ParametersModel parameter = new ParametersModel
-            {
-                ProductId = parameterDto.ProductId,
-                Name = parameterDto.Name,
-                UnitId = parameterDto.UnitId,
-                Value = parameterDto.Value
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ParametersDtoModel, ParametersModel>()).CreateMapper();
+            ParametersModel parameter = mapper.Map<ParametersModel>(parameterDto);
+
             var results = parametersValidator.Validate(parameter);
             if (results.IsValid)
             {
@@ -56,10 +53,7 @@ namespace Services.ParametersServices
         /// Видаляє характеристику
         /// </summary>
         /// <param name="id">Ідентифікатор характеристики</param>
-        public void DeleteParameterById(int id)
-        {
-            parametersRepository.DeleteById(id);
-        }
+        public void DeleteParameterById(int id) => parametersRepository.DeleteById(id);
 
         /// <summary>
         /// Повертає екземпляр характеристики за ідентифікатором
@@ -69,16 +63,11 @@ namespace Services.ParametersServices
         public ParametersDtoModel GetParameterById(int id)
         {
             var parameter = parametersRepository.GetById(id);
-            ParametersDtoModel parametersDto = new ParametersDtoModel
-            {
-                Id = id,
-                Name = parameter.Name,
-                ProductId = parameter.ProductId,
-                ProductName = commonRepository.GetProductsIdNames()[parameter.ProductId],
-                UnitId = parameter.UnitId,
-                UnitName = commonRepository.GetUnitsIdNames()[parameter.UnitId],
-                Value = parameter.Value
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ParametersModel, ParametersDtoModel>()).CreateMapper();
+            ParametersDtoModel parametersDto = mapper.Map<ParametersDtoModel>(parameter);
+            parametersDto.ProductName = commonRepository.GetProductsIdNames()[parameter.ProductId];
+            parametersDto.UnitName = commonRepository.GetUnitsIdNames()[parameter.UnitId];
+
             return parametersDto;
         }
 
@@ -89,23 +78,19 @@ namespace Services.ParametersServices
         public IEnumerable<ParametersDtoModel> GetParameters()
         {
             List<ParametersDtoModel> parametersDtos = new List<ParametersDtoModel>();
-            //List<ProductsDtoModel> products = productsService.GetProducts().ToList();
             Dictionary<int, string> productsIdNames = commonRepository.GetProductsIdNames();
-            //List<UnitsDtoModel> units = unitsService.GetUnits().ToList();
             Dictionary<int, string> unitsIdNames = commonRepository.GetUnitsIdNames();
+
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ParametersModel, ParametersDtoModel>()).CreateMapper();
+
             foreach (ParametersModel parameter in parametersRepository.GetAll())
             {
-                parametersDtos.Add(new ParametersDtoModel
-                {
-                    Id = parameter.Id,
-                    Name = parameter.Name,
-                    ProductId = parameter.ProductId,
-                    ProductName = productsIdNames[parameter.ProductId],
-                    UnitId = parameter.UnitId,
-                    UnitName = unitsIdNames[parameter.UnitId],
-                    Value = parameter.Value
-                });
+                ParametersDtoModel parametersDto = mapper.Map<ParametersDtoModel>(parameter);
+                parametersDto.ProductName = productsIdNames[parameter.ProductId];
+                parametersDto.UnitName = unitsIdNames[parameter.UnitId];
+                parametersDtos.Add(parametersDto);
             }
+
             return parametersDtos;
         }
 
@@ -115,14 +100,9 @@ namespace Services.ParametersServices
         /// <param name="parameterDto">Екземпляр характеристики</param>
         public void UpdateParameter(ParametersDtoModel parameterDto)
         {
-            ParametersModel parameter = new ParametersModel
-            {
-                Id = parameterDto.Id,
-                ProductId = parameterDto.ProductId,
-                Name = parameterDto.Name,
-                UnitId = parameterDto.UnitId,
-                Value = parameterDto.Value
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ParametersDtoModel, ParametersModel>()).CreateMapper();
+            ParametersModel parameter = mapper.Map<ParametersModel>(parameterDto);
+
             var results = parametersValidator.Validate(parameter);
             if (results.IsValid)
             {

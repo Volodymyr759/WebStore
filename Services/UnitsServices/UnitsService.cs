@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using Domain.Models.Units;
 using Services.Validators;
 
@@ -28,11 +29,9 @@ namespace Services.UnitsServices
         /// <param name="unitDto">Екземпляр одиниці виміру</param>
         public void AddUnit(UnitsDtoModel unitDto)
         {
-            UnitsModel unit = new UnitsModel
-            {
-                Name = unitDto.Name,
-                Notes = unitDto.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<UnitsDtoModel, UnitsModel>()).CreateMapper();
+            UnitsModel unit = mapper.Map<UnitsModel>(unitDto);
+
             var results = unitsValidator.Validate(unit);
             if (results.IsValid)
             {
@@ -49,10 +48,7 @@ namespace Services.UnitsServices
         /// Видаляє одиницю виміру
         /// </summary>
         /// <param name="id">Ідентифікатор одиниці виміру</param>
-        public void DeleteUnitById(int id)
-        {
-            unitsRepository.DeleteById(id);
-        }
+        public void DeleteUnitById(int id) => unitsRepository.DeleteById(id);
 
         /// <summary>
         /// Повертає екземпляр одиниці виміру за ідентифікатором
@@ -61,8 +57,9 @@ namespace Services.UnitsServices
         /// <returns>Екземпляр категорії</returns>
         public UnitsDtoModel GetUnitById(int id)
         {
-            var unit = unitsRepository.GetById(id);
-            return new UnitsDtoModel { Id = unit.Id, Name = unit.Name, Notes = unit.Notes };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<UnitsModel, UnitsDtoModel>()).CreateMapper();
+
+            return mapper.Map<UnitsDtoModel>(unitsRepository.GetById(id));
         }
 
         /// <summary>
@@ -71,13 +68,9 @@ namespace Services.UnitsServices
         /// <returns>Список одиниць виміру</returns>
         public IEnumerable<UnitsDtoModel> GetUnits()
         {
-            List<UnitsDtoModel> unitsDtos = new List<UnitsDtoModel>();
-            foreach (UnitsModel unit in unitsRepository.GetAll())
-            {
-                unitsDtos.Add(new UnitsDtoModel { Id = unit.Id, Name = unit.Name, Notes = unit.Notes });
-            }
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<UnitsModel, UnitsDtoModel>()).CreateMapper();
 
-            return unitsDtos;
+            return mapper.Map<IEnumerable<UnitsDtoModel>>(unitsRepository.GetAll());
         }
 
         /// <summary>
@@ -86,7 +79,9 @@ namespace Services.UnitsServices
         /// <param name="unitDto">Екземпляр одиниці виміру</param>
         public void UpdateUnit(UnitsDtoModel unitDto)
         {
-            UnitsModel unit = new UnitsModel { Id = unitDto.Id, Name = unitDto.Name, Notes = unitDto.Notes };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<UnitsDtoModel, UnitsModel>()).CreateMapper();
+            UnitsModel unit = mapper.Map<UnitsModel>(unitDto);
+
             var results = unitsValidator.Validate(unit);
             if (results.IsValid)
             {

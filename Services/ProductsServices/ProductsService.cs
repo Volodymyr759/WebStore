@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using Domain.Models.Products;
 using Services.Validators;
 
@@ -33,24 +34,9 @@ namespace Services.ProductsServices
         /// <param name="productDto">Екземпляр товару</param>
         public void AddProduct(ProductsDtoModel productDto)
         {
-            ProductsModel product = new ProductsModel
-            {
-                Id = productDto.Id,
-                SupplierId = productDto.SupplierId,
-                CategoryId = productDto.CategoryId,
-                GroupId = productDto.GroupId,
-                UnitId = productDto.UnitId,
-                NameWebStore = productDto.NameWebStore,
-                NameSupplier = productDto.NameSupplier,
-                CodeWebStore = productDto.CodeWebStore,
-                CodeSupplier = productDto.CodeSupplier,
-                PriceWebStore = productDto.PriceWebStore,
-                PriceSupplier = productDto.PriceSupplier,
-                Available = productDto.Available,
-                LinkWebStore = productDto.LinkWebStore,
-                LinkSupplier = productDto.LinkSupplier,
-                Notes = productDto.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ProductsDtoModel, ProductsModel>()).CreateMapper();
+            ProductsModel product = mapper.Map<ProductsModel >(productDto);
+
             var results = productsValidator.Validate(product);
             if (results.IsValid)
             {
@@ -77,25 +63,13 @@ namespace Services.ProductsServices
         public ProductsDtoModel GetProductById(int id)
         {
             var product = productsRepository.GetById(id);
-            ProductsDtoModel productDto = new ProductsDtoModel
-            {
-                Id = product.Id,
-                SupplierName = commonRepository.GetSuppliersIdNames()[product.SupplierId],
-                CategoryName = commonRepository.GetCategoriesIdNames()[product.CategoryId],
-                GroupName = commonRepository.GetGroupsIdNames()[(int)product.GroupId] ?? "",
-                UnitName = commonRepository.GetUnitsIdNames()[product.UnitId],
-                NameWebStore = product.NameWebStore,
-                NameSupplier = product.NameSupplier,
-                CodeWebStore = product.CodeWebStore,
-                CodeSupplier = product.CodeSupplier,
-                PriceWebStore = product.PriceWebStore,
-                PriceSupplier = product.PriceSupplier,
-                Currency = commonRepository.GetSuppliersIdCurrencies()[product.SupplierId],
-                Available = product.Available,
-                LinkWebStore = product.LinkWebStore,
-                LinkSupplier = product.LinkSupplier,
-                Notes = product.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ProductsModel, ProductsDtoModel>()).CreateMapper();
+            ProductsDtoModel productDto = mapper.Map<ProductsDtoModel>(product);
+            productDto.SupplierName = commonRepository.GetSuppliersIdNames()[product.SupplierId];
+            productDto.CategoryName = commonRepository.GetCategoriesIdNames()[product.CategoryId];
+            productDto.GroupName = commonRepository.GetGroupsIdNames()[(int)product.GroupId] ?? "";
+            productDto.UnitName = commonRepository.GetUnitsIdNames()[product.UnitId];
+
             return productDto;
         }
 
@@ -112,34 +86,19 @@ namespace Services.ProductsServices
             Dictionary<int, string> groupsIdNames = commonRepository.GetGroupsIdNames();
             Dictionary<int, string> unitsIdNames = commonRepository.GetUnitsIdNames();
 
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ProductsModel, ProductsDtoModel>()).CreateMapper();
+
             foreach (ProductsModel product in productsRepository.GetAll())
             {
-                productsDtos.Add(new ProductsDtoModel
-                {
-                    Id = product.Id,
-                    SupplierId = product.SupplierId,
-                    SupplierName = suppliersIdNames[product.SupplierId],
-                    CategoryId = product.CategoryId,
-                    CategoryName = categoriesIdNames[product.CategoryId],
-                    GroupId = product.GroupId ?? 0,
-                    GroupName = product.GroupId == 0 ? "" : groupsIdNames[(int)product.GroupId],
-                    UnitId = product.UnitId,
-                    UnitName = unitsIdNames[product.UnitId],
-                    NameWebStore = product.NameWebStore,
-                    NameSupplier = product.NameSupplier,
-                    CodeWebStore = product.CodeWebStore,
-                    CodeSupplier = product.CodeSupplier,
-                    PriceWebStore = product.PriceWebStore,
-                    PriceSupplier = product.PriceSupplier,
-                    Currency = suppliersIdCurrencies[product.SupplierId],
-                    Available = product.Available,
-                    LinkWebStore = product.LinkWebStore,
-                    LinkSupplier = product.LinkSupplier,
-                    Notes = product.Notes
-                });
+                ProductsDtoModel productsDto = mapper.Map<ProductsDtoModel>(product);
+                productsDto.SupplierName = suppliersIdNames[product.SupplierId];
+                productsDto.CategoryName = categoriesIdNames[product.CategoryId];
+                productsDto.GroupName = product.GroupId == 0 ? "" : groupsIdNames[(int)product.GroupId];
+                productsDto.UnitName = unitsIdNames[product.UnitId];
+                productsDtos.Add(productsDto);
             }
-            return productsDtos;
 
+            return productsDtos;
         }
 
         /// <summary>
@@ -148,24 +107,9 @@ namespace Services.ProductsServices
         /// <param name="productDto">Екземпляр товару</param>
         public void UpdateProduct(ProductsDtoModel productDto)
         {
-            ProductsModel product = new ProductsModel
-            {
-                Id = productDto.Id,
-                SupplierId = productDto.SupplierId,
-                CategoryId = productDto.CategoryId,
-                GroupId = productDto.GroupId,
-                UnitId = productDto.UnitId,
-                NameWebStore = productDto.NameWebStore,
-                NameSupplier = productDto.NameSupplier,
-                CodeWebStore = productDto.CodeWebStore,
-                CodeSupplier = productDto.CodeSupplier,
-                PriceWebStore = productDto.PriceWebStore,
-                PriceSupplier = productDto.PriceSupplier,
-                Available = productDto.Available,
-                LinkWebStore = productDto.LinkWebStore,
-                LinkSupplier = productDto.LinkSupplier,
-                Notes = productDto.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ProductsDtoModel, ProductsModel>()).CreateMapper();
+            ProductsModel product = mapper.Map<ProductsModel>(productDto);
+
             var results = productsValidator.Validate(product);
             if (results.IsValid)
             {

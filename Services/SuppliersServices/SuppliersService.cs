@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using Domain.Models.Suppliers;
 using Services.Validators;
 
@@ -28,13 +29,9 @@ namespace Services.SuppliersServices
         /// <param name="supplierDto">Екземпляр постачальника</param>
         public void AddSupplier(SuppliersDtoModel supplierDto)
         {
-            SuppliersModel supplier = new SuppliersModel
-            {
-                Name = supplierDto.Name,
-                Link = supplierDto.Link,
-                Currency = supplierDto.Currency,
-                Notes = supplierDto.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<SuppliersDtoModel, SuppliersModel>()).CreateMapper();
+            SuppliersModel supplier = mapper.Map<SuppliersModel>(supplierDto);
+
             var results = suppliersValidator.Validate(supplier);
             if (results.IsValid)
             {
@@ -51,10 +48,7 @@ namespace Services.SuppliersServices
         /// Видаляє постачальника
         /// </summary>
         /// <param name="id">Ідентифікатор постачальника</param>
-        public void DeleteSupplierById(int id)
-        {
-            suppliersRepository.DeleteById(id);
-        }
+        public void DeleteSupplierById(int id) => suppliersRepository.DeleteById(id);
 
         /// <summary>
         /// Повертає екземпляр постачальника за ідентифікатором
@@ -63,15 +57,9 @@ namespace Services.SuppliersServices
         /// <returns>Екземпляр постачальника</returns>
         public SuppliersDtoModel GetSupplierById(int id)
         {
-            var supplier = suppliersRepository.GetById(id);
-            return new SuppliersDtoModel
-            {
-                Id = supplier.Id,
-                Name = supplier.Name,
-                Link = supplier.Link,
-                Currency = supplier.Currency,
-                Notes = supplier.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<SuppliersModel, SuppliersDtoModel>()).CreateMapper();
+
+            return mapper.Map<SuppliersDtoModel>(suppliersRepository.GetById(id));
         }
 
         /// <summary>
@@ -80,19 +68,9 @@ namespace Services.SuppliersServices
         /// <returns>Список постачальників</returns>
         public IEnumerable<SuppliersDtoModel> GetSuppliers()
         {
-            List<SuppliersDtoModel> suppliersDtos = new List<SuppliersDtoModel>();
-            foreach (SuppliersModel supplier in suppliersRepository.GetAll())
-            {
-                suppliersDtos.Add(new SuppliersDtoModel
-                {
-                    Id = supplier.Id,
-                    Name = supplier.Name,
-                    Link = supplier.Link,
-                    Currency = supplier.Currency,
-                    Notes = supplier.Notes
-                });
-            }
-            return suppliersDtos;
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<SuppliersModel, SuppliersDtoModel>()).CreateMapper();
+
+            return mapper.Map<IEnumerable<SuppliersDtoModel>>(suppliersRepository.GetAll());
         }
 
         /// <summary>
@@ -101,14 +79,9 @@ namespace Services.SuppliersServices
         /// <param name="supplierDto">Екземпляр постачальника</param>
         public void UpdateSupplier(SuppliersDtoModel supplierDto)
         {
-            SuppliersModel supplier = new SuppliersModel
-            {
-                Id = supplierDto.Id,
-                Name = supplierDto.Name,
-                Link = supplierDto.Link,
-                Currency = supplierDto.Currency,
-                Notes = supplierDto.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<SuppliersDtoModel, SuppliersModel>()).CreateMapper();
+            SuppliersModel supplier = mapper.Map<SuppliersModel>(supplierDto);
+
             var results = suppliersValidator.Validate(supplier);
             if (results.IsValid)
             {

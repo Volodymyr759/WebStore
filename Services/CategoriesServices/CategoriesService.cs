@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using Domain.Models.Categories;
 using Services.Validators;
 
@@ -33,15 +34,8 @@ namespace Services.CategoriesServices
         /// <param name="categoryDto">Екземпляр категорії</param>
         public void AddCategory(CategoriesDtoModel categoryDto)
         {
-            CategoriesModel category = new CategoriesModel
-            {
-                Id = categoryDto.Id,
-                Name = categoryDto.Name,
-                SupplierId = categoryDto.SupplierId,
-                Link = categoryDto.Link,
-                Rate = categoryDto.Rate,
-                Notes = categoryDto.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<CategoriesDtoModel, CategoriesModel>()).CreateMapper();
+            CategoriesModel category = mapper.Map<CategoriesModel>(categoryDto);
             var results = categoriesValidator.Validate(category);
             if (results.IsValid)
             {
@@ -58,10 +52,7 @@ namespace Services.CategoriesServices
         /// Видаляє категорію
         /// </summary>
         /// <param name="id">Ідентифікатор категорії</param>
-        public void DeleteCategoryById(int id)
-        {
-            categoriesRepository.DeleteById(id);
-        }
+        public void DeleteCategoryById(int id) => categoriesRepository.DeleteById(id);
 
         /// <summary>
         /// Повертає екземпляр категорії за ідентифікатором
@@ -71,16 +62,10 @@ namespace Services.CategoriesServices
         public CategoriesDtoModel GetCategoryById(int id)
         {
             var category = categoriesRepository.GetById(id);
-            CategoriesDtoModel categoriesDto = new CategoriesDtoModel
-            {
-                Id = category.Id,
-                Name = category.Name,
-                SupplierId = category.SupplierId,
-                SupplierName = commonRepository.GetSuppliersIdNames()[category.SupplierId],
-                Link = category.Link,
-                Rate = category.Rate,
-                Notes = category.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<CategoriesModel, CategoriesDtoModel>()).CreateMapper();
+            CategoriesDtoModel categoriesDto = mapper.Map<CategoriesDtoModel>(category);
+            categoriesDto.SupplierName = commonRepository.GetSuppliersIdNames()[category.SupplierId];
+
             return categoriesDto;
         }
 
@@ -92,19 +77,16 @@ namespace Services.CategoriesServices
         {
             List<CategoriesDtoModel> categoriesDtos = new List<CategoriesDtoModel>();
             Dictionary<int, string> suppliersIdNames = commonRepository.GetSuppliersIdNames();
+
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<CategoriesModel, CategoriesDtoModel>()).CreateMapper();
+
             foreach (CategoriesModel category in categoriesRepository.GetAll())
             {
-                categoriesDtos.Add(new CategoriesDtoModel
-                {
-                    Id = category.Id,
-                    Name = category.Name,
-                    SupplierId = category.SupplierId,
-                    SupplierName = suppliersIdNames[category.SupplierId],
-                    Link = category.Link,
-                    Rate = category.Rate,
-                    Notes = category.Notes
-                });
+                CategoriesDtoModel categoriesDto = mapper.Map<CategoriesDtoModel>(category);
+                categoriesDto.SupplierName = suppliersIdNames[category.SupplierId];
+                categoriesDtos.Add(categoriesDto);
             }
+
             return categoriesDtos;
         }
 
@@ -114,15 +96,9 @@ namespace Services.CategoriesServices
         /// <param name="categoryDto">Екземпляр категорії</param>
         public void UpdateCategory(CategoriesDtoModel categoryDto)
         {
-            CategoriesModel category = new CategoriesModel
-            {
-                Id = categoryDto.Id,
-                Name = categoryDto.Name,
-                SupplierId = categoryDto.SupplierId,
-                Link = categoryDto.Link,
-                Rate = categoryDto.Rate,
-                Notes = categoryDto.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<CategoriesDtoModel, CategoriesModel>()).CreateMapper();
+            CategoriesModel category = mapper.Map<CategoriesModel>(categoryDto);
+
             var results = categoriesValidator.Validate(category);
             if (results.IsValid)
             {

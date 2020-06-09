@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using Domain.Models.Images;
 using Services.Validators;
 
@@ -33,14 +34,9 @@ namespace Services.ImagesServices
         /// <param name="imageDto">Екземпляр зображення</param>
         public void AddImage(ImagesDtoModel imageDto)
         {
-            ImagesModel image = new ImagesModel()
-            {
-                ProductId = imageDto.ProductId,
-                FileName = imageDto.FileName,
-                LinkWebStore = imageDto.LinkWebStore ?? "",
-                LinkSupplier = imageDto.LinkSupplier,
-                LocalPath = imageDto.LocalPath
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ImagesDtoModel, ImagesModel>()).CreateMapper();
+            ImagesModel image = mapper.Map<ImagesModel>(imageDto);
+
             var results = imagesValidator.Validate(image);
             if (results.IsValid)
             {
@@ -57,10 +53,7 @@ namespace Services.ImagesServices
         /// Видаляє зображення
         /// </summary>
         /// <param name="id">Ідентифікатор зображення</param>
-        public void DeleteImageById(int id)
-        {
-            imagesRepository.DeleteById(id);
-        }
+        public void DeleteImageById(int id) => imagesRepository.DeleteById(id);
 
         /// <summary>
         /// Повертає екземпляр зображення за ідентифікатором
@@ -69,17 +62,10 @@ namespace Services.ImagesServices
         /// <returns>Екземпляр зображення</returns>
         public ImagesDtoModel GetImageById(int id)
         {
-            var image = imagesRepository.GetById(id);
-            ImagesDtoModel imageDto = new ImagesDtoModel
-            {
-                Id = image.Id,
-                ProductId = image.ProductId,
-                ProductName = commonRepository.GetProductsIdNames()[image.ProductId],
-                FileName = image.FileName,
-                LinkWebStore = image.LinkWebStore ?? "",
-                LinkSupplier = image.LinkSupplier,
-                LocalPath = image.LocalPath
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ImagesModel, ImagesDtoModel>()).CreateMapper();
+            ImagesDtoModel imageDto = mapper.Map<ImagesDtoModel>(imagesRepository.GetById(id));
+            imageDto.ProductName = commonRepository.GetProductsIdNames()[imageDto.ProductId];
+
             return imageDto;
         }
 
@@ -91,19 +77,16 @@ namespace Services.ImagesServices
         {
             List<ImagesDtoModel> imagesDtos = new List<ImagesDtoModel>();
             Dictionary<int, string> productsIdNames = commonRepository.GetProductsIdNames();
+
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ImagesModel, ImagesDtoModel>()).CreateMapper();
+
             foreach (ImagesModel image in imagesRepository.GetAll())
             {
-                imagesDtos.Add(new ImagesDtoModel
-                {
-                    Id = image.Id,
-                    ProductId = image.ProductId,
-                    ProductName = productsIdNames[image.ProductId],
-                    FileName = image.FileName,
-                    LinkWebStore = image.LinkWebStore ?? "",
-                    LinkSupplier = image.LinkSupplier,
-                    LocalPath = image.LocalPath
-                });
+                ImagesDtoModel imagesDto = mapper.Map<ImagesDtoModel>(image);
+                imagesDto.ProductName = productsIdNames[image.ProductId];
+                imagesDtos.Add(imagesDto);
             }
+
             return imagesDtos;
         }
 
@@ -113,15 +96,9 @@ namespace Services.ImagesServices
         /// <param name="imageDto">Екземпляр зображення</param>
         public void UpdateImage(ImagesDtoModel imageDto)
         {
-            ImagesModel image = new ImagesModel()
-            {
-                Id = imageDto.Id,
-                ProductId = imageDto.ProductId,
-                FileName = imageDto.FileName,
-                LinkWebStore = imageDto.LinkWebStore ?? "",
-                LinkSupplier = imageDto.LinkSupplier,
-                LocalPath = imageDto.LocalPath
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ImagesDtoModel, ImagesModel>()).CreateMapper();
+            ImagesModel image = mapper.Map<ImagesModel>(imageDto);
+
             var results = imagesValidator.Validate(image);
             if (imagesValidator.Validate(image).IsValid)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using Domain.Models.Groups;
 using Services.Validators;
 
@@ -28,18 +29,9 @@ namespace Services.GroupsServices
         /// <param name="groupDto">Екземпляр групи</param>
         public void AddGroup(GroupsDtoModel groupDto)
         {
-            GroupsModel group = new GroupsModel
-            {
-                Id = groupDto.Id,
-                Name = groupDto.Name,
-                Number = groupDto.Number,
-                Identifier = groupDto.Identifier,
-                AncestorNumber = groupDto.AncestorNumber,
-                AncestorIdentifier = groupDto.AncestorIdentifier,
-                ProductType = groupDto.ProductType,
-                Link = groupDto.Link,
-                Notes = groupDto.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<GroupsDtoModel, GroupsModel>()).CreateMapper();
+            GroupsModel group = mapper.Map<GroupsModel>(groupDto);
+
             var results = groupsValidator.Validate(group);
             if (results.IsValid)
             {
@@ -56,10 +48,7 @@ namespace Services.GroupsServices
         /// Видаляє групу
         /// </summary>
         /// <param name="id">Ідентифікатор групи</param>
-        public void DeleteGroupById(int id)
-        {
-            groupsRepository.DeleteById(id);
-        }
+        public void DeleteGroupById(int id) => groupsRepository.DeleteById(id);
 
         /// <summary>
         /// Повертає екземпляр групи за ідентифікатором
@@ -68,19 +57,9 @@ namespace Services.GroupsServices
         /// <returns>Екземпляр групи</returns>
         public GroupsDtoModel GetGroupById(int id)
         {
-            var group = groupsRepository.GetById(id);
-            return new GroupsDtoModel
-            {
-                Id = group.Id,
-                Name = group.Name,
-                Number = group.Number,
-                Identifier = group.Identifier,
-                AncestorNumber = group.AncestorNumber,
-                AncestorIdentifier = group.AncestorIdentifier,
-                ProductType = group.ProductType,
-                Link = group.Link,
-                Notes = group.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<GroupsModel, GroupsDtoModel>()).CreateMapper();
+            
+            return mapper.Map<GroupsDtoModel>(groupsRepository.GetById(id));
         }
 
         /// <summary>
@@ -89,23 +68,8 @@ namespace Services.GroupsServices
         /// <returns>Список груп</returns>
         public IEnumerable<GroupsDtoModel> GetGroups()
         {
-            List<GroupsDtoModel> groupsDtos = new List<GroupsDtoModel>();
-            foreach (GroupsModel group in groupsRepository.GetAll())
-            {
-                groupsDtos.Add(new GroupsDtoModel
-                {
-                    Id = group.Id,
-                    Name = group.Name,
-                    Number = group.Number,
-                    Identifier = group.Identifier,
-                    AncestorNumber = group.AncestorNumber,
-                    AncestorIdentifier = group.AncestorIdentifier,
-                    ProductType = group.ProductType,
-                    Link = group.Link,
-                    Notes = group.Notes
-                });
-            }
-            return groupsDtos;
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<GroupsModel, GroupsDtoModel>()).CreateMapper();
+            return mapper.Map<IEnumerable<GroupsDtoModel>>(groupsRepository.GetAll());
         }
 
         /// <summary>
@@ -114,18 +78,9 @@ namespace Services.GroupsServices
         /// <param name="groupDto">Екземпляр групи</param>
         public void UpdateGroup(GroupsDtoModel groupDto)
         {
-            GroupsModel group = new GroupsModel
-            {
-                Id = groupDto.Id,
-                Name = groupDto.Name,
-                Number = groupDto.Number,
-                Identifier = groupDto.Identifier,
-                AncestorNumber = groupDto.AncestorNumber,
-                AncestorIdentifier = groupDto.AncestorIdentifier,
-                ProductType = groupDto.ProductType,
-                Link = groupDto.Link,
-                Notes = groupDto.Notes
-            };
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<GroupsDtoModel, GroupsModel>()).CreateMapper();
+            GroupsModel group = mapper.Map<GroupsModel>(groupDto);
+
             var results = groupsValidator.Validate(group);
             if (results.IsValid)
             {
