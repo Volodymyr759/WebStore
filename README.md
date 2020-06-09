@@ -21,7 +21,7 @@ Planned user roles and uses:
  Sales / Supply / Support online SKU status in the online store (or online price)
 
 Technical description:
- Architecture: MVP (passive view), NET Framework 4.7.2
+ NET Framework 4.7.2
  Tests: MSTest (Moq)
- Patterns: DI (Unity), Facade, Factory method
+ Patterns: MVP (passive view), DI (Unity), Facade, Factory method
  Validation: FluentValidation
