@@ -42,14 +42,14 @@ namespace Presentation
         ToolStripTextBox searchToolStripTextBox;
 
         /// <summary>
-        /// Порожній конструктор головного презентера
+        /// ctor
         /// </summary>
         public MainPresenter()
         {
         }
 
         /// <summary>
-        /// Конструктор головного презентера, інжектуючий використовувані компоненти системи
+        /// ctor
         /// </summary>
         /// <param name="mainView">Головна форма</param>
         /// <param name="settingsPresenter">Презентер представлення налаштувань</param>
