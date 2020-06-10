@@ -78,7 +78,6 @@ namespace Presentation.Tests
                 groupsPresenter, groupsDetailPresenter,
                 categoriesPresenter, categoriesDetailPresenter,
                 facade, deleteConfirmView);
-            mainPresenter.TestEventRaised += (sender, e) => SetOperationSuccessToTrue();
         }
 
         [TestInitialize]
@@ -86,11 +85,6 @@ namespace Presentation.Tests
         {
             errorMessage = "";
             operationSucceeded = false;
-        }
-
-        private void SetOperationSuccessToTrue()
-        {
-            operationSucceeded = true;
         }
 
         [TestMethod]

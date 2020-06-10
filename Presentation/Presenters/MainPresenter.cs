@@ -16,11 +16,6 @@ namespace Presentation
     /// </summary>
     public class MainPresenter : IMainPresenter
     {
-        /// <summary>
-        /// Тестова подія, лише для розробки. В продакшені - не застосовується
-        /// </summary>
-        public event EventHandler TestEventRaised;
-
         IMainView mainView;
         ISettingsPresenter settingsPresenter;
         IUnitsPresenter unitsPresenter;
@@ -189,8 +184,6 @@ namespace Presentation
             targetPanel.Controls.Add(userControl);
 
             if (settingsPresenter.IsNeedRunShedule()) RunSheduler();
-
-            EventHelper.RaiseEvent(this, TestEventRaised, new EventArgs());
         }
 
         private void RunSheduler()
